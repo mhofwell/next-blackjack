@@ -28,7 +28,11 @@ export default function Form() {
         const formData = new FormData(e.currentTarget);
 
         try {
-            const res = await fetch('/api/auth/signup', {
+            // make the query
+
+            // fetch gql 
+
+            const res = await fetch('/api/graphql', {
                 method: 'POST',
                 body: JSON.stringify({
                     username: formData.get('username'),
@@ -40,11 +44,14 @@ export default function Form() {
                 }),
             });
 
+
             const data = await res.json();
 
             if (!data) {
                 throw new Error('Something went wrong.');
             }
+
+            // check if status comes back 200 maybe? 
 
             if (!data.username) {
                 const errors: Error[] = [];
@@ -55,8 +62,6 @@ export default function Form() {
                 setIsError(true);
                 return;
             }
-
-            // submit data to database to store credentials.
 
             console.log('OK!', data);
 

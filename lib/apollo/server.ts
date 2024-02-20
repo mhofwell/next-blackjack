@@ -17,15 +17,12 @@ const schema = makeExecutableSchema({
     typeDefs,
 });
 
-interface MyContext {
-    prisma?: any;
-}
-
-const server = new ApolloServer<MyContext>({ schema });
+const server = new ApolloServer({ schema });
 
 const handler = startServerAndCreateNextHandler<NextRequest>(server, {
     context: async (req, res) => ({
         prisma: prisma,
+        greeting: 'hey',
         req,
         res,
     }),
