@@ -6,12 +6,12 @@ import Mutation from '@/lib/graphql/resolvers/Mutation';
 import Subscription from '@/lib/graphql/resolvers/Subscription';
 import typeDefs from '@/lib/graphql/typedefs';
 import { makeExecutableSchema } from '@graphql-tools/schema';
-import * as prisma from '../prisma/client';
+import prisma from '../prisma/client';
 
 const schema = makeExecutableSchema({
     resolvers: {
         Query,
-        // Mutation,
+        Mutation,
         // Subscription,
     },
     typeDefs,
