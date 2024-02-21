@@ -21,10 +21,10 @@ const server = new ApolloServer({ schema });
 
 const handler = startServerAndCreateNextHandler<NextRequest>(server, {
     context: async (req, res) => ({
-        prisma: prisma,
-        greeting: 'hey',
         req,
         res,
+        prisma,
+        greeting: 'hey',
     }),
 });
 

@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { FormEvent, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import gql from 'graphql-tag';
 
 type Error = {
     field: string;
@@ -12,13 +13,18 @@ type Error = {
     meta?: string;
 };
 
+type UserFormData = {
+    username: FormDataEntryValue | null;
+    email: FormDataEntryValue | null;
+    password: FormDataEntryValue | null;
+    password_confirmation: FormDataEntryValue | null;
+};
+
 type ErrorArray = Error[];
 
 export default function Form() {
     let errorArray: ErrorArray = [];
-
     const [errors, setErrors] = useState(errorArray);
-    const [isError, setIsError] = useState(false);
 
     const router = useRouter();
 
@@ -28,42 +34,67 @@ export default function Form() {
         const formData = new FormData(e.currentTarget);
 
         try {
-            // make the query
+            // gql query
+            const query = gql`
+                mutation Mutation($input: SignUpCredentials!) {
+                    signup(input: $input) {
+                        status
+                        errorMessage {
+                            message
+                        }
+                    }
+                }
+            `;
 
-            // fetch gql 
+            // variables
+            const formObject: UserFormData = {
+                username: formData.get('username'),
+                email: formData.get('email'),
+                password: formData.get('password'),
+                password_confirmation: formData.get('password_confirmation'),
+            };
 
+            console.log(formObject);
+            const signInErrors: Error[] = [];
+
+            // client-side input validation
+
+            //
+            //
+
+            // fix this graphql api call
+            //
+            //
+
+            // fetch graph api
             const res = await fetch('/api/graphql', {
                 method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
                 body: JSON.stringify({
-                    username: formData.get('username'),
-                    email: formData.get('email'),
-                    password: formData.get('password'),
-                    password_confirmation: formData.get(
-                        'password_confirmation'
-                    ),
+                    query: query,
+                    variables: formObject,
                 }),
             });
 
+            const { data } = await res.json();
 
-            const data = await res.json();
+            console.log('Data', data);
+            console.log('signInErrors', data.error);
 
-            if (!data) {
-                throw new Error('Something went wrong.');
-            }
-
-            // check if status comes back 200 maybe? 
-
-            if (!data.username) {
-                const errors: Error[] = [];
-                data.forEach((entry: any) => {
-                    errors.push(entry.message);
+            if (data.signup.status !== 200) {
+                signInErrors.push({
+                    field: 'server-side validation',
+                    message: data.error,
+                    rule: data.error,
                 });
-                setErrors(errors);
-                setIsError(true);
+
+                console.log('signin errors', signInErrors);
+
+                signInErrors.length > 0 ? setErrors(signInErrors) : null;
                 return;
             }
-
-            console.log('OK!', data);
 
             router.push('/login');
         } catch (e) {

@@ -18,18 +18,24 @@ const typeDefs = gql`
         role: Role
     }
 
-    type SignUpResponse {
-        status: Int!
-    }
-
     type Mutation {
         signup(input: SignUpCredentials!): SignUpResponse!
+    }
+
+    type SignUpResponse {
+        status: Int!
+        error: String
+    }
+
+    type Error {
+        message: String!
     }
 
     input SignUpCredentials {
         username: String!
         email: String!
         password: String!
+        password_confirmation: String!
     }
 
     enum Role {
