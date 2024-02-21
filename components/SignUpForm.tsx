@@ -232,7 +232,7 @@ export default function Form() {
                 {errors.length > 0 && (
                     <ul className="text-xs pt-1 text-red-500">
                         {errors.map((error, index) => (
-                            <li key={index}>{error}</li>
+                            <li key={index}>{error.message}</li>
                         ))}
                     </ul>
                 )}
