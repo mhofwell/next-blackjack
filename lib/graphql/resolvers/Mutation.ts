@@ -3,7 +3,7 @@ import validateSignUpInput from '@/lib/validator/validate';
 
 type SignUpResponse = {
     status: number;
-    error: string | null;
+    error: string[];
 };
 
 type SignUpFormData = {
@@ -25,7 +25,10 @@ const Mutation = {
     signup: async (_parent: any, args: SignUpFormData, context: any) => {
         const { prisma } = context;
 
-        let response: SignUpResponse;
+        let response: SignUpResponse = {
+            status: 0,
+            error: [],
+        };
 
         try {
             // get user information from args
@@ -98,17 +101,15 @@ const Mutation = {
             console.log('Sign in successful.');
 
             // sucess response
-            response = {
-                status: 200,
-                error: null,
-            };
+            response.status = 200;
 
             return response;
         } catch (error: any) {
-            response = {
-                status: 400,
-                error: error.message,
-            };
+            // unsuccessful response with error message
+            console.log([error.message]);
+            response.status = 400;
+            response.error = [error.message];
+
             console.log(response);
 
             return response;

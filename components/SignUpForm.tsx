@@ -4,26 +4,24 @@ import { FormEvent, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import gql from 'graphql-tag';
+// import validateSignUpInput from '@/lib/validator/validate';
 
-type Error = {
-    field: string;
-    message: string;
-    rule: string;
-    index?: string;
-    meta?: string;
-};
-
-type UserFormData = {
+type SignUpData = {
     username: FormDataEntryValue | null;
     email: FormDataEntryValue | null;
     password: FormDataEntryValue | null;
     password_confirmation: FormDataEntryValue | null;
 };
 
-type ErrorArray = Error[];
+type ValidationReturn = {
+    validatedOutput: SignUpData | null;
+    status: number;
+    error: string[];
+};
 
 export default function Form() {
-    let errorArray: ErrorArray = [];
+    let errorArray: string[] = [];
+
     const [errors, setErrors] = useState(errorArray);
 
     const router = useRouter();
@@ -46,8 +44,8 @@ export default function Form() {
                 }
             `;
 
-            // variables
-            const formObject: UserFormData = {
+            // Get user input data from the form.
+            const formObject: SignUpData = {
                 username: formData.get('username'),
                 email: formData.get('email'),
                 password: formData.get('password'),
@@ -55,18 +53,27 @@ export default function Form() {
             };
 
             console.log(formObject);
-            const signInErrors: Error[] = [];
 
-            // client-side input validation
+            // need to think about client-side validation. 
 
-            //
-            //
+            // // client-side user input validation
+            // const validationData: ValidationReturn = await validateSignUpInput(
+            //     formObject
+            // );
+
+            // console.log('Client side validation cleared.');
+
+            // if (validationData.status !== 200) {
+            //     validationData.error.length > 0
+            //         ? setErrors(validationData.error)
+            //         : null;
+
+            //     return;
+            // }
 
             // fix this graphql api call
-            //
-            //
 
-            // fetch graph api
+            // submit data to signup Mutation
             const res = await fetch('/api/graphql', {
                 method: 'POST',
                 headers: {
@@ -83,21 +90,20 @@ export default function Form() {
             console.log('Data', data);
             console.log('signInErrors', data.error);
 
-            if (data.signup.status !== 200) {
-                signInErrors.push({
-                    field: 'server-side validation',
-                    message: data.error,
-                    rule: data.error,
-                });
-
-                console.log('signin errors', signInErrors);
-
-                signInErrors.length > 0 ? setErrors(signInErrors) : null;
+            // early return for failed server side validation
+            if (data.status !== 200) {
+                data.error.length > 0 ? setErrors(data.error) : null;
                 return;
             }
 
+            // if server-side validation passes, user has been created
+            console.log('Server side validation cleared.');
+            console.log('Routing to login.');
+
+            // route user to login page
             router.push('/login');
         } catch (e) {
+            // can remove this big try, catch?
             console.log(e);
         }
     }
@@ -232,7 +238,7 @@ export default function Form() {
                 {errors.length > 0 && (
                     <ul className="text-xs pt-1 text-red-500">
                         {errors.map((error, index) => (
-                            <li key={index}>{error.message}</li>
+                            <li key={index}>{error}</li>
                         ))}
                     </ul>
                 )}

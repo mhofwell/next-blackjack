@@ -2,16 +2,16 @@ import { registerSchema } from './authSchema';
 import vine, { errors } from '@vinejs/vine';
 
 type SignUpData = {
-    username: string;
-    email: string;
-    password: string;
-    password_confirmation: string;
+    username: FormDataEntryValue | null;
+    email: FormDataEntryValue | null;
+    password: FormDataEntryValue | null;
+    password_confirmation: FormDataEntryValue | null;
 };
 
 type ValidationReturn = {
     validatedOutput: SignUpData | null;
     status: number;
-    errorMessage: string[] | string | null;
+    error: string[];
 };
 
 // type Error = {
@@ -19,7 +19,11 @@ type ValidationReturn = {
 // };
 
 export default async function validateSignUpInput(input: SignUpData) {
-    let result: ValidationReturn;
+    let result: ValidationReturn = {
+        validatedOutput: null,
+        status: 0,
+        error: [],
+    };
 
     try {
         const inputValidator = vine.compile(registerSchema);
@@ -27,27 +31,19 @@ export default async function validateSignUpInput(input: SignUpData) {
 
         console.log('Validated Form');
 
-        result = {
-            validatedOutput: output,
-            status: 200,
-            errorMessage: null,
-        };
+        result.validatedOutput = output;
+        result.status = 200;
 
         return result;
     } catch (error) {
         if (error instanceof errors.E_VALIDATION_ERROR) {
-            result = {
-                validatedOutput: null,
-                status: 400,
-                errorMessage: error.messages,
-            };
+            result.status = 400;
+            result.error = error.messages;
             return result;
         }
-        result = {
-            validatedOutput: null,
-            status: 500,
-            errorMessage: 'Something went wrong.',
-        };
+        result.status = 500;
+        result.error = ['Something went wrong.'];
+
         return result;
     }
 }

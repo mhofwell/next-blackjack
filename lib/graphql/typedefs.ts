@@ -24,7 +24,7 @@ const typeDefs = gql`
 
     type SignUpResponse {
         status: Int!
-        error: String
+        error: [String]
     }
 
     type Error {
