@@ -1,118 +1,28 @@
 'use client';
 import Image from 'next/image';
-import { FormEvent, useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import gql from 'graphql-tag';
-// import validateSignUpInput from '@/lib/validator/validate';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { SignUpSchema } from '@/lib/validator/schema';
 
-type SignUpData = {
-    username: FormDataEntryValue | null;
-    email: FormDataEntryValue | null;
-    password: FormDataEntryValue | null;
-    password_confirmation: FormDataEntryValue | null;
-};
+type SignUpCredentials = z.infer<typeof SignUpSchema>;
 
-type ValidationReturn = {
-    validatedOutput: SignUpData | null;
-    status: number;
-    error: string[];
-};
+export default function ReactHookForm({ registerNewUser }: any) {
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors },
+    } = useForm<SignUpCredentials>({
+        resolver: zodResolver(SignUpSchema),
+    });
 
-export default function Form() {
-    let errorArray: string[] = [];
-
-    const [errors, setErrors] = useState(errorArray);
-
-    const router = useRouter();
-
-    async function handleSubmit(e: FormEvent<HTMLFormElement>) {
-        e.preventDefault();
-
-        const formData = new FormData(e.currentTarget);
-
-        try {
-            // gql query
-            const query = gql`
-                mutation Mutation($input: SignUpCredentials!) {
-                    signup(input: $input) {
-                        status
-                        errorMessage {
-                            message
-                        }
-                    }
-                }
-            `;
-
-            // Get user input data from the form.
-            const formObject: SignUpData = {
-                username: formData.get('username'),
-                email: formData.get('email'),
-                password: formData.get('password'),
-                password_confirmation: formData.get('password_confirmation'),
-            };
-
-            console.log(formObject);
-
-            // need to think about client-side validation. 
-
-            // // client-side user input validation
-            // const validationData: ValidationReturn = await validateSignUpInput(
-            //     formObject
-            // );
-
-            // console.log('Client side validation cleared.');
-
-            // if (validationData.status !== 200) {
-            //     validationData.error.length > 0
-            //         ? setErrors(validationData.error)
-            //         : null;
-
-            //     return;
-            // }
-
-            // fix this graphql api call
-
-            // submit data to signup Mutation
-            const res = await fetch('/api/graphql', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    query: query,
-                    variables: formObject,
-                }),
-            });
-
-            const { data } = await res.json();
-
-            console.log('Data', data);
-            console.log('signInErrors', data.error);
-
-            // early return for failed server side validation
-            if (data.status !== 200) {
-                data.error.length > 0 ? setErrors(data.error) : null;
-                return;
-            }
-
-            // if server-side validation passes, user has been created
-            console.log('Server side validation cleared.');
-            console.log('Routing to login.');
-
-            // route user to login page
-            router.push('/login');
-        } catch (e) {
-            // can remove this big try, catch?
-            console.log(e);
-        }
-    }
-
-    useEffect(() => {
-        if (errors.length > 0) {
-            console.log(errors);
-        }
-    }, [errors]);
+    const abc: SubmitHandler<SignUpCredentials> = async (data) => {
+        console.log(data);
+        registerNewUser(data);
+        reset();
+    };
 
     return (
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -131,12 +41,7 @@ export default function Form() {
             </div>
 
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                <form
-                    onSubmit={handleSubmit}
-                    className="space-y-6"
-                    action="#"
-                    method="POST"
-                >
+                <form onSubmit={handleSubmit(abc)} className="space-y-6">
                     <div>
                         <label
                             htmlFor="email"
@@ -147,13 +52,16 @@ export default function Form() {
                         <div className="mt-2 ">
                             <input
                                 id="username"
-                                name="username"
-                                type="text"
                                 autoComplete="username"
                                 placeholder="Burntelli"
-                                required
                                 className="block  w-full autofill:text-white autofill:shadow-[inset_0_0_0px_1000px_rgb(55,65,81)]  rounded-md border-0 py-1.5 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-500 dark:bg-gray-600 dark:hover:bg-gray-700 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                {...register('username')}
                             />
+                            {errors.username?.message && (
+                                <p className="text-sm text-red-400">
+                                    {errors.username.message}
+                                </p>
+                            )}
                         </div>
                     </div>
                     <div>
@@ -167,12 +75,15 @@ export default function Form() {
                             <input
                                 id="email"
                                 placeholder="cristiano@ronaldo.com"
-                                name="email"
-                                type="email"
                                 autoComplete="email"
-                                required
                                 className="block w-full autofill:text-white autofill:shadow-[inset_0_0_0px_1000px_rgb(55,65,81)] rounded-md border-0 py-1.5 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-500 dark:bg-gray-600 dark:hover:bg-gray-700 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                {...register('email')}
                             />
+                            {errors.email?.message && (
+                                <p className="text-sm text-red-400">
+                                    {errors.email.message}
+                                </p>
+                            )}
                         </div>
                     </div>
 
@@ -193,13 +104,17 @@ export default function Form() {
                         <div className="mt-2">
                             <input
                                 id="password"
-                                placeholder="********"
-                                name="password"
                                 type="password"
+                                placeholder="********"
                                 autoComplete="current-password"
-                                required
                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-500 dark:bg-gray-600 dark:hover:bg-gray-700 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                {...register('password')}
                             />
+                            {errors.password?.message && (
+                                <p className="text-sm text-red-400">
+                                    {errors.password.message}
+                                </p>
+                            )}
                         </div>
                     </div>
                     <div>
@@ -216,15 +131,18 @@ export default function Form() {
                             <input
                                 id="password_confirmation"
                                 placeholder="********"
-                                name="password_confirmation"
                                 type="password"
                                 autoComplete="current-password"
-                                required
                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-500 dark:bg-gray-600 dark:hover:bg-gray-700 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                {...register('password_confirmation')}
                             />
+                            {errors.password_confirmation?.message && (
+                                <p className="text-sm text-red-400">
+                                    {errors.password_confirmation.message}
+                                </p>
+                            )}
                         </div>
                     </div>
-
                     <div>
                         <button
                             type="submit"
@@ -234,22 +152,12 @@ export default function Form() {
                         </button>
                     </div>
                 </form>
-
-                {errors.length > 0 && (
-                    <ul className="text-xs pt-1 text-red-500">
-                        {errors.map((error, index) => (
-                            <li key={index}>{error}</li>
-                        ))}
-                    </ul>
-                )}
                 <div>
                     <div className="relative mt-10">
                         <div
                             className="absolute inset-0 flex items-center"
                             aria-hidden="true"
-                        >
-                            {/* <div className="w-full border-t border-gray-200" /> */}
-                        </div>
+                        ></div>
                         <div className="relative mb-1 flex justify-center text-sm font-light leading-6">
                             <span className=" text-gray-900 w-auto dark:text-white ">
                                 Or continue with

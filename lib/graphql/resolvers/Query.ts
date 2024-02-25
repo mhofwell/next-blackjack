@@ -1,7 +1,7 @@
 const Query = {
     hello: async (parent: any, args: any, contextValue: any) => {
         const { greeting, prisma } = contextValue;
-        console.log('text');
+        console.log('in the Query');
         try {
             return greeting;
         } catch (error) {

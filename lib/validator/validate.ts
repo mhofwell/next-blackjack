@@ -14,10 +14,6 @@ type ValidationReturn = {
     error: string[];
 };
 
-// type Error = {
-//     message: string;
-// };
-
 export default async function validateSignUpInput(input: SignUpData) {
     let result: ValidationReturn = {
         validatedOutput: null,

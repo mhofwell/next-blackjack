@@ -30,7 +30,7 @@ export default function Form() {
                     action={async (formData) => {
                         'use server';
                         await login(formData);
-                        redirect('/home');
+                        redirect('/dashboard');
                     }}
                 >
                     <div>

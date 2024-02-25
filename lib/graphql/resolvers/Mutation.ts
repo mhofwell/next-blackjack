@@ -45,7 +45,18 @@ const Mutation = {
 
             // early return for failed server side input validation
             if (result.status !== 200) {
-                throw new Error('Input validaton check failed on the server.');
+                response = {
+                    status: 400,
+                    error: result.error,
+                };
+                // response.status = result.status;
+                // console.log('res.error', result.error);
+
+                // result.error.map((e) => {
+                //     response.error.push(e);
+                // });
+                // console.log('res', response);
+                return response;
             }
 
             // check if user exists already.
@@ -113,6 +124,7 @@ const Mutation = {
             console.log(response);
 
             return response;
+            // return NextResponse?
         }
     },
 };
