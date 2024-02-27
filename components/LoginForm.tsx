@@ -3,14 +3,16 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import { set, z } from 'zod';
 import { LogInSchema } from '@/lib/validator/schema';
 import { useEffect, useState } from 'react';
+import AnimatedButton from './AnimatedButton';
 
 type LoginCredentials = z.infer<typeof LogInSchema>;
 
 export default function ReactHookForm({ logUserIn }: any) {
     const [serverErrors, setServerErrors] = useState<string[]>([]);
+    const [loading, setIsLoading] = useState(false);
 
     const {
         register,
@@ -22,10 +24,13 @@ export default function ReactHookForm({ logUserIn }: any) {
     });
 
     const onSubmit: SubmitHandler<LoginCredentials> = async (data) => {
+        setIsLoading(true);
+
         const errors = await logUserIn(data);
 
         if (errors) {
             setServerErrors(errors);
+            setIsLoading(false);
         }
 
         reset();
@@ -35,7 +40,10 @@ export default function ReactHookForm({ logUserIn }: any) {
         if (serverErrors.length > 0) {
             console.log('Server Errors', serverErrors);
         }
-    }, [serverErrors]);
+        if (loading) {
+            console.log('Loading', loading);
+        }
+    }, [serverErrors, loading]);
 
     return (
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -111,14 +119,8 @@ export default function ReactHookForm({ logUserIn }: any) {
                             )}
                         </div>
                     </div>
-
                     <div className="pt-5">
-                        <button
-                            type="submit"
-                            className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                        >
-                            Log In
-                        </button>
+                        <AnimatedButton loading={loading} text={'Log In'} />
                     </div>
                 </form>
                 {serverErrors.map((error, index) => (

@@ -1,16 +1,18 @@
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm, SubmitHandler, set } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { SignUpSchema } from '@/lib/validator/schema';
 import { useEffect, useState } from 'react';
+import AnimatedButton from './AnimatedButton';
 
 type SignUpCredentials = z.infer<typeof SignUpSchema>;
 
 export default function ReactHookForm({ registerNewUser }: any) {
     const [serverErrors, setServerErrors] = useState<string[]>([]);
+    const [loading, setIsLoading] = useState(false);
 
     const {
         register,
@@ -22,10 +24,12 @@ export default function ReactHookForm({ registerNewUser }: any) {
     });
 
     const onSubmit: SubmitHandler<SignUpCredentials> = async (data) => {
+        setIsLoading(true);
         const errors = await registerNewUser(data);
 
         if (errors) {
             setServerErrors(errors);
+            setIsLoading(false);
         }
 
         reset();
@@ -35,7 +39,10 @@ export default function ReactHookForm({ registerNewUser }: any) {
         if (serverErrors.length > 0) {
             console.log('Server Errors', serverErrors);
         }
-    }, [serverErrors]);
+        if (loading) {
+            console.log('Loading', loading);
+        }
+    }, [serverErrors, loading]);
 
     return (
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -157,12 +164,7 @@ export default function ReactHookForm({ registerNewUser }: any) {
                         </div>
                     </div>
                     <div>
-                        <button
-                            type="submit"
-                            className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                        >
-                            Create Account
-                        </button>
+                        <AnimatedButton loading={loading} text={'Sign Up'} />
                     </div>
                 </form>
                 {serverErrors.map((error, index) => (

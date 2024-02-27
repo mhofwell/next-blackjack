@@ -31,7 +31,7 @@ export async function registerNewUser(formData: SignUpCredentials) {
         return data.signup.error;
     }
 
-    if (!data.signup.error && data.signup.status === 200) {
+    if (data.signup.status === 200) {
         redirect('/login');
     }
 }
