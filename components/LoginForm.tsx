@@ -1,10 +1,42 @@
+'use client';
 import Image from 'next/image';
-import { FormEvent } from 'react';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
-import { login } from '../lib/auth/utils';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { LogInSchema } from '@/lib/validator/schema';
+import { useEffect, useState } from 'react';
 
-export default function Form() {
+type LoginCredentials = z.infer<typeof LogInSchema>;
+
+export default function ReactHookForm({ logUserIn }: any) {
+    const [serverErrors, setServerErrors] = useState<string[]>([]);
+
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors },
+    } = useForm<LoginCredentials>({
+        resolver: zodResolver(LogInSchema),
+    });
+
+    const onSubmit: SubmitHandler<LoginCredentials> = async (data) => {
+        const errors = await logUserIn(data);
+
+        if (errors) {
+            setServerErrors(errors);
+        }
+
+        reset();
+    };
+
+    useEffect(() => {
+        if (serverErrors.length > 0) {
+            console.log('Server Errors', serverErrors);
+        }
+    }, [serverErrors]);
+
     return (
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -16,23 +48,16 @@ export default function Form() {
                     alt="PL Blackjack Logo"
                 />
                 <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight ">
-                    Welcome back to
+                    Welcome Back to
                 </h2>
                 <h2 className="text-center text-2xl font-bold leading-9 tracking-tight ">
-                    Premier League Blackjack!
+                    Premiere League Blackjack
                 </h2>
                 {/* Change the color of PL Blackjack and size up the logo. */}
             </div>
 
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                <form
-                    className="space-y-6"
-                    action={async (formData) => {
-                        'use server';
-                        await login(formData);
-                        redirect('/dashboard');
-                    }}
-                >
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     <div>
                         <label
                             htmlFor="email"
@@ -43,12 +68,16 @@ export default function Form() {
                         <div className="mt-2 ">
                             <input
                                 id="email"
-                                name="email"
-                                type="email"
+                                placeholder="jurgen@klopp.com"
                                 autoComplete="email"
-                                required
-                                className="block w-full autofill:text-color-b rounded-md border-0 py-1.5 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 dark:bg-gray-600 dark:hover:bg-gray-700 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                className="block w-full autofill:text-white autofill:shadow-[inset_0_0_0px_1000px_rgb(55,65,81)] rounded-md border-0 py-1.5 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-500 dark:bg-gray-600 dark:hover:bg-gray-700 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                {...register('email')}
                             />
+                            {errors.email?.message && (
+                                <p className="text-sm text-red-400">
+                                    {errors.email.message}
+                                </p>
+                            )}
                         </div>
                     </div>
 
@@ -60,45 +89,49 @@ export default function Form() {
                             >
                                 Password
                             </label>
-                            <div className="text-sm">
-                                <a
-                                    href="#"
-                                    className="font-semibold text-indigo-600 hover:text-indigo-500"
-                                >
-                                    Forgot password?
-                                </a>
-                            </div>
+                            <div className="text-sm"></div>
                         </div>
-                        
+                        <p className="text-xs text-gray-500 italic">
+                            A minimum of 8 characters is required.
+                        </p>
+
                         <div className="mt-2">
                             <input
                                 id="password"
-                                name="password"
                                 type="password"
+                                placeholder="********"
                                 autoComplete="current-password"
-                                required
-                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 dark:bg-gray-600 dark:hover:bg-gray-700 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-500 dark:bg-gray-600 dark:hover:bg-gray-700 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                {...register('password')}
                             />
+                            {errors.password?.message && (
+                                <p className="text-sm text-red-400">
+                                    {errors.password.message}
+                                </p>
+                            )}
                         </div>
                     </div>
 
-                    <div>
+                    <div className="pt-5">
                         <button
-                            // type="submit"
+                            type="submit"
                             className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         >
-                            Sign in
+                            Log In
                         </button>
                     </div>
                 </form>
+                {serverErrors.map((error, index) => (
+                    <p key={index} className="text-sm pt-2 text-red-400">
+                        {error}
+                    </p>
+                ))}
                 <div>
-                    <div className="relative mt-20">
+                    <div className="relative mt-10">
                         <div
                             className="absolute inset-0 flex items-center"
                             aria-hidden="true"
-                        >
-                            {/* <div className="w-full border-t border-gray-200" /> */}
-                        </div>
+                        ></div>
                         <div className="relative mb-1 flex justify-center text-sm font-light leading-6">
                             <span className=" text-gray-900 w-auto dark:text-white ">
                                 Or continue with
@@ -138,13 +171,13 @@ export default function Form() {
                             </span>
                         </a>
                     </div>
-                    <p className="mt-10 text-center text-sm text-gray-500">
-                        Not a member?{' '}
+                    <p className="mt-5 text-center text-sm text-gray-500">
+                        Don't have an account?{' '}
                         <Link
                             href="/signup"
                             className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
                         >
-                            Sign up here.
+                            Sign-up here.
                         </Link>
                     </p>
                 </div>

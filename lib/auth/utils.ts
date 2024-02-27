@@ -19,16 +19,14 @@ export async function decrypt(input: string): Promise<any> {
     return payload;
 }
 
-export async function login(formData: FormData) {
-    // Verify credentials && get the user
-    const user = { email: formData.get('email'), username: 'Hof' };
-
+export async function createSession(cuid: string) {
     // Create the session
     const expires = new Date(Date.now() + 10 * 1000);
-    const session = await encrypt({ user, expires });
+    const session = await encrypt({ cuid, expires });
 
     // Save the session in a cookie
     cookies().set('plbj-session', session, { expires, httpOnly: true });
+    return session;
 }
 
 export async function logout() {

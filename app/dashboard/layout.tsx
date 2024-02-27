@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import Navigation from './components/Navigation';
+import Navigation from '../../components/Navigation';
 import { getSession } from '@/lib/auth/utils';
 
 export default async function DashboardLayout({
@@ -8,18 +8,18 @@ export default async function DashboardLayout({
     children: React.ReactNode;
 }) {
     const session = await getSession();
-
-    let username: string = '';
+    console.log('session', session);
+    let id;
 
     if (!session) {
         redirect('/login');
     } else {
-        username = session.user.username;
+        id = session.cuid;
     }
 
     return (
         <section>
-            <Navigation username={username} />
+            <Navigation username={id} />
             {children}
         </section>
     );

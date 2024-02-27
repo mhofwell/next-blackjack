@@ -28,3 +28,13 @@ export const SignUpSchema = z
             path: ['password_confirmation'],
         }
     );
+
+export const LogInSchema = z.object({
+    email: z.string().email({ message: 'Please use a valid email.' }),
+    password: z
+        .string()
+        .min(8, {
+            message: 'Your password must have at least 8 characters.',
+        })
+        .max(30, { message: 'Password must be less than 30 characters' }),
+});

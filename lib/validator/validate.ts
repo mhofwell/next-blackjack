@@ -1,45 +1,56 @@
-import { registerSchema } from './authSchema';
-import vine, { errors } from '@vinejs/vine';
+import { z } from 'zod';
+import { LogInSchema, SignUpSchema } from './schema';
+import { ZodIssue } from 'zod';
+type SignUpData = z.infer<typeof SignUpSchema>;
 
-type SignUpData = {
-    username: FormDataEntryValue | null;
-    email: FormDataEntryValue | null;
-    password: FormDataEntryValue | null;
-    password_confirmation: FormDataEntryValue | null;
-};
-
-type ValidationReturn = {
+type ValidationResponse = {
     validatedOutput: SignUpData | null;
     status: number;
-    error: string[];
+    error: ZodIssue[];
 };
 
-export default async function validateSignUpInput(input: SignUpData) {
-    let result: ValidationReturn = {
+export async function validateSignUpInput(input: SignUpData) {
+    console.log('validator input', input);
+    const result = SignUpSchema.safeParse(input);
+    let response: ValidationResponse = {
         validatedOutput: null,
         status: 0,
         error: [],
     };
 
-    try {
-        const inputValidator = vine.compile(registerSchema);
-        const output = await inputValidator.validate(input);
-
-        console.log('Validated Form');
-
-        result.validatedOutput = output;
-        result.status = 200;
-
-        return result;
-    } catch (error) {
-        if (error instanceof errors.E_VALIDATION_ERROR) {
-            result.status = 400;
-            result.error = error.messages;
-            return result;
-        }
-        result.status = 500;
-        result.error = ['Something went wrong.'];
-
-        return result;
+    if (!result.success) {
+        response.status = 400;
+        response.error = result.error.issues;
+        return response;
     }
+
+    response.validatedOutput = result.data;
+    response.status = 200;
+
+    return response;
 }
+
+type LoginData = z.infer<typeof LogInSchema>;
+
+export async function validateLoginInput(input: LoginData) {
+    console.log('validator input', input);
+    const result = SignUpSchema.safeParse(input);
+    let response: ValidationResponse = {
+        validatedOutput: null,
+        status: 0,
+        error: [],
+    };
+
+    if (!result.success) {
+        response.status = 400;
+        response.error = result.error.issues;
+        return response;
+    }
+
+    response.validatedOutput = result.data;
+    response.status = 200;
+
+    return response;
+}
+
+// cant I just import this schema into the signUp Mutation and validate with Zod there?

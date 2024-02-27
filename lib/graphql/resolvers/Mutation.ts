@@ -1,9 +1,10 @@
 import { hashPassword } from '@/lib/tools/password';
-import validateSignUpInput from '@/lib/validator/validate';
+import { validateSignUpInput } from '@/lib/validator/validate';
+import { ZodIssue } from 'zod';
 
-type SignUpResponse = {
+type AuthResponse = {
     status: number;
-    error: string[];
+    error: ZodIssue[];
 };
 
 type SignUpFormData = {
@@ -25,7 +26,7 @@ const Mutation = {
     signup: async (_parent: any, args: SignUpFormData, context: any) => {
         const { prisma } = context;
 
-        let response: SignUpResponse = {
+        let response: AuthResponse = {
             status: 0,
             error: [],
         };
@@ -44,19 +45,8 @@ const Mutation = {
             });
 
             // early return for failed server side input validation
-            if (result.status !== 200) {
-                response = {
-                    status: 400,
-                    error: result.error,
-                };
-                // response.status = result.status;
-                // console.log('res.error', result.error);
-
-                // result.error.map((e) => {
-                //     response.error.push(e);
-                // });
-                // console.log('res', response);
-                return response;
+            if (result.status !== 200 || !result.validatedOutput) {
+                throw new Error('Failed server-side form validation.');
             }
 
             // check if user exists already.
@@ -69,14 +59,12 @@ const Mutation = {
                 },
             });
 
-            console.log('existing', existingUser);
-
             if (existingUser !== null) {
                 throw new Error('User already exists, please login.');
             }
 
             // hash user password
-            let hash = await hashPassword(password);
+            let hash = await hashPassword(result.validatedOutput.password);
 
             // early return for no hashed password
             if (!hash) {
@@ -109,22 +97,17 @@ const Mutation = {
                 );
             }
 
-            console.log('Sign in successful.');
-
             // sucess response
             response.status = 200;
+            console.log('Sign in successful.');
 
             return response;
         } catch (error: any) {
             // unsuccessful response with error message
-            console.log([error.message]);
             response.status = 400;
             response.error = [error.message];
 
-            console.log(response);
-
             return response;
-            // return NextResponse?
         }
     },
 };

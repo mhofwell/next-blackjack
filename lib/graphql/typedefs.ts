@@ -4,6 +4,8 @@ const typeDefs = gql`
     type Query {
         hello: String!
         User(id: ID!): User!
+        login(input: LoginCredentials!): LoginResponse!
+        logout: AuthResponse!
         # Query for a user based on their credentials
     }
 
@@ -19,11 +21,17 @@ const typeDefs = gql`
     }
 
     type Mutation {
-        signup(input: SignUpCredentials!): SignUpResponse!
+        signup(input: SignUpCredentials!): AuthResponse!
     }
 
-    type SignUpResponse {
+    type AuthResponse {
         status: Int!
+        error: [String]
+    }
+
+    type LoginResponse {
+        status: Int!
+        cuid: String
         error: [String]
     }
 
@@ -38,14 +46,15 @@ const typeDefs = gql`
         password_confirmation: String!
     }
 
+    input LoginCredentials {
+        email: String!
+        password: String!
+    }
+
     enum Role {
         USER
         ADMIN
     }
-
-    # type Subscription {
-    #
-    # }
 `;
 
 export default typeDefs;

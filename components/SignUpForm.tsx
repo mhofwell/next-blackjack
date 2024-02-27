@@ -5,10 +5,13 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { SignUpSchema } from '@/lib/validator/schema';
+import { useEffect, useState } from 'react';
 
 type SignUpCredentials = z.infer<typeof SignUpSchema>;
 
 export default function ReactHookForm({ registerNewUser }: any) {
+    const [serverErrors, setServerErrors] = useState<string[]>([]);
+
     const {
         register,
         handleSubmit,
@@ -18,11 +21,21 @@ export default function ReactHookForm({ registerNewUser }: any) {
         resolver: zodResolver(SignUpSchema),
     });
 
-    const abc: SubmitHandler<SignUpCredentials> = async (data) => {
-        console.log(data);
-        registerNewUser(data);
+    const onSubmit: SubmitHandler<SignUpCredentials> = async (data) => {
+        const errors = await registerNewUser(data);
+
+        if (errors) {
+            setServerErrors(errors);
+        }
+
         reset();
     };
+
+    useEffect(() => {
+        if (serverErrors.length > 0) {
+            console.log('Server Errors', serverErrors);
+        }
+    }, [serverErrors]);
 
     return (
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -41,7 +54,7 @@ export default function ReactHookForm({ registerNewUser }: any) {
             </div>
 
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                <form onSubmit={handleSubmit(abc)} className="space-y-6">
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     <div>
                         <label
                             htmlFor="email"
@@ -152,6 +165,11 @@ export default function ReactHookForm({ registerNewUser }: any) {
                         </button>
                     </div>
                 </form>
+                {serverErrors.map((error, index) => (
+                    <p key={index} className="text-sm pt-2 text-red-400">
+                        {error}
+                    </p>
+                ))}
                 <div>
                     <div className="relative mt-10">
                         <div
