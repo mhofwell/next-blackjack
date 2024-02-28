@@ -1,3 +1,4 @@
+'use server';
 import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
@@ -27,11 +28,6 @@ export async function createSession(cuid: string) {
     // Save the session in a cookie
     cookies().set('plbj-session', session, { expires, httpOnly: true });
     return session;
-}
-
-export async function logout() {
-    // Destroy the session
-    cookies().set('plbj-session', '', { expires: new Date(0) });
 }
 
 export async function getSession() {

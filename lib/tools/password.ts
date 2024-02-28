@@ -1,3 +1,4 @@
+'use server';
 import * as argon2 from 'argon2';
 // hash a password using
 export async function hashPassword(input: string) {

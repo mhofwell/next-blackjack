@@ -7,10 +7,11 @@ import { z } from 'zod';
 import { SignUpSchema } from '@/lib/validator/schema';
 import { useEffect, useState } from 'react';
 import AnimatedButton from './AnimatedButton';
+import { signUserUp } from '@/lib/auth/signup';
 
 type SignUpCredentials = z.infer<typeof SignUpSchema>;
 
-export default function ReactHookForm({ registerNewUser }: any) {
+export default function ReactHookForm() {
     const [serverErrors, setServerErrors] = useState<string[]>([]);
     const [loading, setIsLoading] = useState(false);
 
@@ -25,11 +26,11 @@ export default function ReactHookForm({ registerNewUser }: any) {
 
     const onSubmit: SubmitHandler<SignUpCredentials> = async (data) => {
         setIsLoading(true);
-        const errors = await registerNewUser(data);
+        const errors = await signUserUp(data);
 
         if (errors) {
             setServerErrors(errors);
-            setIsLoading(false);
+            setIsLoading(false); 
         }
 
         reset();

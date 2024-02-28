@@ -1,3 +1,4 @@
+'use server';
 import { getClient } from '@/lib/apollo/client';
 import gql from 'graphql-tag';
 import { SignUpSchema } from '@/lib/validator/schema';
@@ -6,8 +7,7 @@ import { redirect } from 'next/navigation';
 
 type SignUpCredentials = z.infer<typeof SignUpSchema>;
 
-export async function registerNewUser(formData: SignUpCredentials) {
-    'use server';
+export async function signUserUp(formData: SignUpCredentials) {
 
     const formDataToSubmit = {
         input: formData,

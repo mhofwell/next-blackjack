@@ -1,7 +1,13 @@
 'use client';
-import { Disclosure, Menu, Transition } from '@headlessui/react';
+import { Disclosure, Menu, MenuItem, Transition } from '@headlessui/react';
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Fragment } from 'react';
+import { logout } from '@/lib/auth/logout';
+import { useRouter } from 'next/router';
+
+type NavProps = {
+    username: string;
+};
 
 interface User {
     name: string;
@@ -15,35 +21,35 @@ interface NavigationItem {
     current: boolean;
 }
 
-const user: User = {
-    name: 'Tom Cook',
-    email: 'tom@example.com',
-    imageUrl:
-        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-};
-const navigation: NavigationItem[] = [
-    { name: 'Dashboard', href: '#', current: true },
-    { name: 'Upcoming Fixtures', href: '#', current: false },
-    { name: 'PL News', href: '#', current: false },
-    { name: 'About', href: '#', current: false },
-];
-
-const userNavigation = [
-    { name: 'Your Profile', href: '#', action: null },
-    { name: 'Settings', href: '#', action: null },
-    { name: 'Sign out', href: '#', action: null },
-];
-
-function classNames(...classes: string[]) {
-    return classes.filter(Boolean).join(' ');
-}
-type NavProps = {
-    username: string;
-};
-
 export default function Navigation(props: NavProps) {
-    console.log('Props', props);
+    const user: User = {
+        name: 'Tom Cook',
+        email: 'tom@example.com',
+        imageUrl:
+            'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    };
+    const navigation: NavigationItem[] = [
+        { name: 'Dashboard', href: '#', current: true },
+        { name: 'Upcoming Fixtures', href: '#', current: false },
+        { name: 'PL News', href: '#', current: false },
+        { name: 'About', href: '#', current: false },
+    ];
 
+    function classNames(...classes: string[]) {
+        return classes.filter(Boolean).join(' ');
+    }
+
+    const userNavigation = [
+        { name: 'Your Profile', href: '#', onClick: undefined },
+        { name: 'Settings', href: '#', onClick: undefined },
+        {
+            name: 'Sign out',
+            onClick: handleClick,
+        },
+    ];
+    function handleClick() {
+        logout();
+    }
     return (
         <div className="min-h-full">
             <div className="bg-gray-800 pb-32">
@@ -131,17 +137,16 @@ export default function Navigation(props: NavProps) {
                                                         leave="transition ease-in duration-75"
                                                         leaveFrom="transform opacity-100 scale-100"
                                                         leaveTo="transform opacity-0 scale-95"
-
-                                                        //     ? 'bg-gray-900 text-white'
-                                                        //     : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                                                        // 'rounded-md px-3 py-2 text-sm font-medium'
                                                     >
-                                                        <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md dark:bg-gray-900 dark:text-gray-300  py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                                        <Menu.Items className="absolute flex flex-col items-start right-0 z-10 mt-2 w-32 origin-top-right rounded-md dark:bg-gray-900 dark:text-gray-300  py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                                                             {userNavigation.map(
-                                                                (item) => (
-                                                                    <Menu.Item
+                                                                (button) => (
+                                                                    <Disclosure.Button
                                                                         key={
-                                                                            item.name
+                                                                            button.name
+                                                                        }
+                                                                        onClick={
+                                                                            button.onClick
                                                                         }
                                                                     >
                                                                         {({
@@ -149,7 +154,7 @@ export default function Navigation(props: NavProps) {
                                                                         }) => (
                                                                             <a
                                                                                 href={
-                                                                                    item.href
+                                                                                    button.href
                                                                                 }
                                                                                 className={classNames(
                                                                                     active
@@ -159,11 +164,11 @@ export default function Navigation(props: NavProps) {
                                                                                 )}
                                                                             >
                                                                                 {
-                                                                                    item.name
+                                                                                    button.name
                                                                                 }
                                                                             </a>
                                                                         )}
-                                                                    </Menu.Item>
+                                                                    </Disclosure.Button>
                                                                 )
                                                             )}
                                                         </Menu.Items>
@@ -253,8 +258,6 @@ export default function Navigation(props: NavProps) {
                                         {userNavigation.map((item) => (
                                             <Disclosure.Button
                                                 key={item.name}
-                                                as="a"
-                                                href={item.href}
                                                 className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
                                             >
                                                 {item.name}

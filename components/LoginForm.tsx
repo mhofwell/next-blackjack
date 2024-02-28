@@ -3,14 +3,15 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { set, z } from 'zod';
+import { z } from 'zod';
 import { LogInSchema } from '@/lib/validator/schema';
 import { useEffect, useState } from 'react';
 import AnimatedButton from './AnimatedButton';
+import { logUserIn } from '@/lib/auth/login';
 
 type LoginCredentials = z.infer<typeof LogInSchema>;
 
-export default function ReactHookForm({ logUserIn }: any) {
+export default function ReactHookForm() {
     const [serverErrors, setServerErrors] = useState<string[]>([]);
     const [loading, setIsLoading] = useState(false);
 
@@ -31,6 +32,7 @@ export default function ReactHookForm({ logUserIn }: any) {
         if (errors) {
             setServerErrors(errors);
             setIsLoading(false);
+            reset();
         }
 
         reset();
