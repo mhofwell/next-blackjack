@@ -3,6 +3,7 @@ import { Disclosure, Menu, MenuItem, Transition } from '@headlessui/react';
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Fragment } from 'react';
 import { logout } from '@/lib/auth/logout';
+import { Avatar } from './UI/avatar';
 
 
 type NavProps = {
@@ -42,8 +43,8 @@ export default function Navigation(props: NavProps) {
     }
 
     const userNavigation = [
-        { name: 'Your Profile', href: '#', onClick: undefined },
-        { name: 'Settings', href: '#', onClick: undefined },
+        // { name: 'Your Profile', href: '#', onClick: undefined },
+        // { name: 'Settings', href: '#', onClick: undefined },
         {
             name: 'Sign out',
             onClick: handleClick,
@@ -122,11 +123,12 @@ export default function Navigation(props: NavProps) {
                                                             <span className="sr-only">
                                                                 Open user menu
                                                             </span>
-                                                            <img
-                                                                className="h-8 w-8 rounded-full"
-                                                                src={
-                                                                    user.imageUrl
-                                                                }
+                                                            <Avatar
+                                                                initials={'TC'}
+                                                                className="size-10 rounded-full bg-gray-900"
+                                                                // src={
+                                                                //     user.imageUrl
+                                                                // }
                                                                 alt=""
                                                             />
                                                         </Menu.Button>
@@ -275,7 +277,7 @@ export default function Navigation(props: NavProps) {
                     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                         <div className="flex">
                             <h1 className="text-3xl font-bold tracking-tight text-white">
-                                {props.username}'s Dashboard
+                                Your Dashboard
                             </h1>
                             <p className="px-3">🚀</p>
                         </div>

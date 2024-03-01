@@ -13,7 +13,7 @@ const stats = [
 
 export default async function Banner() {
     return (
-        <div className="bg-gray-900 py-5">
+        <div className="bg-gray-900 py-5 border border-gray-800 rounded-xl">
             <div className="mx-auto max-w-7xl">
                 <div className="grid grid-cols-1 gap-px bg-white/5 sm:grid-cols-2 lg:grid-cols-4">
                     {stats.map((stat) => (

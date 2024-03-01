@@ -10,7 +10,7 @@ import { Badge } from './UI/badge';
 
 export default function PoolFrame() {
     return (
-        <>
+        <div>
             <h1 className="text-2xl font-semibold">Pool Manager</h1>
             <Fieldset>
                 <FieldGroup>
@@ -28,14 +28,17 @@ export default function PoolFrame() {
                 </FieldGroup>
             </Fieldset>
 
-            <PoolBanner />
+            <div className="pt-5 w-full">
+                <PoolBanner />
+            </div>
 
+            {/* player card component */}
             <div className="flex">
-                <div className="w-1/2 my-auto">
-                    <div className="m-10 border border-gray-800 p-5 rounded-xl">
-                        <div className="flex">
-                            <div className=" ml-2 flex">
-                                <Avatar initials={'AA'} className="size-12" />
+                <div className="w-1/2 mt-5 mr-5">
+                    <div className="border border-gray-800 p-5 rounded-xl">
+                        <div className="flex pb-5">
+                            <div className="flex">
+                                <Avatar initials={'TH'} className="size-12" />
                                 <div className="flex w-auto">
                                     <div>
                                         <h2 className="text-xl pl-5 pt-1">
@@ -47,6 +50,9 @@ export default function PoolFrame() {
                                         <Badge color="lime" className="ml-5">
                                             ACTIVE
                                         </Badge>
+                                        <Badge color="fuchsia" className="ml-2">
+                                            PAID
+                                        </Badge>
                                     </div>
                                 </div>
                             </div>
@@ -56,18 +62,25 @@ export default function PoolFrame() {
 
                         <div className="pt-10">
                             <h3>Player Details</h3>
-                            <Text className="pt-2">
+                            <Text className="text-sm pt-2">
                                 Email: michael.hofweller@gmail.com
                             </Text>
-                            <Text className="">Club: Chelsea</Text>
+                            <Text className="">Club: Liverpool</Text>
                         </div>
                     </div>
                 </div>
-                <div className="w-1/2">
-                    <p className="text-xl mt-4 mb-8">All Players</p>
-                    <UserTable users={users} />
+                <div className="w-1/2 mt-5 ml-5">
+                    <div className=" border border-gray-800 p-5 rounded-xl">
+                        <div className="mb-3">
+                            <p className="text-xl">All Players</p>
+                            <Text className="mt-1">
+                                Select a player for more details
+                            </Text>
+                        </div>
+                        <UserTable users={users} />
+                    </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 }

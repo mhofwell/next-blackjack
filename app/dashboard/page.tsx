@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import SummaryBanner from '../../components/SummaryBanner';
 import PoolFrame from '@/components/PoolFrame';
+import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
     title: 'Dasbhoard',
@@ -20,6 +21,9 @@ export default async function Home() {
                         <div>
                             <PoolFrame />
                         </div>
+                    </div>
+                    <div className='w-full'>
+                        <Footer />
                     </div>
                 </div>
             </section>
