@@ -1,19 +1,12 @@
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from './UI/table';
-
 import { Description, Field, FieldGroup, Fieldset } from './UI/fieldset';
-
 import { Select } from './UI/select';
-import { Badge } from './UI/badge';
-import { Avatar } from './UI/avatar';
-
+import PoolBanner from './PoolBanner';
+import UserTable from './UserTable';
 import users from '../test/testdata';
+import { Avatar } from './UI/avatar';
+import DenseTable from './DenseTable';
+import { Strong, Text, TextLink } from './UI/text';
+import { Badge } from './UI/badge';
 
 export default function PoolFrame() {
     return (
@@ -35,41 +28,46 @@ export default function PoolFrame() {
                 </FieldGroup>
             </Fieldset>
 
-            <Table className="py-10 px-1 mx-auto">
-                <TableHead>
-                    <TableRow>
-                        <TableHeader>Avatar</TableHeader>
-                        <TableHeader>User</TableHeader>
-                        <TableHeader>Total Goals</TableHeader>
-                        <TableHeader>All 4 Scored?</TableHeader>
-                        <TableHeader>Status</TableHeader>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {users.map((user) => (
-                        <TableRow key={user.handle}>
-                            <TableCell>
-                                <Avatar className="size-8 pb-10" src="mh.png" />
-                                {/* fix this so the avatar circle doesn't stretch to fit image */}
-                            </TableCell>
-                            <TableCell className="font-medium">
-                                {user.name}
-                            </TableCell>
-                            <TableCell>{user.net_goals}</TableCell>
-                            <TableCell className="text-zinc-500">
-                                <Badge color="purple">YES</Badge>
-                            </TableCell>
-                            <TableCell className="text-zinc-500">
-                                {user.status === 'ACTIVE' ? (
-                                    <Badge color="lime">{user.status}</Badge>
-                                ) : (
-                                    <Badge color="red">{user.status}</Badge>
-                                )}
-                            </TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
+            <PoolBanner />
+
+            <div className="flex">
+                <div className="w-1/2 my-auto">
+                    <div className="m-10 border border-gray-800 p-5 rounded-xl">
+                        <div className="flex">
+                            <div className=" ml-2 flex">
+                                <Avatar initials={'AA'} className="size-12" />
+                                <div className="flex w-auto">
+                                    <div>
+                                        <h2 className="text-xl pl-5 pt-1">
+                                            The Hof
+                                        </h2>
+                                        <Text className="pl-5">Rank: 1</Text>
+                                    </div>
+                                    <div className="h-auto mt-1">
+                                        <Badge color="lime" className="ml-5">
+                                            ACTIVE
+                                        </Badge>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <DenseTable />
+
+                        <div className="pt-10">
+                            <h3>Player Details</h3>
+                            <Text className="pt-2">
+                                Email: michael.hofweller@gmail.com
+                            </Text>
+                            <Text className="">Club: Chelsea</Text>
+                        </div>
+                    </div>
+                </div>
+                <div className="w-1/2">
+                    <p className="text-xl mt-4 mb-8">All Players</p>
+                    <UserTable users={users} />
+                </div>
+            </div>
         </>
     );
 }

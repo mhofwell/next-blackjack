@@ -1,14 +1,15 @@
-'use client';
-import { useState } from 'react';
 import { redirect } from 'next/navigation';
+import { getSession } from '@/lib/auth/utils';
 
 export default async function Home() {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [isNew, setIsNew] = useState(false);
+    
+    const session = await getSession();
+
+    console.log('session', session);
 
     return (
         <main className="flex h-screen">
-            {isLoggedIn ? redirect('/home') : redirect('/login')}
+            {session ? redirect('/dashboard') : redirect('/login')}
         </main>
     );
 }

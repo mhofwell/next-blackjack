@@ -4,6 +4,7 @@ import StoreProvider from '@/lib/store/StoreProvider';
 import './globals.css';
 import { ApolloWrapper } from '@/lib/apollo/ApolloWrapper';
 
+export const dynamic = 'force-dynamic';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {

@@ -3,7 +3,7 @@ import { Disclosure, Menu, MenuItem, Transition } from '@headlessui/react';
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Fragment } from 'react';
 import { logout } from '@/lib/auth/logout';
-import { useRouter } from 'next/router';
+
 
 type NavProps = {
     username: string;
@@ -22,6 +22,7 @@ interface NavigationItem {
 }
 
 export default function Navigation(props: NavProps) {
+
     const user: User = {
         name: 'Tom Cook',
         email: 'tom@example.com',
@@ -30,9 +31,10 @@ export default function Navigation(props: NavProps) {
     };
     const navigation: NavigationItem[] = [
         { name: 'Dashboard', href: '#', current: true },
-        { name: 'Upcoming Fixtures', href: '#', current: false },
-        { name: 'PL News', href: '#', current: false },
-        { name: 'About', href: '#', current: false },
+        // { name: 'Fixtures', href: '#', current: false },
+        // { name: 'Players', href: '#', current: false },
+        // { name: '|', href: '#', current: false },
+        // { name: 'About', href: '#', current: false },
     ];
 
     function classNames(...classes: string[]) {

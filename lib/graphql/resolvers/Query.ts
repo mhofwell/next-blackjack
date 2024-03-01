@@ -64,21 +64,6 @@ const Query = {
             return response;
         }
     },
-    logout: async (_parent: any, _args: any, _context: any) => {
-        // Destroy the session
-        let response: AuthResponse = {
-            status: 0,
-            error: [],
-        };
-        try {
-            cookies().set('plbj-session', '', { expires: new Date(0) });
-            redirect('/login');
-        } catch (error: any) {
-            response.status = 400;
-            response.error = [error.message];
-            return response;
-        }
-    },
 };
 
 export default Query;

@@ -5,7 +5,6 @@ const typeDefs = gql`
         hello: String!
         User(id: ID!): User!
         login(input: LoginCredentials!): LoginResponse!
-        logout: AuthResponse!
         # Query for a user based on their credentials
     }
 
