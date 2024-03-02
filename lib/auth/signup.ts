@@ -17,7 +17,7 @@ export async function signUserUp(formData: SignUpCredentials) {
         mutation Mutation($input: SignUpCredentials!) {
             signup(input: $input) {
                 status
-                error
+                errors
             }
         }
     `;

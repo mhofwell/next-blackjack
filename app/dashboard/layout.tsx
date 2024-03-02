@@ -1,7 +1,8 @@
 import Navigation from '../../components/Navigation';
 import { getSession } from '@/lib/auth/utils';
+import { redirect } from 'next/navigation';
 
-export const dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic';
 
 export default async function DashboardLayout({
     children,
@@ -9,17 +10,15 @@ export default async function DashboardLayout({
     children: React.ReactNode;
 }) {
     const session = await getSession();
-    let id = 'Hof';
 
+    //  undo this once done with dashboard coding.
     // if (!session) {
     //     redirect('/login');
-    // } else {
-    //     id = session.cuid;
     // }
 
     return (
         <section>
-            <Navigation username={id} />
+            <Navigation />
             {children}
         </section>
     );

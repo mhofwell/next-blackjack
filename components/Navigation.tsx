@@ -1,19 +1,19 @@
 'use client';
-import { Disclosure, Menu, MenuItem, Transition } from '@headlessui/react';
+import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { Fragment } from 'react';
+import { Fragment, useEffect } from 'react';
 import { logout } from '@/lib/auth/logout';
 import { Avatar } from './UI/avatar';
+import { Text } from './UI/text';
 
-
-type NavProps = {
-    username: string;
-};
+import { useAppSelector } from '@/lib/store/hooks';
 
 interface User {
-    name: string;
+    id: string;
+    username: string;
+    avatar: string;
+    team: string;
     email: string;
-    imageUrl: string;
 }
 
 interface NavigationItem {
@@ -22,37 +22,46 @@ interface NavigationItem {
     current: boolean;
 }
 
-export default function Navigation(props: NavProps) {
+const navigation: NavigationItem[] = [
+    { name: 'Dashboard', href: '#', current: true },
+];
+
+export default function Navigation() {
+    const selector = useAppSelector((state) => state.authReducer.data);
 
     const user: User = {
-        name: 'Tom Cook',
-        email: 'tom@example.com',
-        imageUrl:
-            'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+        id: selector.id,
+        username: selector.username,
+        avatar: selector.avatar,
+        team: selector.team,
+        email: selector.email,
     };
-    const navigation: NavigationItem[] = [
-        { name: 'Dashboard', href: '#', current: true },
-        // { name: 'Fixtures', href: '#', current: false },
-        // { name: 'Players', href: '#', current: false },
-        // { name: '|', href: '#', current: false },
-        // { name: 'About', href: '#', current: false },
-    ];
+
+    function getInitials(username: string) {
+        return username.substring(0, 2).toLowerCase();
+    }
+
+    const initials = getInitials(user.username);
 
     function classNames(...classes: string[]) {
         return classes.filter(Boolean).join(' ');
     }
 
+    // avatar navigation
     const userNavigation = [
-        // { name: 'Your Profile', href: '#', onClick: undefined },
-        // { name: 'Settings', href: '#', onClick: undefined },
         {
             name: 'Sign out',
             onClick: handleClick,
         },
     ];
+
     function handleClick() {
+        // add remove auth state from redux store before logout
         logout();
     }
+
+    useEffect(() => {});
+
     return (
         <div className="min-h-full">
             <div className="bg-gray-800 pb-32">
@@ -124,7 +133,9 @@ export default function Navigation(props: NavProps) {
                                                                 Open user menu
                                                             </span>
                                                             <Avatar
-                                                                initials={'TC'}
+                                                                initials={
+                                                                    initials
+                                                                }
                                                                 className="size-10 rounded-full bg-gray-900"
                                                                 // src={
                                                                 //     user.imageUrl
@@ -142,7 +153,22 @@ export default function Navigation(props: NavProps) {
                                                         leaveFrom="transform opacity-100 scale-100"
                                                         leaveTo="transform opacity-0 scale-95"
                                                     >
-                                                        <Menu.Items className="absolute flex flex-col items-start right-0 z-10 mt-2 w-32 origin-top-right rounded-md dark:bg-gray-900 dark:text-gray-300  py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                                        <Menu.Items className="border border-gray-700 m-2 text-xs p-2 space-y-1 absolute flex flex-col items-start right-0 z-10 mt-2 w-56 origin-top-right rounded-md dark:bg-gray-800 dark:text-gray-300  py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                                            <div className="border border-gray-700 m-2 text-xs w-48 rounded-xl p-2 space-y-1 dark:bg-gray-900">
+                                                                <Text>
+                                                                    {
+                                                                        user.username
+                                                                    }
+                                                                </Text>
+                                                                <div>
+                                                                    {user.email}
+                                                                </div>
+                                                                <div>
+                                                                    {user.team}
+                                                                </div>
+
+                                                                {/* <div>user.email</div> */}
+                                                            </div>
                                                             {userNavigation.map(
                                                                 (button) => (
                                                                     <Disclosure.Button
@@ -157,9 +183,6 @@ export default function Navigation(props: NavProps) {
                                                                             active,
                                                                         }) => (
                                                                             <a
-                                                                                href={
-                                                                                    button.href
-                                                                                }
                                                                                 className={classNames(
                                                                                     active
                                                                                         ? 'dark:hover:bg-gray-700'
@@ -230,18 +253,21 @@ export default function Navigation(props: NavProps) {
                                 <div className="border-t border-gray-700 pb-3 pt-4">
                                     <div className="flex items-center px-5">
                                         <div className="flex-shrink-0">
-                                            <img
-                                                className="h-10 w-10 rounded-full"
-                                                src={user.imageUrl}
+                                            <Avatar
+                                                initials={initials}
+                                                className="size-10 rounded-full bg-gray-900"
+                                                // src={
+                                                //     user.imageUrl
+                                                // }
                                                 alt=""
                                             />
                                         </div>
                                         <div className="ml-3">
                                             <div className="text-base font-medium leading-none text-white">
-                                                {user.name}
+                                                {user.username}
                                             </div>
                                             <div className="text-sm font-medium leading-none text-gray-400">
-                                                {user.email}
+                                                {user.id}
                                             </div>
                                         </div>
                                         <button

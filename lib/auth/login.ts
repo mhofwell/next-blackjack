@@ -3,51 +3,107 @@ import { getClient } from '@/lib/apollo/client';
 import gql from 'graphql-tag';
 import { LogInSchema } from '@/lib/validator/schema';
 import { z } from 'zod';
-import { redirect } from 'next/navigation';
 import { createSession } from '@/lib/auth/utils';
-
-// these would work with Fetch in the lib folder but not with Apollo Client.
 
 type LoginCredentials = z.infer<typeof LogInSchema>;
 
+type User = {
+    id: string;
+    username: string;
+    avatar: string;
+    email: string;
+    team: string;
+};
+
+type LoginResponse = {
+    session: string;
+    status: number;
+    errors: string[];
+    user: User | null;
+};
+
 export async function logUserIn(formData: LoginCredentials) {
-    // validate data
-    const validatedData = LogInSchema.safeParse(formData);
-
-    if (!validatedData.success) {
-        return ['Validation check failed on the server. Please try again.'];
-    }
-
-    const formDataToSubmit = {
-        input: validatedData.data,
+    let response: LoginResponse = {
+        status: 0,
+        errors: [],
+        session: '',
+        user: {
+            id: '',
+            username: '',
+            avatar: '',
+            email: '',
+            team: '',
+        },
     };
+    try {
+        // validate data
+        const validatedData = LogInSchema.safeParse(formData);
 
-    const query = gql`
-        query Login($input: LoginCredentials!) {
-            login(input: $input) {
-                status
-                cuid
-                error
+        if (!validatedData.success) {
+            response.errors = [
+                'Validation check failed on the server. Please try again.',
+            ];
+            response.status = 400;
+            return response;
+        }
+
+        const formDataToSubmit = {
+            input: validatedData.data,
+        };
+
+        const query = gql`
+            query Login($input: LoginCredentials!) {
+                login(input: $input) {
+                    status
+                    errors
+                    user {
+                        id
+                        username
+                        avatar
+                        email
+                        team
+                    }
+                }
             }
+        `;
+
+        const { data } = await getClient().query({
+            query: query,
+            variables: formDataToSubmit,
+        });
+
+        if (data.login.errors.length > 0) {
+            console.log('Errors', data.login.errors);
+            response.errors = [
+                'Login failed, user not found or password is incorrect. Please try again.',
+            ];
+            response.status = 400;
+            return response;
         }
-    `;
 
-    const { data } = await getClient().query({
-        query: query,
-        variables: formDataToSubmit,
-    });
+        // create session and send user data back to client
+        if (data.login.status === 200 && data.login.user !== undefined) {
+            const session = await createSession(data.login.user.id);
 
-    if (data.login.error.length > 0) {
-        return [
-            'Login failed, user not found or password is incorrect. Please try again.',
-        ];
-    }
+            response = {
+                user: data.login.user,
+                session: session,
+                status: 200,
+                errors: [],
+            };
 
-    // set cookies and redirect to dashboard
-    if (data.login.error.length === 0 && data.login.status === 200) {
-        const session = await createSession(data.login.cuid);
-        if (session !== null) {
-            redirect('/dashboard');
+            return response;
         }
+
+        if (data.login.user === undefined) {
+            return response;
+        }
+
+    } catch (error) {
+        console.error(error);
+        response.errors = ['Something went wrong during login.'];
+        response.status = 400;
+
+        return response;
     }
 }

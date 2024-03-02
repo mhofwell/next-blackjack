@@ -40,7 +40,7 @@ const users: User[] = [
     {
         name: 'JoJo',
         email: 'Mike@mike.com',
-        status: 'LOST',
+        status: 'ELIMINATED',
         paid: 'YES',
         id: '4',
         avatar: '/mh.png',
@@ -67,7 +67,7 @@ const users: User[] = [
     {
         name: 'JoJo',
         email: 'Mike@mike.com',
-        status: 'LOST',
+        status: 'ELIMINATED',
         paid: 'YES',
         id: '7',
         avatar: '/mh.png',
@@ -94,7 +94,7 @@ const users: User[] = [
     {
         name: 'JoJo',
         email: 'Mike@mike.com',
-        status: 'LOST',
+        status: 'ELIMINATED',
         paid: 'YES',
         id: '10',
         avatar: '/mh.png',

@@ -11,12 +11,9 @@ const typeDefs = gql`
     type User {
         id: String!
         username: String!
-        isLoggedIn: Boolean!
         email: String!
-        hashedPassword: String!
-        team: String
         avatar: String
-        role: Role
+        team: String
     }
 
     type Mutation {
@@ -25,13 +22,14 @@ const typeDefs = gql`
 
     type AuthResponse {
         status: Int!
-        error: [String]
+        errors: [String]
     }
 
     type LoginResponse {
         status: Int!
-        cuid: String
-        error: [String]
+        id: String
+        errors: [String]
+        user: User
     }
 
     type Error {

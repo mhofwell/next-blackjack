@@ -1,22 +1,20 @@
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
-import { ZodIssue } from 'zod';
-
 type LoginResponse = {
     status: number;
-    cuid: string;
-    error: ZodIssue[];
+    user: User;
+    errors: string[];
 };
 
-type AuthResponse = {
-    status: number;
-    error: ZodIssue[];
+type User = {
+    id: string;
+    username: string;
+    avatar: string;
+    email: string;
+    team: string;
 };
 
 const Query = {
     hello: async (_parent: any, _args: any, contextValue: any) => {
         const { greeting } = contextValue;
-        console.log('in the Query');
 
         try {
             return greeting;
@@ -30,8 +28,14 @@ const Query = {
 
         let response: LoginResponse = {
             status: 0,
-            cuid: '',
-            error: [],
+            errors: [],
+            user: {
+                id: '',
+                username: '',
+                avatar: '',
+                email: '',
+                team: '',
+            },
         };
 
         try {
@@ -43,8 +47,14 @@ const Query = {
                 },
                 select: {
                     id: true,
+                    username: true,
+                    avatar: true,
+                    email: true,
+                    team: true,
                 },
             });
+
+            await prisma.$disconnect();
 
             // early return for no user found
             if (!user.id) {
@@ -52,14 +62,18 @@ const Query = {
             }
 
             response.status = 200;
-            response.cuid = user.id;
+            response.user.id = user.id;
+            response.user.username = user.username;
+            response.user.avatar = user.avatar;
+            response.user.email = user.email;
+            response.user.team = user.team;
 
             return response;
 
             // catch any errors
         } catch (error: any) {
             response.status = 400;
-            response.error = [error.message];
+            response.errors = [error.message];
 
             return response;
         }

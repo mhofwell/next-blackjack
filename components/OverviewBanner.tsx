@@ -1,5 +1,5 @@
 import { Badge } from './UI/badge';
-import { Text } from './UI/text';
+
 const stats = [
     { name: 'Active Pools', value: '2' },
     { name: 'Total Treasury', value: '$330.25', unit: 'CAD' },
@@ -7,7 +7,7 @@ const stats = [
     { name: 'Eliminated', value: '3' },
 ];
 
-export default async function Banner() {
+export default async function OverviewBanner() {
     return (
         <div className="bg-gray-900">
             <div className="mx-auto max-w-7xl">
@@ -32,7 +32,7 @@ export default async function Banner() {
                                     </p>
                                     {stat.unit === 'OK' ? (
                                         <div className="py-[10px]">
-                                            <Badge color="lime">All Paid</Badge>
+                                            <Badge color="fuchsia">All Paid</Badge>
                                         </div>
                                     ) : stat.unit ? (
                                         <div className="py-4">

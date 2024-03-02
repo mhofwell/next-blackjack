@@ -3,10 +3,8 @@ import { Select } from './UI/select';
 import PoolBanner from './PoolBanner';
 import UserTable from './UserTable';
 import users from '../test/testdata';
-import { Avatar } from './UI/avatar';
-import DenseTable from './DenseTable';
-import { Strong, Text, TextLink } from './UI/text';
-import { Badge } from './UI/badge';
+import { Text } from './UI/text';
+import PlayerCard from './UserCard';
 
 export default function PoolFrame() {
     return (
@@ -32,42 +30,9 @@ export default function PoolFrame() {
                 <PoolBanner />
             </div>
 
-            {/* player card component */}
             <div className="flex">
                 <div className="w-1/2 mt-5 mr-5">
-                    <div className="border border-gray-800 p-5 rounded-xl">
-                        <div className="flex pb-5">
-                            <div className="flex">
-                                <Avatar initials={'TH'} className="size-12" />
-                                <div className="flex w-auto">
-                                    <div>
-                                        <h2 className="text-xl pl-5 pt-1">
-                                            The Hof
-                                        </h2>
-                                        <Text className="pl-5">Rank: 1</Text>
-                                    </div>
-                                    <div className="h-auto mt-1">
-                                        <Badge color="lime" className="ml-5">
-                                            ACTIVE
-                                        </Badge>
-                                        <Badge color="fuchsia" className="ml-2">
-                                            PAID
-                                        </Badge>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <DenseTable />
-
-                        <div className="pt-10">
-                            <h3>Player Details</h3>
-                            <Text className="text-sm pt-2">
-                                Email: michael.hofweller@gmail.com
-                            </Text>
-                            <Text className="">Club: Liverpool</Text>
-                        </div>
-                    </div>
+                    <PlayerCard />
                 </div>
                 <div className="w-1/2 mt-5 ml-5">
                     <div className=" border border-gray-800 p-5 rounded-xl">

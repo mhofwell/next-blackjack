@@ -4,7 +4,7 @@ import { ZodIssue } from 'zod';
 
 type AuthResponse = {
     status: number;
-    error: ZodIssue[];
+    errors: ZodIssue[];
 };
 
 type SignUpFormData = {
@@ -28,7 +28,7 @@ const Mutation = {
 
         let response: AuthResponse = {
             status: 0,
-            error: [],
+            errors: [],
         };
 
         try {
@@ -105,7 +105,7 @@ const Mutation = {
         } catch (error: any) {
             // unsuccessful response with error message
             response.status = 400;
-            response.error = [error.message];
+            response.errors = [error.message];
 
             return response;
         }

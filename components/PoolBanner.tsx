@@ -1,5 +1,3 @@
-import { Badge } from './UI/badge';
-
 const stats = [
     { name: 'Gameweek ', value: '29', unit: 'OK' },
     { name: 'Total Players', value: '11' },
@@ -8,10 +6,10 @@ const stats = [
     { name: 'Active', value: '8', unit: 'OK' },
     { name: 'Bust', value: '3' },
     { name: 'Inactive', value: '3' },
-    { name: 'Lost', value: '8', unit: 'OK' },
+    { name: 'Eliminated', value: '8', unit: 'OK' },
 ];
 
-export default async function Banner() {
+export default async function PoolBanner() {
     return (
         <div className="bg-gray-900 py-5 border border-gray-800 rounded-xl">
             <div className="mx-auto max-w-7xl">

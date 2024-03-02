@@ -1,15 +1,26 @@
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
+import AnimatedButton from './AnimatedButton';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { LogInSchema } from '@/lib/validator/schema';
 import { useEffect, useState } from 'react';
-import AnimatedButton from './AnimatedButton';
 import { logUserIn } from '@/lib/auth/login';
+import { useAppDispatch } from '@/lib/store/hooks';
+import { setAuthState } from '@/lib/store/slices/auth-slice';
+import { useRouter } from 'next/navigation';
 
 type LoginCredentials = z.infer<typeof LogInSchema>;
+
+type User = {
+    id: string;
+    username: string;
+    avatar: string;
+    email: string;
+    team: string;
+};
 
 export default function ReactHookForm() {
     const [serverErrors, setServerErrors] = useState<string[]>([]);
@@ -24,26 +35,46 @@ export default function ReactHookForm() {
         resolver: zodResolver(LogInSchema),
     });
 
+    const router = useRouter();
+    const dispatch = useAppDispatch();
+
     const onSubmit: SubmitHandler<LoginCredentials> = async (data) => {
         setIsLoading(true);
 
-        const errors = await logUserIn(data);
+        const loginResponse = await logUserIn(data);
 
-        if (errors) {
-            setServerErrors(errors);
+        if (loginResponse === undefined) {
+            setServerErrors([
+                'An error occurred while trying to log you in. Please try again.',
+            ]);
             setIsLoading(false);
             reset();
+            return;
+        } else if (loginResponse.status !== 200) {
+            setServerErrors(loginResponse.errors);
+            setIsLoading(false);
+            reset();
+        } else if (loginResponse.user !== null) {
+            const payload: User = {
+                username: loginResponse.user.username,
+                id: loginResponse.user.id,
+                avatar: loginResponse.user.avatar,
+                email: loginResponse.user.email,
+                team: loginResponse.user.team,
+            };
+            dispatch(setAuthState(payload));
+            router.push('/dashboard');
         }
-
-        reset();
     };
 
     useEffect(() => {
         if (serverErrors.length > 0) {
-            console.log('Server Errors', serverErrors);
+            // console.log('Server Errors', serverErrors);
+            setServerErrors(serverErrors);
         }
         if (loading) {
-            console.log('Loading', loading);
+            // console.log('Loading', loading);
+            setIsLoading(true);
         }
     }, [serverErrors, loading]);
 

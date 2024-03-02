@@ -47,13 +47,13 @@ const players = [
     },
 ];
 
-export default function DenseTable() {
+export default function PlayerTable() {
     // create function to return totals here maybe? or just pull totals from db
     return (
         <Table dense className="mx-auto">
             <TableHead>
                 <TableRow>
-                    <TableHeader>Player</TableHeader>
+                    <TableHeader>Footballer</TableHeader>
                     <TableHeader className="">G</TableHeader>
                     <TableHeader className="">OG</TableHeader>
                     <TableHeader className="">NG</TableHeader>
