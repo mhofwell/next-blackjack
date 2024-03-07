@@ -1,49 +1,69 @@
-import { Description, Field, FieldGroup, Fieldset } from './UI/fieldset';
-import { Select } from './UI/select';
-import PoolBanner from './PoolBanner';
-import UserTable from './UserTable';
-import users from '../test/testdata';
-import { Text } from './UI/text';
-import PlayerCard from './UserCard';
+import PoolDataBanner from './PoolDataBanner';
+import PlayerCard from './EntryCard';
+import PoolSelector from './PoolSelector';
+import AllPlayersList from './AllPlayersList';
+import { getClient } from '@/lib/apollo/client';
+import gql from 'graphql-tag';
 
-export default function PoolFrame() {
+type PoolOptions = {
+    id: string;
+    name: string;
+};
+
+const options: PoolOptions[] = [
+    {
+        id: '1',
+        name: 'Pool 1',
+    },
+    {
+        id: '2',
+        name: 'Pool 2',
+    },
+    {
+        id: '3',
+        name: 'Pool 3',
+    },
+];
+
+export default async function PoolFrame() {
+    // get options for Pool Selector from server
+    const variables = {
+        input: {
+            id: '1',
+        },
+    };
+
+    // const query = gql`
+    //     query GetPoolNames {
+    //         getPoolNames {
+    //             id
+    //             name
+    //         }
+    //     }
+    // `;
+
+    // const { data } = await getClient().query({
+    //     query: query,
+    //     variables: variables,
+    // });
+
+    // console.log(data);
+
+    // const options: PoolOptions[] = data.getPoolNames;
+
     return (
         <div>
             <h1 className="text-2xl font-semibold">Pool Manager</h1>
-            <Fieldset>
-                <FieldGroup>
-                    <Field>
-                        <div className="flex items-center justify-between">
-                            <Description className="w-1/2">
-                                Select from all of the pools that you organize.
-                            </Description>
-                            <Select className="w-1/4" name="country">
-                                <option>Canada</option>
-                                <option>UK</option>
-                            </Select>
-                        </div>
-                    </Field>
-                </FieldGroup>
-            </Fieldset>
-
+            <PoolSelector options={options} />
             <div className="pt-5 w-full">
-                <PoolBanner />
+                <PoolDataBanner />
             </div>
-
             <div className="flex">
                 <div className="w-1/2 mt-5 mr-5">
                     <PlayerCard />
                 </div>
                 <div className="w-1/2 mt-5 ml-5">
-                    <div className=" border border-gray-800 p-5 rounded-xl">
-                        <div className="mb-3">
-                            <p className="text-xl">All Players</p>
-                            <Text className="mt-1">
-                                Select a player for more details
-                            </Text>
-                        </div>
-                        <UserTable users={users} />
-                    </div>
+                    <AllPlayersList />
                 </div>
             </div>
         </div>

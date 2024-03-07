@@ -8,47 +8,77 @@ import {
 } from './UI/table';
 
 import { Text } from './UI/text';
+// import { useEffect } from 'react';
 
-const user = {
-    id: 1,
-    goals: 21,
-    own_goals: 2,
-    net_goals: 1,
+type Player = {
+    id: string;
+    fn: string;
+    ln: string;
+    goals: number;
+    own_goals: number;
+    net_goals: number;
 };
 
-const players = [
-    {
-        id: '1',
-        name: 'Virgil Van Dijk',
-        goals: '5',
-        own_goals: '0',
-        net_goals: '5',
-    },
-    {
-        id: '2',
-        name: 'Alphonso Davies',
-        goals: '10',
-        own_goals: '0',
-        net_goals: '10',
-    },
-    {
-        id: '3',
-        name: 'Kai Havertz',
-        goals: '5',
-        own_goals: '2',
-        net_goals: '3',
-    },
-    {
-        id: '4',
-        name: 'Harry Kane',
-        goals: '1',
-        own_goals: '6',
-        net_goals: '5',
-    },
-];
+// const players: Player[] = [
+//     {
+//         id: '1',
+//         fn: 'Virgil Van',
+//         ln: 'Dijk',
+//         goals: 5,
+//         own_goals: 0,
+//         net_goals: 5,
+//     },
+//     {
+//         id: '2',
+//         fn: 'Alphonso',
+//         ln: 'Davies',
+//         goals: 4,
+//         own_goals: 0,
+//         net_goals: 4,
+//     },
+//     {
+//         id: '3',
+//         fn: 'Kai',
+//         ln: 'Havertz',
+//         goals: 2,
+//         own_goals: 1,
+//         net_goals: 1,
+//     },
+//     {
+//         id: '4',
+//         fn: 'Harry',
+//         ln: 'Kane',
+//         goals: 5,
+//         own_goals: 0,
+//         net_goals: 5,
+//     },
+// ];
 
-export default function PlayerTable() {
-    // create function to return totals here maybe? or just pull totals from db
+export default function PlayerTable({ players }: { players: Player[] }) {
+    // create function to RETURN totals for goals, ng, own goals here. and then add to the table
+
+    let totals = {
+        goals: 0,
+        own_goals: 0,
+        net_goals: 0,
+    };
+
+    function getTotals() {
+        players.forEach((player) => {
+            totals.goals += player.goals;
+            totals.own_goals += player.own_goals;
+            totals.net_goals += player.net_goals;
+        });
+
+        return { ...totals };
+    }
+
+    totals = getTotals();
+
+    // useEffect(() => {
+    //     totals = getTotals();
+    // }, [players]);
+
     return (
         <Table dense className="mx-auto">
             <TableHead>
@@ -63,7 +93,7 @@ export default function PlayerTable() {
                 {players.map((player) => (
                     <TableRow key={player.id}>
                         <TableCell className="font-medium">
-                            {player.name}
+                            {player.fn} {player.ln}
                         </TableCell>
                         <TableCell className=" tabular-nums">
                             {player.goals}
@@ -76,18 +106,19 @@ export default function PlayerTable() {
                         </TableCell>
                     </TableRow>
                 ))}
-                <TableRow className="border border-fuscia" key={user.id}>
+
+                <TableRow className="border border-fuscia" key={totals.goals}>
                     <TableCell className="font-medium">
                         <Text>TOTAL</Text>
                     </TableCell>
                     <TableCell className=" tabular-nums">
-                        {user.goals}
+                        {totals.goals}
                     </TableCell>
                     <TableCell className=" tabular-nums">
-                        {user.own_goals}
+                        {totals.own_goals}
                     </TableCell>
                     <TableCell className=" tabular-nums">
-                        {user.net_goals}
+                        {totals.net_goals}
                     </TableCell>
                 </TableRow>
             </TableBody>

@@ -1,19 +1,44 @@
 import { Badge } from './UI/badge';
 
-const stats = [
-    { name: 'Active Pools', value: '2' },
-    { name: 'Total Treasury', value: '$330.25', unit: 'CAD' },
-    { name: 'Total Players', value: '36', unit: 'OK' },
-    { name: 'Eliminated', value: '3' },
-];
-
 export default async function OverviewBanner() {
+
+    
+    async function getOverviewData() {
+        // call the server to get the data
+        // this will be a gql route that will return the data needed to populate this.
+
+        return {
+            activePools: 2,
+            totalTreasury: 330.25,
+            activePlayers: 24,
+            totalPlayers: 36,
+            gameweek: 28,
+        };
+    }
+
+    const dbObject = await getOverviewData();
+
+    const stats = [
+        { name: 'Active Pools', value: dbObject.activePools },
+        { name: 'Gameweek', value: dbObject.gameweek },
+        {
+            name: 'Active Players',
+            value: `${dbObject.activePlayers}/${dbObject.totalPlayers}`,
+            unit: 'OK',
+        },
+        {
+            name: 'Total Treasury',
+            value: `$${dbObject.totalTreasury}`,
+            unit: 'CAD',
+        },
+    ];
+
     return (
         <div className="bg-gray-900">
             <div className="mx-auto max-w-7xl">
                 <h2 className="text-2xl pb-5 font-semibold tracking-tight text-white">
                     Overview
-            </h2>
+                </h2>
                 <div className="border border-gray-800 p-5 rounded-xl">
                     <div className="grid grid-cols-1 gap-px bg-white/5 sm:grid-cols-2 lg:grid-cols-4">
                         {stats.map((stat) => (
@@ -32,7 +57,9 @@ export default async function OverviewBanner() {
                                     </p>
                                     {stat.unit === 'OK' ? (
                                         <div className="py-[10px]">
-                                            <Badge color="fuchsia">All Paid</Badge>
+                                            <Badge color="fuchsia">
+                                                All Paid
+                                            </Badge>
                                         </div>
                                     ) : stat.unit ? (
                                         <div className="py-4">

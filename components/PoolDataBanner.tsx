@@ -1,15 +1,42 @@
-const stats = [
-    { name: 'Gameweek ', value: '29', unit: 'OK' },
-    { name: 'Total Players', value: '11' },
-    { name: 'Entry Fee', value: '$15', unit: 'CAD' },
-    { name: 'Treasury', value: '$300.00', unit: 'CAD' },
-    { name: 'Active', value: '8', unit: 'OK' },
-    { name: 'Bust', value: '3' },
-    { name: 'Inactive', value: '3' },
-    { name: 'Eliminated', value: '8', unit: 'OK' },
-];
+'use client';
+import { useAppSelector } from '@/lib/store/hooks';
+import { useState, useEffect } from 'react';
 
-export default async function PoolBanner() {
+const data = {
+    id: '1',
+    name: 'Pool 1',
+    entryFee: 15,
+    treasury: 300.21,
+    active: 8,
+    bust: 3,
+    inactive: 3,
+    eliminated: 8,
+    totalPlayers: 11,
+    gameweek: 29,
+};
+
+export default function PoolBanner() {
+    const poolId = useAppSelector((state) => state.poolReducer.data.active);
+
+    const [pool, setPool] = useState(data);
+
+    const stats = [
+        { name: 'Gameweek ', value: pool.gameweek, unit: 'OK' },
+        { name: 'Total Players', value: pool.totalPlayers },
+        { name: 'Entry Fee', value: `$${pool.entryFee}`, unit: 'CAD' },
+        { name: 'Treasury', value: `$${pool.treasury}`, unit: 'CAD' },
+        { name: 'Active', value: pool.active },
+        { name: 'Bust', value: pool.bust },
+        { name: 'Inactive', value: pool.inactive },
+        { name: 'Eliminated', value: pool.eliminated },
+    ];
+
+    useEffect(() => {
+        // use the poolId to call a server action to get the pool data
+        console.log('BannerEffect', poolId);
+        // set the pool to the data returned from the server
+    }, [poolId]);
+
     return (
         <div className="bg-gray-900 py-5 border border-gray-800 rounded-xl">
             <div className="mx-auto max-w-7xl">

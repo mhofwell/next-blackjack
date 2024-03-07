@@ -1,10 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from './slices/auth-slice';
+import poolReducer from './slices/pool-slice';
+import playerReducer from './slices/player-slice';
 
 export const store = () => {
     return configureStore({
         reducer: {
             authReducer,
+            poolReducer,
+            playerReducer,
         },
     });
 };

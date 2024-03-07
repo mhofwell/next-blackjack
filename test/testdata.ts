@@ -1,5 +1,5 @@
 type User = {
-    name: string;
+    username: string;
     email: string;
     status: string;
     paid: string; 
@@ -11,16 +11,16 @@ type User = {
 
 const users: User[] = [
     {
-        name: 'The Hof',
+        id: '1',
+        username: 'The Hof',
         email: 'Mike@mike.com',
         status: 'INACTIVE',
         paid: 'YES',
-        id: '1',
         avatar: '/mh.png',
         net_goals: 21,
     },
     {
-        name: 'Neverkeusen',
+        username: 'Neverkeusen',
         email: 'Mike@mike.com',
         status: 'ACTIVE',
         paid: 'YES',
@@ -29,7 +29,7 @@ const users: User[] = [
         net_goals: 21,
     },
     {
-        name: 'Burntelli42069',
+        username: 'Burntelli42069',
         email: 'Mike@mike.com',
         status: 'BUST',
         paid: 'YES',
@@ -38,7 +38,7 @@ const users: User[] = [
         net_goals: 21,
     },
     {
-        name: 'JoJo',
+        username: 'JoJo',
         email: 'Mike@mike.com',
         status: 'ELIMINATED',
         paid: 'YES',
@@ -47,7 +47,7 @@ const users: User[] = [
         net_goals: 21,
     },
     {
-        name: 'IyadsNotReal',
+        username: 'IyadsNotReal',
         email: 'Mike@mike.com',
         paid: 'NO',
         status: 'ACTIVE',
@@ -56,7 +56,7 @@ const users: User[] = [
         net_goals: 21,
     },
     {
-        name: 'Burntelli42069',
+        username: 'Burntelli42069',
         email: 'Mike@mike.com',
         status: 'BUST',
         paid: 'YES',
@@ -65,7 +65,7 @@ const users: User[] = [
         net_goals: 21,
     },
     {
-        name: 'JoJo',
+        username: 'JoJo',
         email: 'Mike@mike.com',
         status: 'ELIMINATED',
         paid: 'YES',
@@ -74,7 +74,7 @@ const users: User[] = [
         net_goals: 21,
     },
     {
-        name: 'IyadsNotReal',
+        username: 'IyadsNotReal',
         email: 'Mike@mike.com',
         paid: 'NO',
         status: 'ACTIVE',
@@ -83,7 +83,7 @@ const users: User[] = [
         net_goals: 21,
     },
     {
-        name: 'Burntelli42069',
+        username: 'Burntelli42069',
         email: 'Mike@mike.com',
         status: 'BUST',
         paid: 'YES',
@@ -92,7 +92,7 @@ const users: User[] = [
         net_goals: 21,
     },
     {
-        name: 'JoJo',
+        username: 'JoJo',
         email: 'Mike@mike.com',
         status: 'ELIMINATED',
         paid: 'YES',
@@ -101,7 +101,7 @@ const users: User[] = [
         net_goals: 21,
     },
     {
-        name: 'IyadsNotReal',
+        username: 'IyadsNotReal',
         email: 'Mike@mike.com',
         paid: 'NO',
         status: 'ACTIVE',
