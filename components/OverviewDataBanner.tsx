@@ -1,34 +1,86 @@
 import { Badge } from './UI/badge';
+import { getSession } from '@/lib/auth/utils';
+import { getClient } from '@/lib/apollo/client';
+import gql from 'graphql-tag';
+
+type OverviewResponse = {
+    status: number;
+    errors: string[];
+    overview: OverviewData;
+};
+
+type OverviewData = {
+    activePools: number;
+    totalTreasury: number;
+    activePlayers: number;
+    totalPlayers: number;
+    gameweek: number;
+};
 
 export default async function OverviewBanner() {
+    const session = await getSession();
 
-    
+    let id: string;
+
+    session ? (id = session.cuid) : (id = '');
+
+    let overviewData: OverviewResponse = {
+        status: 0,
+        errors: [],
+        overview: {
+            activePools: 0,
+            totalTreasury: 0,
+            activePlayers: 0,
+            totalPlayers: 0,
+            gameweek: 0,
+        },
+    };
+
+    // pull this function out into the parent server component for parallel fetching.s
     async function getOverviewData() {
-        // call the server to get the data
-        // this will be a gql route that will return the data needed to populate this.
+        const query = gql`
+            query Overview($input: String!) {
+                overview(input: $input) {
+                    status
+                    errors
+                    overview {
+                        totalTreasury
+                        activePools
+                        gameweek
+                        activePlayers
+                        totalPlayers
+                    }
+                }
+            }
+        `;
 
-        return {
-            activePools: 2,
-            totalTreasury: 330.25,
-            activePlayers: 24,
-            totalPlayers: 36,
-            gameweek: 28,
+        const variables = {
+            input: id,
         };
+
+        const { data } = await getClient().query({
+            query: query,
+            variables: variables,
+        });
+
+        overviewData = data.overview;
+
+        return overviewData;
     }
 
-    const dbObject = await getOverviewData();
+    const data = await getOverviewData();
 
     const stats = [
-        { name: 'Active Pools', value: dbObject.activePools },
-        { name: 'Gameweek', value: dbObject.gameweek },
+        { name: 'Active Pools', value: data.overview.activePools },
+        { name: 'Gameweek', value: data.overview.gameweek },
         {
             name: 'Active Players',
-            value: `${dbObject.activePlayers}/${dbObject.totalPlayers}`,
+            value: `${data.overview.activePlayers}/${data.overview.totalPlayers}`,
             unit: 'OK',
         },
         {
             name: 'Total Treasury',
-            value: `$${dbObject.totalTreasury}`,
+            value: `$${data.overview.totalTreasury}`,
             unit: 'CAD',
         },
     ];

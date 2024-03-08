@@ -6,37 +6,39 @@ import PlayerTable from './PlayerTable';
 import { useAppSelector } from '@/lib/store/hooks';
 import { useState, useEffect } from 'react';
 
-export default function EntryCard() {
-    let data = {
-        id: '',
-        username: '',
-        rank: '',
-        status: '',
-        paid: '',
-        team: '',
-        email: '',
-        avatar: '',
-        players: [
-            {
-                id: '',
-                fn: '-',
-                ln: '',
-                goals: 0,
-                own_goals: 0,
-                net_goals: 0,
-            },
-        ],
-    };
+let data = {
+    id: '',
+    username: '',
+    rank: '',
+    status: '',
+    paid: '',
+    team: '',
+    email: '',
+    avatar: '',
+    players: [
+        {
+            id: '',
+            fn: '-',
+            ln: '',
+            goals: 0,
+            own_goals: 0,
+            net_goals: 0,
+        },
+    ],
+};
 
+export default function EntryCard() {
+    const entryId = useAppSelector((state) => state.playerReducer.data.active);
+    // can probably lose this state
     const [entry, setEntry] = useState(data);
 
-    const entryId = useAppSelector((state) => state.playerReducer.data.active);
 
     let initials = 'DE';
 
     useEffect(() => {
         // use the playerId to call a server action to get the entry data
         console.log('entry', entryId);
+        // this is where we can get the entry variable from
 
         // set the initials to the first two letters of the username
         function getInitials(username: string) {
@@ -56,11 +58,8 @@ export default function EntryCard() {
             avatar: entry.avatar,
             players: entry.players,
         };
-
-        // setPlayer to the data returned from the server
-        setEntry(data);
     }),
-        [entryId];
+        [];
 
     return (
         <div className="border border-gray-800 p-5 rounded-xl ">

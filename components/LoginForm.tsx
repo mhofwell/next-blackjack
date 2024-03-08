@@ -61,7 +61,7 @@ export default function ReactHookForm() {
                 id: loginResponse.user.id,
                 avatar: loginResponse.user.avatar,
                 email: loginResponse.user.email,
-                team: loginResponse.user.team,
+                team: loginResponse.user.team.name,
             };
             dispatch(setAuthState(payload));
             router.push('/dashboard');

@@ -3,9 +3,10 @@ import { gql } from 'graphql-tag';
 const typeDefs = gql`
     type Query {
         hello: String!
-        User(id: ID!): User!
+        user(id: ID!): User!
         login(input: LoginCredentials!): LoginResponse!
-        # Query for a user based on their credentials
+        # working on this now.. convert total treasury to CAD
+        overview(input: String!): OverviewResponse!
     }
 
     type User {
@@ -13,11 +14,30 @@ const typeDefs = gql`
         username: String!
         email: String!
         avatar: String
-        team: String
+        team: Team
+    }
+
+    type Team {
+        id: Int!
+        name: String!
     }
 
     type Mutation {
         signup(input: SignUpCredentials!): AuthResponse!
+    }
+
+    type OverviewResponse {
+        status: Int!
+        errors: [String]
+        overview: OverviewData
+    }
+
+    type OverviewData {
+        activePools: Int!
+        gameweek: Int!
+        activePlayers: Int!
+        totalPlayers: Int!
+        totalTreasury: Float!
     }
 
     type AuthResponse {
@@ -26,8 +46,8 @@ const typeDefs = gql`
     }
 
     type LoginResponse {
+        session: String
         status: Int!
-        id: String
         errors: [String]
         user: User
     }

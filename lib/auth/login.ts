@@ -12,7 +12,12 @@ type User = {
     username: string;
     avatar: string;
     email: string;
-    team: string;
+    team: Team;
+};
+
+type Team = {
+    id: number;
+    name: string;
 };
 
 type LoginResponse = {
@@ -32,7 +37,10 @@ export async function logUserIn(formData: LoginCredentials) {
             username: '',
             avatar: '',
             email: '',
-            team: '',
+            team: {
+                id: 0,
+                name: '',
+            },
         },
     };
     try {
@@ -55,13 +63,17 @@ export async function logUserIn(formData: LoginCredentials) {
             query Login($input: LoginCredentials!) {
                 login(input: $input) {
                     status
+                    session
                     errors
                     user {
                         id
                         username
                         avatar
                         email
-                        team
+                        team {
+                            id
+                            name
+                        }
                     }
                 }
             }
@@ -71,6 +83,8 @@ export async function logUserIn(formData: LoginCredentials) {
             query: query,
             variables: formDataToSubmit,
         });
+
+        console.log('data', data);
 
         if (data.login.errors.length > 0) {
             console.log('Errors', data.login.errors);
@@ -98,7 +112,6 @@ export async function logUserIn(formData: LoginCredentials) {
         if (data.login.user === undefined) {
             return response;
         }
-
     } catch (error) {
         console.error(error);
         response.errors = ['Something went wrong during login.'];

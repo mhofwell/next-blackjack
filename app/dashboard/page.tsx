@@ -7,8 +7,6 @@ export const metadata: Metadata = {
     title: 'Dasbhoard',
 };
 
-
-
 export default async function Dashboard() {
     return (
         <div className="h-screen">

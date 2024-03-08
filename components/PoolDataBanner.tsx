@@ -33,7 +33,7 @@ export default function PoolBanner() {
 
     useEffect(() => {
         // use the poolId to call a server action to get the pool data
-        console.log('BannerEffect', poolId);
+        console.log('PoolId', poolId);
         // set the pool to the data returned from the server
     }, [poolId]);
 

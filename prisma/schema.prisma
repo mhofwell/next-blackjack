@@ -7,23 +7,104 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Init {
-  id   String @id @default(cuid())
-  name String @default("prisma")
-}
-
 model User {
   id             String   @id @unique @default(cuid())
   username       String
-  email          String   @unique
-  hashedPassword String
-  paid           String?  @default("")
-  team           String?  @default("")
+  fn             String
+  ln             String
+  email          String
+  hashedPassword String   @default("11111111")
+  paid           Paid     @default(NO)
+  team           Team?    @relation(fields: [teamId], references: [id])
+  teamId         Int?
   avatar         String?  @default("")
   role           Role     @default(USER)
-  isAuth         Boolean  @default(false)
+  Pools          Pool[]
+  Entries        Entry[]
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+
+  @@unique([id, email])
+}
+
+model Pool {
+  id        String   @id @unique @default(uuid())
+  name      String
+  season    Int
+  league    League
+  gameweek  Int
+  fee       Float
+  treasury  Float
+  currency  Currency
+  manager   User     @relation(fields: [userId], references: [id])
+  userId    String
+  entries   Entry[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Entry {
+  id        String   @id @unique @default(cuid())
+  players   Player[]
+  goals     Int      @default(0)
+  own_goals Int      @default(0)
+  net_goals Int      @default(0)
+  status    Status   @default(INACTIVE)
+  paid      Paid     @default(NO)
+  pool      Pool     @relation(fields: [poolId], references: [id])
+  poolId    String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  standing  Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, poolId])
+}
+
+model Player {
+  id        Int      @id @unique
+  fn        String
+  ln        String
+  team      Team     @relation(fields: [teamId], references: [id])
+  teamId    Int
+  avatar    String?
+  entry     Entry[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Team {
+  id        Int      @id @unique
+  name      String
+  avatar    String
+  players   Player[]
+  users     User[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Currency {
+  GBP
+  CAD
+  USD
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+  BUST
+  ELIMINATED
+  WINNER
+}
+
+enum Paid {
+  YES
+  NO
+}
+
+enum League {
+  PL
 }
 
 enum Role {

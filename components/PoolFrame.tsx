@@ -1,7 +1,7 @@
 import PoolDataBanner from './PoolDataBanner';
 import PlayerCard from './EntryCard';
 import PoolSelector from './PoolSelector';
-import AllPlayersList from './AllPlayersList';
+import AllEntriesList from './AllEntriesList';
 import { getClient } from '@/lib/apollo/client';
 import gql from 'graphql-tag';
 
@@ -63,7 +63,7 @@ export default async function PoolFrame() {
                     <PlayerCard />
                 </div>
                 <div className="w-1/2 mt-5 ml-5">
-                    <AllPlayersList />
+                    <AllEntriesList />
                 </div>
             </div>
         </div>

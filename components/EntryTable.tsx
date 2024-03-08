@@ -22,7 +22,7 @@ export default function PlayerTable() {
         // use the poolId to call a server action to get the player entry data for this pool
         console.log('PlayerList', poolId);
         // setPlayers to the data returned from the server
-    }, [poolId]);
+    }, []);
 
     return (
         <Table>
