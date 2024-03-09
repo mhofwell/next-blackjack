@@ -12,11 +12,11 @@ import { Avatar } from './UI/avatar';
 import { useAppSelector } from '@/lib/store/hooks';
 import { useState, useEffect } from 'react';
 
-import data from '@/test/testdata';
+import { users } from '@/test/testdata';
 
 export default function PlayerTable() {
     const poolId = useAppSelector((state) => state.poolReducer.data.active);
-    const [players, setPlayers] = useState(data);
+    const [players, setPlayers] = useState(users);
 
     useEffect(() => {
         // use the poolId to call a server action to get the player entry data for this pool

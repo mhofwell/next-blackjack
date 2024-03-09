@@ -6,8 +6,9 @@ import { useAppDispatch } from '@/lib/store/hooks';
 import { setActivePool } from '@/lib/store/slices/pool-slice';
 
 export default function PoolSelector({ options }: { options: any }) {
-    // save pools to state
     const dispatch = useAppDispatch();
+
+    console.log('data', options);
 
     async function handlePoolSelect(
         event: React.ChangeEvent<HTMLSelectElement>
@@ -34,7 +35,7 @@ export default function PoolSelector({ options }: { options: any }) {
                             <option value="Select a pool" disabled>
                                 Select a pool
                             </option>
-                            {options.map((option) => (
+                            {options.map((option: any) => (
                                 <option value={option.id} key={option.id}>
                                     {option.name}
                                 </option>

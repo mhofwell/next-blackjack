@@ -19,41 +19,6 @@ type Player = {
     net_goals: number;
 };
 
-// const players: Player[] = [
-//     {
-//         id: '1',
-//         fn: 'Virgil Van',
-//         ln: 'Dijk',
-//         goals: 5,
-//         own_goals: 0,
-//         net_goals: 5,
-//     },
-//     {
-//         id: '2',
-//         fn: 'Alphonso',
-//         ln: 'Davies',
-//         goals: 4,
-//         own_goals: 0,
-//         net_goals: 4,
-//     },
-//     {
-//         id: '3',
-//         fn: 'Kai',
-//         ln: 'Havertz',
-//         goals: 2,
-//         own_goals: 1,
-//         net_goals: 1,
-//     },
-//     {
-//         id: '4',
-//         fn: 'Harry',
-//         ln: 'Kane',
-//         goals: 5,
-//         own_goals: 0,
-//         net_goals: 5,
-//     },
-// ];
-
 export default function PlayerTable({ players }: { players: Player[] }) {
     // create function to RETURN totals for goals, ng, own goals here. and then add to the table
 
@@ -62,7 +27,6 @@ export default function PlayerTable({ players }: { players: Player[] }) {
         own_goals: 0,
         net_goals: 0,
     };
-
     function getTotals() {
         players.forEach((player) => {
             totals.goals += player.goals;

@@ -26,9 +26,20 @@ type OverviewResponse = {
 type OverviewData = {
     activePools: number;
     totalTreasury: number;
-    activePlayers: number;
-    totalPlayers: number;
+    activeEntries: number;
+    totalEntries: number;
     gameweek: number;
+};
+
+type OptionsResponse = {
+    status: number;
+    errors: string[];
+    options: PoolOptions;
+};
+
+type PoolOptions = {
+    id: string;
+    name: string[];
 };
 
 const Query = {
@@ -81,8 +92,6 @@ const Query = {
                 },
             });
 
-            console.log('user', user);
-
             await prisma.$disconnect();
 
             // early return for no user found
@@ -110,6 +119,7 @@ const Query = {
     overview: async (_parent: any, args: any, context: any) => {
         const id = args.input;
         const { prisma } = context;
+        console.log(id);
 
         let response: OverviewResponse = {
             status: 0,
@@ -117,22 +127,32 @@ const Query = {
             overview: {
                 activePools: 0,
                 totalTreasury: 0,
-                activePlayers: 0,
-                totalPlayers: 0,
+                activeEntries: 0,
+                totalEntries: 0,
                 gameweek: 0,
             },
         };
         try {
-            // get the pools with managers matching the user id
-            const activePools = await prisma.pool.count();
+            // get the pools the user manages
+            const activePools = await prisma.pool.count({
+                where: {
+                    manager: {
+                        id: id,
+                    },
+                },
+            });
             console.log('active', activePools);
 
             // get the latest gameweek from EPL API
-            // const gameweek = await prisma.gameweek.findFirst();
-            const gameweek = 1; // change this to the actual gameweek
+            const res = await fetch(
+                'https://fantasy.premierleague.com/api/fixtures?future=1'
+            );
+
+            const data = await res.json();
+            const gameweek = data[0].event;
 
             // get active players
-            const activePlayers = await prisma.entry.count({
+            const activeEntries = await prisma.entry.count({
                 where: {
                     status: 'ACTIVE',
                     pool: {
@@ -144,16 +164,22 @@ const Query = {
             });
 
             // change this to count for all players in pools with managers matching the user id
-            const totalPlayers = await prisma.entry.count();
+            const totalEntries = await prisma.entry.count();
 
-            // treasury sum calculation
-            // const totalTreasury = await prisma.player.aggregate({
-            //     _sum: {
-            //         treasury: true,
-            //     },
-            // });
+            // treasury sum calculation.
+            const totalTreasury = await prisma.pool.aggregate({
+                _sum: {
+                    treasury: true,
+                },
+                where: {
+                    manager: {
+                        id: id,
+                    },
+                },
+            });
 
-            const totalTreasury = 123.25; // change this to the actual total treasury
+            // we have to reseed database to get float numbers in here with decimals.
+            console.log('tt', totalTreasury._sum.treasury);
 
             await prisma.$disconnect();
 
@@ -163,9 +189,9 @@ const Query = {
                 overview: {
                     activePools,
                     gameweek,
-                    activePlayers,
-                    totalPlayers,
-                    totalTreasury,
+                    activeEntries,
+                    totalEntries,
+                    totalTreasury: totalTreasury._sum.treasury,
                 },
             };
             console.log('response', response);
@@ -175,6 +201,42 @@ const Query = {
             console.error(error);
             response.errors = [error.message];
             response.status = 400;
+            return response;
+        }
+    },
+    options: async (_parent: any, args: any, context: any) => {
+        const { prisma } = context;
+        const id = args.input;
+
+        let response: OptionsResponse = {
+            status: 0,
+            errors: [],
+            options: {
+                id: '',
+                name: [],
+            },
+        };
+
+        try {
+            const poolData = await prisma.pool.findMany({
+                where: {
+                    manager: {
+                        id: id,
+                    },
+                },
+                select: {
+                    id: true,
+                    name: true,
+                },
+            });
+
+            response.status = 200;
+            response.options = poolData;
+
+            return response;
+        } catch (error: any) {
+            response.status = 400;
+            response.errors = [error.message];
             return response;
         }
     },

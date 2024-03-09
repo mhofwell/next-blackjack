@@ -7,8 +7,13 @@ const typeDefs = gql`
         login(input: LoginCredentials!): LoginResponse!
         # working on this now.. convert total treasury to CAD
         overview(input: String!): OverviewResponse!
+        # working on this as well..
+        options(input: String!): OptionsResponse!
     }
 
+    type Mutation {
+        signup(input: SignUpCredentials!): AuthResponse!
+    }
     type User {
         id: String!
         username: String!
@@ -22,8 +27,15 @@ const typeDefs = gql`
         name: String!
     }
 
-    type Mutation {
-        signup(input: SignUpCredentials!): AuthResponse!
+    type OptionsResponse {
+        status: Int!
+        errors: [String]
+        options: [PoolSelectOption!]
+    }
+
+    type PoolSelectOption {
+        id: String!
+        name: String!
     }
 
     type OverviewResponse {
@@ -35,8 +47,8 @@ const typeDefs = gql`
     type OverviewData {
         activePools: Int!
         gameweek: Int!
-        activePlayers: Int!
-        totalPlayers: Int!
+        activeEntries: Int!
+        totalEntries: Int!
         totalTreasury: Float!
     }
 

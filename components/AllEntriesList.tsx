@@ -5,9 +5,9 @@ export default function AllPlayersList() {
     return (
         <div className=" border border-gray-800 p-5 rounded-xl">
             <div className="mb-3">
-                <p className="text-xl">All Players</p>
+                <p className="text-xl">Entries</p>
                 <Text className="mt-1">
-                    Select a player to view their entry details
+                    All of the entries in your pool
                 </Text>
             </div>
             <PlayerTable />

@@ -1,5 +1,5 @@
 'use client';
-import { useAppSelector } from '@/lib/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
 import { useState, useEffect } from 'react';
 
 const data = {
@@ -22,7 +22,7 @@ export default function PoolBanner() {
 
     const stats = [
         { name: 'Gameweek ', value: pool.gameweek, unit: 'OK' },
-        { name: 'Total Players', value: pool.totalPlayers },
+        { name: 'Total Entries', value: pool.totalPlayers },
         { name: 'Entry Fee', value: `$${pool.entryFee}`, unit: 'CAD' },
         { name: 'Treasury', value: `$${pool.treasury}`, unit: 'CAD' },
         { name: 'Active', value: pool.active },
@@ -33,7 +33,8 @@ export default function PoolBanner() {
 
     useEffect(() => {
         // use the poolId to call a server action to get the pool data
-        console.log('PoolId', poolId);
+        console.log('PoolDataBanner Waiting', poolId);
+
         // set the pool to the data returned from the server
     }, [poolId]);
 

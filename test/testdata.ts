@@ -2,14 +2,15 @@ type User = {
     username: string;
     email: string;
     status: string;
-    paid: string; 
+    paid: string;
     id: string;
     avatar: string;
     net_goals: number;
 };
 
+export const testUser = 'cltjag71100078xvfiu2cxjss';
 
-const users: User[] = [
+export const users: User[] = [
     {
         id: '1',
         username: 'The Hof',
@@ -110,5 +111,3 @@ const users: User[] = [
         net_goals: 21,
     },
 ];
-
-export default users;

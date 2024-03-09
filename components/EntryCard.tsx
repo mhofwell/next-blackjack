@@ -32,8 +32,7 @@ export default function EntryCard() {
     // can probably lose this state
     const [entry, setEntry] = useState(data);
 
-
-    let initials = 'DE';
+    let initials = '?';
 
     useEffect(() => {
         // use the playerId to call a server action to get the entry data
@@ -77,7 +76,7 @@ export default function EntryCard() {
                                 {' '}
                                 {data.rank
                                     ? `Rank: ${data.rank}`
-                                    : 'Choose a player on the right to view their entry'}
+                                    : 'Select an entry on the right to view details'}
                             </Text>
                         </div>
                         {data.id ? (

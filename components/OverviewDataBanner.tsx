@@ -1,7 +1,5 @@
 import { Badge } from './UI/badge';
-import { getSession } from '@/lib/auth/utils';
-import { getClient } from '@/lib/apollo/client';
-import gql from 'graphql-tag';
+import { testUser } from '@/test/testdata';
 
 type OverviewResponse = {
     status: number;
@@ -9,78 +7,33 @@ type OverviewResponse = {
     overview: OverviewData;
 };
 
+// deal with this in your code, what object are you sending here and make it consistent with you pool selector. Either you just
+// send the datat for the component or the entire object with status and error. I say just the data you need in the component. 
+
 type OverviewData = {
     activePools: number;
     totalTreasury: number;
-    activePlayers: number;
-    totalPlayers: number;
+    activeEntries: number;
+    totalEntries: number;
     gameweek: number;
 };
 
-export default async function OverviewBanner() {
-    const session = await getSession();
-
-    let id: string;
-
-    session ? (id = session.cuid) : (id = '');
-
-    let overviewData: OverviewResponse = {
-        status: 0,
-        errors: [],
-        overview: {
-            activePools: 0,
-            totalTreasury: 0,
-            activePlayers: 0,
-            totalPlayers: 0,
-            gameweek: 0,
-        },
-    };
-
-    // pull this function out into the parent server component for parallel fetching.s
-    async function getOverviewData() {
-        const query = gql`
-            query Overview($input: String!) {
-                overview(input: $input) {
-                    status
-                    errors
-                    overview {
-                        totalTreasury
-                        activePools
-                        gameweek
-                        activePlayers
-                        totalPlayers
-                    }
-                }
-            }
-        `;
-
-        const variables = {
-            input: id,
-        };
-
-        const { data } = await getClient().query({
-            query: query,
-            variables: variables,
-        });
-
-        overviewData = data.overview;
-
-        return overviewData;
-    }
-
-    const data = await getOverviewData();
-
+export default async function OverviewBanner({
+    overviewData,
+}: {
+    overviewData: OverviewData;
+}) {
     const stats = [
-        { name: 'Active Pools', value: data.overview.activePools },
-        { name: 'Gameweek', value: data.overview.gameweek },
+        { name: 'Active Pools', value: overviewData.activePools },
+        { name: 'Gameweek', value: overviewData.gameweek },
         {
-            name: 'Active Players',
-            value: `${data.overview.activePlayers}/${data.overview.totalPlayers}`,
+            name: 'Active Entries',
+            value: `${overviewData.activeEntries}/${overviewData.totalEntries}`,
             unit: 'OK',
         },
         {
             name: 'Total Treasury',
-            value: `$${data.overview.totalTreasury}`,
+            value: `$${overviewData.totalTreasury}`,
             unit: 'CAD',
         },
     ];
