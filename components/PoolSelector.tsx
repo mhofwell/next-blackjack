@@ -5,7 +5,11 @@ import { Select } from './UI/select';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { setActivePool } from '@/lib/store/slices/pool-slice';
 
-export default function PoolSelector({ options }: { options: any }) {
+type Option = {
+    id: string;
+    name: string;
+};
+export default function PoolSelector({ options }: { options: Option[] }) {
     const dispatch = useAppDispatch();
 
     console.log('data', options);
@@ -35,7 +39,7 @@ export default function PoolSelector({ options }: { options: any }) {
                             <option value="Select a pool" disabled>
                                 Select a pool
                             </option>
-                            {options.map((option: any) => (
+                            {options.map((option: Option) => (
                                 <option value={option.id} key={option.id}>
                                     {option.name}
                                 </option>

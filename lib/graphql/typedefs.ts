@@ -5,15 +5,16 @@ const typeDefs = gql`
         hello: String!
         user(id: ID!): User!
         login(input: LoginCredentials!): LoginResponse!
-        # working on this now.. convert total treasury to CAD
         overview(input: String!): OverviewResponse!
-        # working on this as well..
         options(input: String!): OptionsResponse!
     }
 
     type Mutation {
-        signup(input: SignUpCredentials!): AuthResponse!
+        signup(input: SignUpCredentials!): BasicResponse!
+        # Working on this now
+        updatePoolData(input: String!): BasicResponse!
     }
+
     type User {
         id: String!
         username: String!
@@ -52,7 +53,7 @@ const typeDefs = gql`
         totalTreasury: Float!
     }
 
-    type AuthResponse {
+    type BasicResponse {
         status: Int!
         errors: [String]
     }

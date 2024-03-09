@@ -1,14 +1,4 @@
 import { Badge } from './UI/badge';
-import { testUser } from '@/test/testdata';
-
-type OverviewResponse = {
-    status: number;
-    errors: string[];
-    overview: OverviewData;
-};
-
-// deal with this in your code, what object are you sending here and make it consistent with you pool selector. Either you just
-// send the datat for the component or the entire object with status and error. I say just the data you need in the component. 
 
 type OverviewData = {
     activePools: number;

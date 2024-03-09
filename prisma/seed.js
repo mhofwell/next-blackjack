@@ -182,7 +182,7 @@ async function main() {
                 league: 'PL',
                 fee: 15,
                 gameweek: 29,
-                treasury: 165.01,
+                treasury: 165.00,
                 currency: 'CAD',
             },
             {
@@ -192,7 +192,7 @@ async function main() {
                 league: 'PL',
                 fee: 15,
                 gameweek: 29,
-                treasury: 195.01,
+                treasury: 195.00,
                 currency: 'GBP',
             },
         ],

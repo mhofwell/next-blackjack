@@ -119,7 +119,6 @@ const Query = {
     overview: async (_parent: any, args: any, context: any) => {
         const id = args.input;
         const { prisma } = context;
-        console.log(id);
 
         let response: OverviewResponse = {
             status: 0,
@@ -141,7 +140,6 @@ const Query = {
                     },
                 },
             });
-            console.log('active', activePools);
 
             // get the latest gameweek from EPL API
             const res = await fetch(
@@ -149,7 +147,7 @@ const Query = {
             );
 
             const data = await res.json();
-            const gameweek = data[0].event;
+            const gameweek = data[0].event - 1;
 
             // get active players
             const activeEntries = await prisma.entry.count({
@@ -194,8 +192,6 @@ const Query = {
                     totalTreasury: totalTreasury._sum.treasury,
                 },
             };
-            console.log('response', response);
-
             return response;
         } catch (error: any) {
             console.error(error);

@@ -14,15 +14,14 @@ export default async function PoolFrame() {
     const id = testUser;
 
     // Server action here to get the data for the PoolSelector.
-    const overviewData = await getSelectorOptions(id);
-    const options = overviewData.options;
+    const optionsData = await getSelectorOptions(id);
 
     return (
         <div>
             <div>
                 <h1 className="text-2xl font-semibold">Pool Manager</h1>
                 {/* Pass in PoolSelector options. */}
-                <PoolSelector options={options} />
+                <PoolSelector options={optionsData.options} />
             </div>
 
             <div className="pt-5 w-full">

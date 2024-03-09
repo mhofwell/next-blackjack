@@ -32,7 +32,7 @@ model Pool {
   name      String
   season    Int
   league    League
-  gameweek  Int
+  // removed gameweek
   fee       Float
   treasury  Float
   currency  Currency
