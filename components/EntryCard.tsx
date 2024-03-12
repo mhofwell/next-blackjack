@@ -5,6 +5,7 @@ import { Badge } from './UI/badge';
 import PlayerTable from './PlayerTable';
 import { useAppSelector } from '@/lib/store/hooks';
 import { useState, useEffect } from 'react';
+import { getInitials } from '@/lib/tools/getInitials';
 
 let data = {
     id: '',
@@ -37,13 +38,8 @@ export default function EntryCard() {
     useEffect(() => {
         // use the playerId to call a server action to get the entry data
         console.log('entry', entryId);
-        // this is where we can get the entry variable from
 
         // set the initials to the first two letters of the username
-        function getInitials(username: string) {
-            return username.substring(0, 2).toLowerCase();
-        }
-
         initials = getInitials(data.username);
 
         data = {

@@ -1,3 +1,5 @@
+import { sortEntries } from '@/lib/tools/sortEntries';
+
 type LoginResponse = {
     status: number;
     user: User;
@@ -56,6 +58,25 @@ type Entry = {
         id: string;
         username: string;
     };
+};
+
+type PoolBannerResponse = {
+    status: number;
+    errors: string[];
+    bannerData: PoolBannerData;
+};
+
+type PoolBannerData = {
+    id: string;
+    name: string;
+    treasury: number;
+    fee: number;
+    total: number;
+    active: number;
+    inactive: number;
+    bust: number;
+    eliminated: number;
+    gameweek: number;
 };
 
 const Query = {
@@ -293,7 +314,7 @@ const Query = {
                     id: true,
                     net_goals: true,
                     status: true,
-                    paid: true, 
+                    paid: true,
                     user: {
                         select: {
                             id: true,
@@ -307,10 +328,101 @@ const Query = {
                 return response; // early return for no entries found
             }
 
+            const sortedArray = sortEntries(entries);
+
             response.status = 200;
-            response.entries = entries;
+            response.entries = sortedArray;
             await prisma.$disconnect();
             console.log(response);
+            return response;
+        } catch (error: any) {
+            await prisma.$disconnect();
+            response.status = 400;
+            response.errors = [error.message];
+            return response;
+        }
+    },
+    poolBannerData: async (_parent: any, args: any, context: any) => {
+        // get the banner data for a pool
+        const { prisma } = context;
+        const id = args.input;
+
+        let response: PoolBannerResponse = {
+            status: 0,
+            errors: [],
+            bannerData: {
+                id: '',
+                name: '',
+                treasury: 0,
+                fee: 0,
+                total: 0,
+                active: 0,
+                inactive: 0,
+                bust: 0,
+                eliminated: 0,
+                gameweek: 0,
+            },
+        };
+
+        try {
+            const bannerData = await prisma.pool.findFirst({
+                where: {
+                    id,
+                },
+                select: {
+                    id: true,
+                    name: true,
+                    treasury: true,
+                    fee: true,
+                    entries: {
+                        select: {
+                            id: true,
+                            status: true,
+                        },
+                    },
+                    gameweek: true,
+                },
+            });
+
+            // iterate through the banner data and count active, inactive, bust, and eliminated entries
+            let active = 0;
+            let inactive = 0;
+            let bust = 0;
+            let eliminated = 0;
+
+            bannerData.entries.forEach((entry: Entry) => {
+                if (entry.status === 'ACTIVE') {
+                    active++;
+                } else if (entry.status === 'INACTIVE') {
+                    inactive++;
+                } else if (entry.status === 'BUST') {
+                    bust++;
+                } else if (entry.status === 'ELIMINATED') {
+                    eliminated++;
+                }
+            });
+
+            console.log('active', active);
+            console.log('inactive', inactive);
+            console.log('bust', bust);
+            console.log('eliminated', eliminated);
+            console.log('fee', bannerData.fee);
+
+            response.bannerData = {
+                id: bannerData.id,
+                name: bannerData.name,
+                treasury: bannerData.treasury,
+                fee: bannerData.fee,
+                total: bannerData.entries.length,
+                active: active,
+                inactive: inactive,
+                bust: bust,
+                eliminated: eliminated,
+                gameweek: bannerData.gameweek,
+            };
+
+            response.status = 200;
+            await prisma.$disconnect();
             return response;
         } catch (error: any) {
             await prisma.$disconnect();

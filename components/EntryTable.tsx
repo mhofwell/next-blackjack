@@ -11,8 +11,8 @@ import { Badge } from './UI/badge';
 import { Avatar } from './UI/avatar';
 import { useAppSelector } from '@/lib/store/hooks';
 import { useState, useEffect } from 'react';
-import { users } from '@/test/testdata';
 import { getPoolEntries } from '@/lib/actions/getPoolEntries';
+import { getInitials } from '@/lib/tools/getInitials';
 
 type AllEntriesUser = {
     id: string;
@@ -27,11 +27,15 @@ type Entry = {
     user: AllEntriesUser;
 };
 
-async function fetchEntries(poolId: string, setEntries: any, e: Entry[] = []) {
+async function fetchEntries(
+    poolId: string,
+    setEntries: any,
+    entryData: Entry[] = []
+) {
     const response = await getPoolEntries(poolId);
-    console.log('sdfaszfdsafass', response.entries);
-    e = response.entries;
-    setEntries(e);
+    entryData = response.entries;
+
+    setEntries(entryData);
 }
 
 export default function EntryTable() {
@@ -40,7 +44,7 @@ export default function EntryTable() {
         {
             id: '',
             net_goals: 0,
-            status: '',
+            status: 'INACTIVE',
             paid: '',
             user: {
                 id: '',
@@ -53,7 +57,6 @@ export default function EntryTable() {
         if (poolState.active === '') {
             return;
         }
-        console.log('Active Pool', poolState.active);
         let newEntries: Entry[] = [];
 
         fetchEntries(poolState.active, setEntries, newEntries);
@@ -66,7 +69,7 @@ export default function EntryTable() {
                     <TableHeader>Rank</TableHeader>
                     <TableHeader>Avatar</TableHeader>
                     <TableHeader>Username</TableHeader>
-                    <TableHeader>Score</TableHeader>
+                    <TableHeader>Net Goals</TableHeader>
                     <TableHeader>Status</TableHeader>
                 </TableRow>
             </TableHead>
@@ -76,7 +79,7 @@ export default function EntryTable() {
                         <TableCell>1</TableCell>
                         <TableCell>
                             <Avatar
-                                initials={'AA'}
+                                initials={getInitials(entry.user.username)}
                                 className="size-6"
                                 // src={entry.avatar}
                                 alt={entry.user.username}

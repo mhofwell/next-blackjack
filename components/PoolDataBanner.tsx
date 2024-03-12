@@ -1,29 +1,51 @@
 'use client';
-import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
+import { useAppSelector } from '@/lib/store/hooks';
 import { useState, useEffect } from 'react';
+import { getPoolBannerData } from '@/lib/actions/getPoolBannerData';
 
-const data = {
-    id: '1',
-    name: 'Pool 1',
-    entryFee: 15,
-    treasury: 300.21,
-    active: 8,
-    bust: 3,
-    inactive: 3,
-    eliminated: 8,
-    totalPlayers: 11,
-    gameweek: 29,
+type PoolBannerData = {
+    id: string;
+    name: string;
+    entryFee: number;
+    treasury: number;
+    fee: number;
+    active: number;
+    bust: number;
+    inactive: number;
+    eliminated: number;
+    total: number;
+    gameweek: number;
 };
 
+const emptyState = {
+    id: '',
+    name: '',
+    entryFee: 0,
+    treasury: 0,
+    fee: 0,
+    active: 0,
+    bust: 0,
+    inactive: 0,
+    eliminated: 0,
+    total: 0,
+    gameweek: 0,
+};
+
+async function fetchPoolBannerData(poolId: string, setPool: any) {
+    console.log('aaa');
+    const response = await getPoolBannerData(poolId);
+    setPool(response.bannerData);
+}
+
 export default function PoolBanner() {
-    const poolId = useAppSelector((state) => state.poolReducer.data.active);
+    const poolState = useAppSelector((state) => state.poolReducer.data);
 
-    const [pool, setPool] = useState(data);
+    const [pool, setPool] = useState<PoolBannerData>(emptyState);
 
-    const stats = [
+    let stats = [
         { name: 'Gameweek ', value: pool.gameweek, unit: 'OK' },
-        { name: 'Total Entries', value: pool.totalPlayers },
-        { name: 'Entry Fee', value: `$${pool.entryFee}`, unit: 'CAD' },
+        { name: 'Total Entries', value: pool.total },
+        { name: 'Entry Fee', value: `$${pool.fee}`, unit: 'CAD' },
         { name: 'Treasury', value: `$${pool.treasury}`, unit: 'CAD' },
         { name: 'Active', value: pool.active },
         { name: 'Bust', value: pool.bust },
@@ -32,11 +54,17 @@ export default function PoolBanner() {
     ];
 
     useEffect(() => {
+        if (poolState.active === '') {
+            return;
+        }
         // use the poolId to call a server action to get the pool data
-        console.log('PoolDataBanner Waiting', poolId);
+        console.log('Active Pool', poolState.active);
+
+        // create the API route to get this data
+        fetchPoolBannerData(poolState.active, setPool);
 
         // set the pool to the data returned from the server
-    }, [poolId]);
+    }, [poolState]);
 
     return (
         <div className="bg-gray-900 py-5 border border-gray-800 rounded-xl">

@@ -30,8 +30,6 @@ export async function getPoolEntries(id: string) {
         input: id,
     };
 
-    console.log('test');
-
     const { data } = await getClient().query({
         query,
         variables,

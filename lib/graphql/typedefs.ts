@@ -8,6 +8,7 @@ const typeDefs = gql`
         overview(input: String!): OverviewResponse!
         options(input: String!): OptionsResponse!
         poolEntries(input: String!): EntryResponse!
+        poolBannerData(input: String!): PoolBannerResponse!
     }
 
     type Mutation {
@@ -23,7 +24,7 @@ const typeDefs = gql`
         team: Team
     }
 
-    type AllEntriesUser { 
+    type AllEntriesUser {
         id: String!
         username: String!
     }
@@ -34,7 +35,7 @@ const typeDefs = gql`
         entries: [Entry]
     }
 
-    type Entry { 
+    type Entry {
         id: String!
         net_goals: Int!
         status: String!
@@ -45,6 +46,25 @@ const typeDefs = gql`
     type Team {
         id: Int!
         name: String!
+    }
+
+    type PoolBannerResponse {
+        status: Int!
+        errors: [String]
+        bannerData: PoolBannerData
+    }
+
+    type PoolBannerData {
+        id: String!
+        name: String!
+        treasury: Float!
+        fee: Float!
+        total: Int!
+        active: Int!
+        inactive: Int!
+        bust: Int!
+        eliminated: Int!
+        gameweek: Int!
     }
 
     type OptionsResponse {

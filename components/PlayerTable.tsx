@@ -39,10 +39,6 @@ export default function PlayerTable({ players }: { players: Player[] }) {
 
     totals = getTotals();
 
-    // useEffect(() => {
-    //     totals = getTotals();
-    // }, [players]);
-
     return (
         <Table dense className="mx-auto">
             <TableHead>
