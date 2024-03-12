@@ -60,8 +60,6 @@ export default function Navigation() {
         logout();
     }
 
-    useEffect(() => {});
-
     return (
         <div className="min-h-full">
             <div className="bg-gray-800 pb-32">

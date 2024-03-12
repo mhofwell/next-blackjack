@@ -7,11 +7,11 @@ const typeDefs = gql`
         login(input: LoginCredentials!): LoginResponse!
         overview(input: String!): OverviewResponse!
         options(input: String!): OptionsResponse!
+        poolEntries(input: String!): EntryResponse!
     }
 
     type Mutation {
         signup(input: SignUpCredentials!): BasicResponse!
-        # Working on this now
         updatePoolData(input: String!): BasicResponse!
     }
 
@@ -21,6 +21,25 @@ const typeDefs = gql`
         email: String!
         avatar: String
         team: Team
+    }
+
+    type AllEntriesUser { 
+        id: String!
+        username: String!
+    }
+
+    type EntryResponse {
+        status: Int!
+        errors: [String]
+        entries: [Entry]
+    }
+
+    type Entry { 
+        id: String!
+        net_goals: Int!
+        status: String!
+        paid: String!
+        user: AllEntriesUser
     }
 
     type Team {

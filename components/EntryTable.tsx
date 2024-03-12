@@ -11,18 +11,53 @@ import { Badge } from './UI/badge';
 import { Avatar } from './UI/avatar';
 import { useAppSelector } from '@/lib/store/hooks';
 import { useState, useEffect } from 'react';
-
 import { users } from '@/test/testdata';
+import { getPoolEntries } from '@/lib/actions/getPoolEntries';
 
-export default function PlayerTable() {
-    const poolId = useAppSelector((state) => state.poolReducer.data.active);
-    const [players, setPlayers] = useState(users);
+type AllEntriesUser = {
+    id: string;
+    username: string;
+};
+
+type Entry = {
+    id: string;
+    net_goals: number;
+    status: string;
+    paid: string;
+    user: AllEntriesUser;
+};
+
+async function fetchEntries(poolId: string, setEntries: any, e: Entry[] = []) {
+    const response = await getPoolEntries(poolId);
+    console.log('sdfaszfdsafass', response.entries);
+    e = response.entries;
+    setEntries(e);
+}
+
+export default function EntryTable() {
+    const poolState = useAppSelector((state) => state.poolReducer.data);
+    let [entries, setEntries] = useState<Entry[]>([
+        {
+            id: '',
+            net_goals: 0,
+            status: '',
+            paid: '',
+            user: {
+                id: '',
+                username: '',
+            },
+        },
+    ]);
 
     useEffect(() => {
-        // use the poolId to call a server action to get the player entry data for this pool
-        console.log('PlayerList', poolId);
-        // setPlayers to the data returned from the server
-    }, []);
+        if (poolState.active === '') {
+            return;
+        }
+        console.log('Active Pool', poolState.active);
+        let newEntries: Entry[] = [];
+
+        fetchEntries(poolState.active, setEntries, newEntries);
+    }, [poolState.active]);
 
     return (
         <Table>
@@ -36,34 +71,34 @@ export default function PlayerTable() {
                 </TableRow>
             </TableHead>
             <TableBody>
-                {players.map((player) => (
-                    <TableRow key={player.id} href={'#'}>
+                {entries.map((entry) => (
+                    <TableRow key={entry.id} href={'#'}>
                         <TableCell>1</TableCell>
                         <TableCell>
                             <Avatar
                                 initials={'AA'}
                                 className="size-6"
-                                // src={player.avatar}
-                                alt={player.username}
+                                // src={entry.avatar}
+                                alt={entry.user.username}
                             />
                         </TableCell>
                         <TableCell className="font-sm">
-                            {player.username}
+                            {entry.user.username}
                         </TableCell>
-                        <TableCell>{player.net_goals}</TableCell>
+                        <TableCell>{entry.net_goals}</TableCell>
                         <TableCell className="text-zinc-500">
                             <Badge
                                 color={
-                                    player.status === 'ACTIVE'
+                                    entry.status === 'ACTIVE'
                                         ? 'lime'
-                                        : player.status === 'BUST'
+                                        : entry.status === 'BUST'
                                         ? 'amber'
-                                        : player.status === 'INACTIVE'
+                                        : entry.status === 'INACTIVE'
                                         ? 'zinc'
                                         : 'red'
                                 }
                             >
-                                {player.status}
+                                {entry.status}
                             </Badge>
                         </TableCell>
                     </TableRow>

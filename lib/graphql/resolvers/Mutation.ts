@@ -1,4 +1,3 @@
-import { pool } from '@/lib/store/slices/pool-slice';
 import { hashPassword } from '@/lib/tools/password';
 import { validateSignUpInput } from '@/lib/validator/validate';
 import { ZodIssue } from 'zod';
@@ -21,6 +20,26 @@ type UserCreationData = {
     username: string;
     email: string;
     hashedPassword: string;
+};
+
+type Player = {
+    id: number;
+};
+
+type Pool = {
+    id: string;
+    name: string;
+    entries: Entry[];
+};
+
+type Entry = {
+    id: number;
+    goals: number;
+    own_goals: number;
+    net_goals: number;
+    players: Player[];
+    status: string;
+    paid: string;
 };
 
 const Mutation = {
@@ -105,6 +124,7 @@ const Mutation = {
             return response;
         } catch (error: any) {
             // unsuccessful response with error message
+            await prisma.$disconnect();
             response.status = 400;
             response.errors = [error.message];
 
@@ -115,13 +135,10 @@ const Mutation = {
         const id = args.input;
         const { prisma } = context;
 
-        console.log('id', id);
-
         let response: BasicResponse = {
             status: 0,
             errors: [],
         };
-
         try {
             // Get all of the pools belonging to the user
             let pools = await prisma.pool.findMany({
@@ -134,6 +151,11 @@ const Mutation = {
                     entries: {
                         select: {
                             id: true,
+                            status: true,
+                            paid: true,
+                            goals: true,
+                            own_goals: true,
+                            net_goals: true,
                             players: {
                                 select: {
                                     id: true,
@@ -158,27 +180,19 @@ const Mutation = {
             // for each pool, calculate G, NG, OG, and set status then save to the database.
             const eplData = await epl.json();
 
-            // create types here for player and Pool! and Entry!
-            //
-            //
-            //
-            //
-            //
-            
-            pools.forEach((pool) => {
+            pools.forEach((pool: Pool) => {
                 // for each entry
-                pool.entries.forEach((entry) => {
+                pool.entries.forEach((entry: Entry) => {
                     let G = 0;
                     let OG = 0;
                     let count = 0;
                     let didAll4Score = false;
                     // get the players
-                    entry.players.forEach((player) => {
+                    entry.players.forEach((player: Player) => {
                         const playerData = eplData.elements.find(
                             (element: { id: number }) =>
                                 element.id === player.id
                         );
-
                         // sum the goal stats for this pool
                         if (playerData) {
                             if (playerData.goals_scored > 0) {
@@ -194,36 +208,62 @@ const Mutation = {
                         : (didAll4Score = false);
 
                     const NG = G - OG;
-                    // set status for this entry
 
+                    // set goals for the entry
+                    entry.goals = G;
+                    entry.own_goals = OG;
+                    entry.net_goals = NG;
+
+                    // set paid for the entry
+
+                    entry.paid = 'YES'
+
+                    // set status for this entry
                     if (didAll4Score && NG <= 21) {
-                        entry.state = 'ACTIVE';
+                        entry.status = 'ACTIVE';
                     } else if (!didAll4Score) {
-                        entry.state = 'INACTIVE';
+                        entry.status = 'INACTIVE';
                     } else if (NG > 21) {
-                        entry.state = 'BUST';
+                        entry.status = 'BUST';
                     } else {
                         // Eliminated = can't automate this yet. Need to add a way to eliminate entries.
-                        entry.state = 'ELIMINATED';
+                        entry.status = 'ELIMINATED';
                     }
-
-                    entry.paid = 'YES';
-                    console.log(entry.id);
-                    console.log('G', G);
-                    console.log('OG', OG);
-                    console.log('NG', NG);
-                    console.log('didAll4Score', didAll4Score);
-                    console.log('state', entry.state);
-                    console.log('paid', entry.paid);
                 });
-                // save pool to database
             });
 
+            // loop over entries in each pool and save them to the database
+            for (let i = 0; i < pools.length; i++) {
+                for (let j = 0; j < pools[i].entries.length; j++) {
+                    const updated = await prisma.entry.update({
+                        where: {
+                            id: pools[i].entries[j].id,
+                        },
+                        data: {
+                            status: pools[i].entries[j].status,
+                            paid: pools[i].entries[j].paid,
+                            goals: pools[i].entries[j].goals,
+                            own_goals: pools[i].entries[j].own_goals,
+                            net_goals: pools[i].entries[j].net_goals,
+                        },
+                        select: {
+                            id: true,
+                            status: true,
+                        },
+                    });
+                    console.log(updated);
+                }
+            }
+
+            // success response
             response.status = 200;
 
             await prisma.$disconnect();
+
             return response;
         } catch (error: any) {
+            // error response
+            await prisma.$disconnect();
             response.status = 400;
             response.errors = [error.message];
 

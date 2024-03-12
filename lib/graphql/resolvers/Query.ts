@@ -42,10 +42,25 @@ type PoolOptions = {
     name: string[];
 };
 
+type EntryResponse = {
+    status: number;
+    errors: string[];
+    entries: Entry[];
+};
+
+type Entry = {
+    id: string;
+    net_goals: number;
+    status: string;
+    user: {
+        id: string;
+        username: string;
+    };
+};
+
 const Query = {
     hello: async (_parent: any, _args: any, contextValue: any) => {
         const { greeting } = contextValue;
-
         try {
             return greeting;
         } catch (error) {
@@ -99,17 +114,23 @@ const Query = {
                 throw new Error('No user found');
             }
 
-            response.status = 200;
-            response.user.id = user.id;
-            response.user.username = user.username;
-            response.user.avatar = user.avatar;
-            response.user.email = user.email;
-            response.user.team = user.team;
+            response = {
+                status: 200,
+                user: {
+                    id: user.id,
+                    username: user.username,
+                    avatar: user.avatar,
+                    email: user.email,
+                    team: user.team,
+                },
+                errors: [],
+            };
 
             return response;
 
             // catch any errors
         } catch (error: any) {
+            await prisma.$disconnect();
             response.status = 400;
             response.errors = [error.message];
 
@@ -192,9 +213,10 @@ const Query = {
                     totalTreasury: totalTreasury._sum.treasury,
                 },
             };
+
             return response;
         } catch (error: any) {
-            console.error(error);
+            await prisma.$disconnect();
             response.errors = [error.message];
             response.status = 400;
             return response;
@@ -228,9 +250,70 @@ const Query = {
 
             response.status = 200;
             response.options = poolData;
+            await prisma.$disconnect();
 
             return response;
         } catch (error: any) {
+            await prisma.$disconnect();
+            response.status = 400;
+            response.errors = [error.message];
+            return response;
+        }
+    },
+    poolEntries: async (_parent: any, args: any, context: any) => {
+        // get all the entries for a poolID
+        const { prisma } = context;
+        const id = args.input;
+
+        console.log('id', id);
+
+        let response: EntryResponse = {
+            status: 0,
+            errors: [],
+            entries: [
+                {
+                    id: '',
+                    net_goals: 0,
+                    status: '',
+                    user: {
+                        id: '',
+                        username: '',
+                    },
+                },
+            ],
+        };
+        try {
+            const entries = await prisma.entry.findMany({
+                where: {
+                    pool: {
+                        id,
+                    },
+                },
+                select: {
+                    id: true,
+                    net_goals: true,
+                    status: true,
+                    paid: true, 
+                    user: {
+                        select: {
+                            id: true,
+                            username: true,
+                        },
+                    },
+                },
+            });
+
+            if (entries.length === 0) {
+                return response; // early return for no entries found
+            }
+
+            response.status = 200;
+            response.entries = entries;
+            await prisma.$disconnect();
+            console.log(response);
+            return response;
+        } catch (error: any) {
+            await prisma.$disconnect();
             response.status = 400;
             response.errors = [error.message];
             return response;
