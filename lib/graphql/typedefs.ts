@@ -9,6 +9,7 @@ const typeDefs = gql`
         options(input: String!): OptionsResponse!
         poolEntries(input: String!): EntryResponse!
         poolBannerData(input: String!): PoolBannerResponse!
+        userEntry(input: String!): UserEntryResponse!
     }
 
     type Mutation {
@@ -32,15 +33,38 @@ const typeDefs = gql`
     type EntryResponse {
         status: Int!
         errors: [String]
-        entries: [Entry]
+        entries: [ListEntry]
     }
 
-    type Entry {
+    type ListEntry {
         id: String!
         net_goals: Int!
         status: String!
         paid: String!
         user: AllEntriesUser
+    }
+
+    type UserEntryResponse {
+        status: Int!
+        errors: [String]
+        entry: CardEntry
+    }
+
+    type CardEntry {
+        id: String!
+        user: User!
+        status: String!
+        paid: String!
+        players: [Player]
+    }
+
+    type Player {
+        id: Int!
+        fn: String!
+        ln: String!
+        goals: Int!
+        own_goals: Int!
+        net_goals: Int!
     }
 
     type Team {

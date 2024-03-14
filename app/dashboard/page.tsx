@@ -7,9 +7,12 @@ import { testUser } from '@/test/testdata';
 import { getOverviewData } from '@/lib/actions/getOverviewData';
 import { getClient } from '@/lib/apollo/client';
 import gql from 'graphql-tag';
+
 export const metadata: Metadata = {
     title: 'Dasbhoard',
 };
+
+export const dynamic = 'force-dynamic';
 
 async function updatePoolData(id: string) {
     const mutation = gql`
@@ -28,9 +31,8 @@ async function updatePoolData(id: string) {
     const updateStatus = await getClient().mutate({
         mutation,
         variables,
+        fetchPolicy: 'no-cache', // this is important to get the latest data
     });
-
-    console.log('status', updateStatus.data.updatePoolData.status);
 }
 
 export default async function Dashboard() {
@@ -38,8 +40,10 @@ export default async function Dashboard() {
     // const id = session.cuid;
     const id = testUser;
 
-    // server action to set status and G, OG, NG for each entry. Save to DB. or Save to component/Redux state.
-    await updatePoolData(id);
+    // server action to set status and G, OG, NG for each entry. Save to DB. or Save to component/Redux state. Maybe we should move this into the banner
+    // it can create a loading state for the overview, and it won't take that long to load all-up.  
+    // that is not the right result for someone who has 125 pools with average 50 people each. That won't work. 
+    updatePoolData(id);
 
     // server action to get the data for the PoolSelector.
     const overviewData = await getOverviewData(id);

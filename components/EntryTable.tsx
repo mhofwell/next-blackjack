@@ -9,10 +9,12 @@ import {
 } from './UI/table';
 import { Badge } from './UI/badge';
 import { Avatar } from './UI/avatar';
-import { useAppSelector } from '@/lib/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
 import { useState, useEffect } from 'react';
 import { getPoolEntries } from '@/lib/actions/getPoolEntries';
 import { getInitials } from '@/lib/tools/getInitials';
+import Spinner from './UI/spinner';
+import { setActiveEntry } from '@/lib/store/slices/entry-slice';
 
 type AllEntriesUser = {
     id: string;
@@ -27,19 +29,10 @@ type Entry = {
     user: AllEntriesUser;
 };
 
-async function fetchEntries(
-    poolId: string,
-    setEntries: any,
-    entryData: Entry[] = []
-) {
-    const response = await getPoolEntries(poolId);
-    entryData = response.entries;
-
-    setEntries(entryData);
-}
-
 export default function EntryTable() {
     const poolState = useAppSelector((state) => state.poolReducer.data);
+    const dispatch = useAppDispatch();
+    const [loading, setLoading] = useState(false);
     let [entries, setEntries] = useState<Entry[]>([
         {
             id: '',
@@ -53,16 +46,36 @@ export default function EntryTable() {
         },
     ]);
 
+    async function fetchEntries(poolId: string) {
+        setLoading(true);
+        const response = await getPoolEntries(poolId);
+
+        setEntries(response.entries);
+        setLoading(false);
+    }
+
+    async function handleEntryClick(
+        event: React.MouseEvent<HTMLTableRowElement>
+    ) {
+        const payload: string = event.currentTarget.id;
+        dispatch(setActiveEntry(payload));
+    }
+
     useEffect(() => {
+        // early return for inactive pool state
         if (poolState.active === '') {
             return;
         }
-        let newEntries: Entry[] = [];
 
-        fetchEntries(poolState.active, setEntries, newEntries);
+        // get the pool data
+        fetchEntries(poolState.active);
     }, [poolState.active]);
 
-    return (
+    return loading ? (
+        <div className="flex items-center justify-center min-h-[600px]">
+            <Spinner />
+        </div>
+    ) : (
         <Table>
             <TableHead>
                 <TableRow>
@@ -75,7 +88,12 @@ export default function EntryTable() {
             </TableHead>
             <TableBody>
                 {entries.map((entry) => (
-                    <TableRow key={entry.id} href={'#'}>
+                    <TableRow
+                        key={entry.id}
+                        onClick={handleEntryClick}
+                        id={entry.id}
+                        className="hover:bg-gray-800 cursor-pointer"
+                    >
                         <TableCell>1</TableCell>
                         <TableCell>
                             <Avatar

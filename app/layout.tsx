@@ -1,11 +1,9 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import StoreProvider from '@/lib/store/StoreProvider';
 import './globals.css';
 import { ApolloWrapper } from '@/lib/apollo/ApolloWrapper';
 
 export const dynamic = 'force-dynamic';
-const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
     title: 'Premiere League Blackjack',
@@ -21,7 +19,7 @@ export default function RootLayout({
         <html lang="en">
             <ApolloWrapper>
                 <StoreProvider>
-                    <body className={inter.className}>{children}</body>
+                    <body>{children}</body>
                 </StoreProvider>
             </ApolloWrapper>
         </html>

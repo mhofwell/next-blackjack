@@ -32,6 +32,5 @@ export async function getPoolBannerData(id: string) {
         variables,
     });
 
-    console.log('API response', data);
     return data.poolBannerData;
 }

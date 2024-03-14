@@ -84,8 +84,6 @@ export async function logUserIn(formData: LoginCredentials) {
             variables: formDataToSubmit,
         });
 
-        console.log('data', data);
-
         if (data.login.errors.length > 0) {
             console.log('Errors', data.login.errors);
             response.errors = [

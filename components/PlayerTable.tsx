@@ -8,7 +8,6 @@ import {
 } from './UI/table';
 
 import { Text } from './UI/text';
-// import { useEffect } from 'react';
 
 type Player = {
     id: string;
@@ -20,7 +19,6 @@ type Player = {
 };
 
 export default function PlayerTable({ players }: { players: Player[] }) {
-    // create function to RETURN totals for goals, ng, own goals here. and then add to the table
 
     let totals = {
         goals: 0,

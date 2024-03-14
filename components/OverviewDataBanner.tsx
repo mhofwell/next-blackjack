@@ -28,6 +28,11 @@ export default async function OverviewBanner({
         },
     ];
 
+    // use effect call here to update the data from the server. Loading state for banner until data is fetched. 
+    // You'd actually need to run both calls here. 
+
+
+    
     return (
         <div className="bg-gray-900">
             <div className="mx-auto max-w-7xl">

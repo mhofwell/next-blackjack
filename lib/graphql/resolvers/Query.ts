@@ -47,10 +47,37 @@ type PoolOptions = {
 type EntryResponse = {
     status: number;
     errors: string[];
-    entries: Entry[];
+    entries: ListEntry[];
 };
 
-type Entry = {
+type EntryCardResponse = {
+    status: number;
+    errors: string[];
+    entry: EntryCardData;
+};
+
+type EntryCardData = {
+    id: string;
+    paid: string;
+    status: string;
+    user: {
+        id: string;
+        username: string;
+        email: string;
+        avatar: string;
+        team: {
+            id: number;
+            name: string;
+        };
+    };
+    players: {
+        id: string;
+        fn: string;
+        ln: string;
+    };
+};
+
+type ListEntry = {
     id: string;
     net_goals: number;
     status: string;
@@ -219,7 +246,6 @@ const Query = {
             });
 
             // we have to reseed database to get float numbers in here with decimals.
-            console.log('tt', totalTreasury._sum.treasury);
 
             await prisma.$disconnect();
 
@@ -286,8 +312,6 @@ const Query = {
         const { prisma } = context;
         const id = args.input;
 
-        console.log('id', id);
-
         let response: EntryResponse = {
             status: 0,
             errors: [],
@@ -333,7 +357,6 @@ const Query = {
             response.status = 200;
             response.entries = sortedArray;
             await prisma.$disconnect();
-            console.log(response);
             return response;
         } catch (error: any) {
             await prisma.$disconnect();
@@ -390,7 +413,7 @@ const Query = {
             let bust = 0;
             let eliminated = 0;
 
-            bannerData.entries.forEach((entry: Entry) => {
+            bannerData.entries.forEach((entry: ListEntry) => {
                 if (entry.status === 'ACTIVE') {
                     active++;
                 } else if (entry.status === 'INACTIVE') {
@@ -401,12 +424,6 @@ const Query = {
                     eliminated++;
                 }
             });
-
-            console.log('active', active);
-            console.log('inactive', inactive);
-            console.log('bust', bust);
-            console.log('eliminated', eliminated);
-            console.log('fee', bannerData.fee);
 
             response.bannerData = {
                 id: bannerData.id,
@@ -422,6 +439,83 @@ const Query = {
             };
 
             response.status = 200;
+            await prisma.$disconnect();
+            return response;
+        } catch (error: any) {
+            await prisma.$disconnect();
+            response.status = 400;
+            response.errors = [error.message];
+            return response;
+        }
+    },
+    userEntry: async (_parent: any, args: any, context: any) => {
+        // get the entry for a user in a pool
+        const { prisma } = context;
+        const { input } = args;
+
+        console.log('input', input);
+
+        let response: EntryCardResponse = {
+            status: 0,
+            errors: [],
+            entry: {
+                id: '',
+                paid: '',
+                status: '',
+                user: {
+                    id: '',
+                    username: '',
+                    email: '',
+                    avatar: '',
+                    team: {
+                        id: 0,
+                        name: '',
+                    },
+                },
+                players: {
+                    id: '',
+                    fn: '',
+                    ln: '',
+                },
+            },
+        };
+
+        try {
+            const entry = await prisma.entry.findFirst({
+                where: {
+                    id: input,
+                },
+                select: {
+                    id: true,
+                    status: true,
+                    paid: true,
+                    user: {
+                        select: {
+                            id: true,
+                            username: true,
+                            email: true,
+                            avatar: true,
+                            team: {
+                                select: {
+                                    id: true,
+                                    name: true,
+                                },
+                            },
+                        },
+                    },
+                    players: {
+                        select: {
+                            id: true,
+                            fn: true,
+                            ln: true,
+                        },
+                    },
+                },
+            });
+
+            response.status = 200;
+            response.entry = entry;
+
             await prisma.$disconnect();
             return response;
         } catch (error: any) {

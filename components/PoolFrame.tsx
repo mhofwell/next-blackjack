@@ -33,7 +33,7 @@ export default async function PoolFrame() {
                     {/* listen for state change for activeEntryCard and query the database for info. */}
                     <PlayerCard />
                 </div>
-                <div className="w-1/2 mt-5 ml-5">
+                <div className="w-1/2 mt-5 ml-5 min-h-[600px]">
                     {/* client component handle Selector state change with redux */}
                     <AllEntriesList />
                 </div>

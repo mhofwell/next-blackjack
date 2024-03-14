@@ -2,6 +2,7 @@
 import { useAppSelector } from '@/lib/store/hooks';
 import { useState, useEffect } from 'react';
 import { getPoolBannerData } from '@/lib/actions/getPoolBannerData';
+import Spinner from './UI/spinner';
 
 type PoolBannerData = {
     id: string;
@@ -31,15 +32,9 @@ const emptyState = {
     gameweek: 0,
 };
 
-async function fetchPoolBannerData(poolId: string, setPool: any) {
-    console.log('aaa');
-    const response = await getPoolBannerData(poolId);
-    setPool(response.bannerData);
-}
-
 export default function PoolBanner() {
     const poolState = useAppSelector((state) => state.poolReducer.data);
-
+    const [loading, setLoading] = useState(false);
     const [pool, setPool] = useState<PoolBannerData>(emptyState);
 
     let stats = [
@@ -53,15 +48,24 @@ export default function PoolBanner() {
         { name: 'Eliminated', value: pool.eliminated },
     ];
 
+    async function fetchPoolBannerData(
+        poolId: string,
+        setPool: any,
+        setLoading: any
+    ) {
+        setLoading(true);
+        const response = await getPoolBannerData(poolId);
+        setPool(response.bannerData);
+        setLoading(false);
+    }
+
     useEffect(() => {
         if (poolState.active === '') {
             return;
         }
-        // use the poolId to call a server action to get the pool data
-        console.log('Active Pool', poolState.active);
 
         // create the API route to get this data
-        fetchPoolBannerData(poolState.active, setPool);
+        fetchPoolBannerData(poolState.active, setPool, setLoading);
 
         // set the pool to the data returned from the server
     }, [poolState]);
@@ -69,36 +73,43 @@ export default function PoolBanner() {
     return (
         <div className="bg-gray-900 py-5 border border-gray-800 rounded-xl">
             <div className="mx-auto max-w-7xl">
-                <div className="grid grid-cols-1 gap-px bg-white/5 sm:grid-cols-2 lg:grid-cols-4">
-                    {stats.map((stat) => (
-                        <div
-                            key={stat.name}
-                            className="bg-gray-900 px-4 py-2 sm:px-6 lg:px-8"
-                        >
-                            <p className="text-sm font-medium leading-6 text-gray-400">
-                                {stat.name}
-                            </p>
-                            <div className=" mt-2 flex gap-x-2">
-                                <p>
-                                    <span className="text-2xl font-semibold tracking-tight text-white">
-                                        {stat.value}
-                                    </span>
+                {loading ? (
+                    // Render a loading spinner or some other placeholder
+                    <div className="flex m-16 items-center justify-center ">
+                        <Spinner />
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 gap-px bg-white/5 sm:grid-cols-2 lg:grid-cols-4">
+                        {stats.map((stat) => (
+                            <div
+                                key={stat.name}
+                                className="bg-gray-900 px-4 py-2 sm:px-6 lg:px-8"
+                            >
+                                <p className="text-sm font-medium leading-6 text-gray-400">
+                                    {stat.name}
                                 </p>
-                                {stat.unit === 'OK' ? (
-                                    <div className="py-1">
-                                        {/* <Badge color="lime">Great!</Badge> */}
-                                    </div>
-                                ) : stat.unit ? (
-                                    <div className="py-2">
-                                        <span className="text-sm text-gray-400">
-                                            {stat.unit}
+                                <div className=" mt-2 flex gap-x-2">
+                                    <p>
+                                        <span className="text-2xl font-semibold tracking-tight text-white">
+                                            {stat.value}
                                         </span>
-                                    </div>
-                                ) : null}
+                                    </p>
+                                    {stat.unit === 'OK' ? (
+                                        <div className="py-1">
+                                            {/* <Badge color="lime">Great!</Badge> */}
+                                        </div>
+                                    ) : stat.unit ? (
+                                        <div className="py-2">
+                                            <span className="text-sm text-gray-400">
+                                                {stat.unit}
+                                            </span>
+                                        </div>
+                                    ) : null}
+                                </div>
                             </div>
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
+                )}
             </div>
         </div>
     );

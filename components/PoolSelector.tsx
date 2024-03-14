@@ -9,10 +9,9 @@ type Option = {
     id: string;
     name: string;
 };
+
 export default function PoolSelector({ options }: { options: Option[] }) {
     const dispatch = useAppDispatch();
-
-    console.log('data', options);
 
     async function handlePoolSelect(
         event: React.ChangeEvent<HTMLSelectElement>

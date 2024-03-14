@@ -4,6 +4,7 @@
     "private": true,
     "scripts": {
         "dev": "next dev",
+        "build": "next build",
         "start": "next start",
         "lint": "next lint"
     },
@@ -40,6 +41,7 @@
         "react-hook-form": "^7.50.1",
         "react-redux": "^9.1.0",
         "save-dev": "^0.0.1-security",
+        "sharp": "^0.33.2",
         "symbol-observable": "^4.0.0",
         "tailwind-merge": "^2.2.1",
         "tailwindcss-animate": "^1.0.7",

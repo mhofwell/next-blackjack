@@ -171,8 +171,6 @@ const Mutation = {
                 throw new Error('No pools found.');
             }
 
-            console.log(pools[0].entries[0].players);
-
             const epl = await fetch(
                 'https://fantasy.premierleague.com/api/bootstrap-static/'
             );
@@ -216,7 +214,7 @@ const Mutation = {
 
                     // set paid for the entry
 
-                    entry.paid = 'YES'
+                    entry.paid = 'YES';
 
                     // set status for this entry
                     if (didAll4Score && NG <= 21) {
@@ -232,10 +230,14 @@ const Mutation = {
                 });
             });
 
+            // for loop over the pools and save entries to the data base
+
+            let updatedPools: Pool[] = [];
+
             // loop over entries in each pool and save them to the database
             for (let i = 0; i < pools.length; i++) {
                 for (let j = 0; j < pools[i].entries.length; j++) {
-                    const updated = await prisma.entry.update({
+                    const entries = await prisma.entry.update({
                         where: {
                             id: pools[i].entries[j].id,
                         },
@@ -249,12 +251,14 @@ const Mutation = {
                         select: {
                             id: true,
                             status: true,
+                            paid: true,
+                            goals: true,
+                            own_goals: true,
+                            net_goals: true,
                         },
                     });
-                    console.log(updated);
                 }
             }
-
             // success response
             response.status = 200;
 

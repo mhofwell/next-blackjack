@@ -9,7 +9,6 @@ export default async function DashboardLayout({
     children: React.ReactNode;
 }) {
     const session = await getSession();
-    console.log(session);
 
     //  undo this once done with dashboard coding.
     // if (!session) {
