@@ -92,6 +92,10 @@ export default function ReactHookForm() {
                 <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight ">
                     Welcome Back to
                 </h2>
+                <div>
+                    {process.env.DATABASE_URL}
+                    {process.env.RAILWAY_PRIVATE_DOMAIN}
+                </div>
                 <h2 className="text-center text-2xl font-bold leading-9 tracking-tight ">
                     Premiere League Blackjack
                 </h2>
