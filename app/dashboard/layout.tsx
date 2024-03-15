@@ -3,6 +3,8 @@ import { getSession } from '@/lib/auth/utils';
 
 export const dynamic = 'force-dynamic';
 
+console.log(process.env.DATABASE_URL);
+
 export default async function DashboardLayout({
     children,
 }: {
