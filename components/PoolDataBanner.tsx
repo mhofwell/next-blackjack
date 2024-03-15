@@ -64,7 +64,7 @@ export default function PoolBanner() {
         fetchPoolBannerData(poolState.active);
 
         // set the pool to the data returned from the server
-    }, [poolState]);
+    }, [poolState.active]);
 
     return (
         <div className="bg-gray-900 py-5 border border-gray-800 rounded-xl">
