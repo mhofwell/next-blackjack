@@ -93,14 +93,8 @@ export default function ReactHookForm() {
                     alt="PL Blackjack Logo"
                 />
                 <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight ">
-                    Welcome Back to {process.env.DATABASE_URL}
-                    {abc}
-                    {process.env.RAILWAY_PRIVATE_DOMAIN}
+                    Welcome Back to
                 </h2>
-                <div>
-                    {process.env.DATABASE_URL}
-                    {process.env.RAILWAY_PRIVATE_DOMAIN}
-                </div>
                 <h2 className="text-center text-2xl font-bold leading-9 tracking-tight ">
                     Premiere League Blackjack
                 </h2>

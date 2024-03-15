@@ -5,7 +5,7 @@
     "scripts": {
         "dev": "next dev",
         "build": "sleep 3 && next build",
-        "start": "next start",
+        "start": "--port ${PORT-3000}",
         "lint": "next lint"
     },
     "prisma": {
