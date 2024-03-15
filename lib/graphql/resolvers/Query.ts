@@ -453,8 +453,6 @@ const Query = {
         const { prisma } = context;
         const { input } = args;
 
-        console.log('input', input);
-
         let response: EntryCardResponse = {
             status: 0,
             errors: [],

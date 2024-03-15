@@ -48,11 +48,7 @@ export default function PoolBanner() {
         { name: 'Eliminated', value: pool.eliminated },
     ];
 
-    async function fetchPoolBannerData(
-        poolId: string,
-        setPool: any,
-        setLoading: any
-    ) {
+    async function fetchPoolBannerData(poolId: string) {
         setLoading(true);
         const response = await getPoolBannerData(poolId);
         setPool(response.bannerData);
@@ -65,7 +61,7 @@ export default function PoolBanner() {
         }
 
         // create the API route to get this data
-        fetchPoolBannerData(poolState.active, setPool, setLoading);
+        fetchPoolBannerData(poolState.active);
 
         // set the pool to the data returned from the server
     }, [poolState]);
