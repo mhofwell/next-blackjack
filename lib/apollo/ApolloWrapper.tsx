@@ -8,13 +8,13 @@ import {
     NextSSRApolloClient,
     SSRMultipartLink,
 } from '@apollo/experimental-nextjs-app-support/ssr';
+import SERVER_URL from '@/config';
 
 // have a function to create a client for you
 function makeClient() {
     const httpLink = new HttpLink({
         // this needs to be an absolute url, as relative urls cannot be used in SSR
-        uri: `http://${process.env.RAILWAY_PRIVATE_DOMAIN}:${process.env.PORT}/api/graphql`,
-        // uri: `http://localhost:3000/api/graphql`,
+        uri: SERVER_URL,
         // you can disable result caching here if you want to
         // (this does not work if you are rendering your page with `export const dynamic = "force-static"`)
         fetchOptions: { cache: 'no-store' },
@@ -25,7 +25,6 @@ function makeClient() {
     });
 
     return new NextSSRApolloClient({
-        // use the `NextSSRInMemoryCache`, not the normal `InMemoryCache`
         cache: new NextSSRInMemoryCache(),
         link:
             typeof window === 'undefined'

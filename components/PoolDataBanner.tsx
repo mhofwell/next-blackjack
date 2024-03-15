@@ -3,56 +3,74 @@ import { useAppSelector } from '@/lib/store/hooks';
 import { useState, useEffect } from 'react';
 import { getPoolBannerData } from '@/lib/actions/getPoolBannerData';
 import Spinner from './UI/spinner';
+import { any } from 'zod';
+import { empty } from '@apollo/client';
 
-type PoolBannerData = {
-    id: string;
-    name: string;
-    entryFee: number;
-    treasury: number;
-    fee: number;
-    active: number;
-    bust: number;
-    inactive: number;
-    eliminated: number;
-    total: number;
-    gameweek: number;
-};
+// type PoolBannerData = {
+//     id: string;
+//     name: string;
+//     entryFee: number;
+//     treasury: number;
+//     fee: number;
+//     active: number;
+//     bust: number;
+//     inactive: number;
+//     eliminated: number;
+//     total: number;
+//     gameweek: number;
+// };
 
-const emptyState = {
-    id: '',
-    name: '',
-    entryFee: 0,
-    treasury: 0,
-    fee: 0,
-    active: 0,
-    bust: 0,
-    inactive: 0,
-    eliminated: 0,
-    total: 0,
-    gameweek: 0,
-};
+// const emptyState = {
+//     id: '',
+//     name: '',
+//     entryFee: 0,
+//     treasury: 0,
+//     fee: 0,
+//     active: 0,
+//     bust: 0,
+//     inactive: 0,
+//     eliminated: 0,
+//     total: 0,
+//     gameweek: 0,
+// };
+
+
 
 export default function PoolBanner() {
     const poolState = useAppSelector((state) => state.poolReducer.data);
     const [loading, setLoading] = useState(false);
-    const [pool, setPool] = useState<PoolBannerData>(emptyState);
-
-    let stats = [
-        { name: 'Gameweek ', value: pool.gameweek, unit: 'OK' },
-        { name: 'Total Entries', value: pool.total },
-        { name: 'Entry Fee', value: `$${pool.fee}`, unit: 'CAD' },
-        { name: 'Treasury', value: `$${pool.treasury}`, unit: 'CAD' },
-        { name: 'Active', value: pool.active },
-        { name: 'Bust', value: pool.bust },
-        { name: 'Inactive', value: pool.inactive },
-        { name: 'Eliminated', value: pool.eliminated },
+    // const [pool, setPool] = useState(emptyState);
+    
+    let emptyStats = [
+        { name: 'Gameweek ', value: 0, unit: 'OK' },
+        { name: 'Total Entries', value: 0 },
+        { name: 'Entry Fee', value: `$0`, unit: 'CAD' },
+        { name: 'Treasury', value: `$0`, unit: 'CAD' },
+        { name: 'Active', value: 0 },
+        { name: 'Bust', value: 0 },
+        { name: 'Inactive', value: 0 },
+        { name: 'Eliminated', value: 0 },
     ];
+    const [stats, setStats] = useState(emptyStats);
+    
+    
     console.log('stats', stats);
 
     async function fetchPoolBannerData(poolId: string) {
         setLoading(true);
         const response = await getPoolBannerData(poolId);
-        setPool(response.bannerData);
+        const newStats = [
+            { name: 'Gameweek ', value: response.bannerData.gameweek, unit: 'OK' },
+            { name: 'Total Entries', value: response.bannerData.total },
+            { name: 'Entry Fee', value: `$${response.bannerData.fee}`, unit: 'CAD' },
+            { name: 'Treasury', value: `$${response.bannerData.treasury}`, unit: 'CAD' },
+            { name: 'Active', value: response.bannerData.active },
+            { name: 'Bust', value: response.bannerData.bust },
+            { name: 'Inactive', value: response.bannerData.inactive },
+            { name: 'Eliminated', value: response.bannerData.eliminated },
+        ];
+        setStats(newStats)
+        // setPool(response.bannerData);
         setLoading(false);
     }
 
@@ -104,6 +122,7 @@ export default function PoolBanner() {
                                     ) : null}
                                 </div>
                             </div>
+                            
                         ))}
                     </div>
                 )}
