@@ -47,6 +47,7 @@ export default function PoolBanner() {
         { name: 'Inactive', value: pool.inactive },
         { name: 'Eliminated', value: pool.eliminated },
     ];
+    console.log('stats', stats);
 
     async function fetchPoolBannerData(poolId: string) {
         setLoading(true);
