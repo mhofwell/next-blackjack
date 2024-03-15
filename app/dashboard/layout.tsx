@@ -11,6 +11,7 @@ export default async function DashboardLayout({
     const session = await getSession();
 
     console.log('env', process.env.DATABASE_URL);
+    console.log('port', process.env.PORT);
     //  undo this once done with dashboard coding.
     // if (!session) {
     //     redirect('/login');
