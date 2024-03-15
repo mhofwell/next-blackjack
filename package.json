@@ -4,8 +4,8 @@
     "private": true,
     "scripts": {
         "dev": "next dev",
-        "build": "sleep 3 && next build",
-        "start": "prisma generate && next start",
+        "build": "sleep 3 && prisma generate && next build",
+        "start": "next start",
         "lint": "next lint"
     },
     "prisma": {
