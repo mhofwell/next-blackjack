@@ -198,6 +198,7 @@ async function main() {
     });
 
     console.log(pools);
+    
     // Entries of users attached to pools
 
     for (const user of users) {
