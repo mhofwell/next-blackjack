@@ -8,7 +8,7 @@ ARG DATABASE_URL
 
 WORKDIR /app
 
-COPY next.config.js package*.json ./
+COPY next.config.mjs package*.json ./
 
 RUN npm ci --omit=dev
 
