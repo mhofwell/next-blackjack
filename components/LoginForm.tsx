@@ -79,6 +79,8 @@ export default function ReactHookForm() {
         }
     }, [serverErrors, loading]);
 
+    const abc = process.env.DATABASE_URL;
+
     return (
         <div className=" flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 ">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -90,7 +92,9 @@ export default function ReactHookForm() {
                     alt="PL Blackjack Logo"
                 />
                 <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight ">
-                    Welcome Back to
+                    Welcome Back to {process.env.DATABASE_URL}
+                    {abc}
+                    {process.env.RAILWAY_PRIVATE_DOMAIN}
                 </h2>
                 <div>
                     {process.env.DATABASE_URL}
