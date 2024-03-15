@@ -8,13 +8,13 @@ ARG DATABASE_URL
 
 WORKDIR /app
 
-COPY next.config.mjs package*.json ./
+COPY next.config.mjs .env package*.json ./
 
 RUN npm ci --omit=dev
 
 COPY . .
 
-RUN npm run build
+RUN npx prisma generate && npm run build
 
 EXPOSE 3000
 
