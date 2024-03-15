@@ -160,7 +160,6 @@ async function main() {
         });
         console.log(newUser);
     }
-
     // Create pools attached to users.
 
     const teddyId = await prisma.user.findFirst({
