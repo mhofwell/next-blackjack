@@ -403,7 +403,6 @@ const Query = {
                             status: true,
                         },
                     },
-                    gameweek: true,
                 },
             });
 
@@ -425,6 +424,14 @@ const Query = {
                 }
             });
 
+            // get the latest gameweek from EPL API
+            const res = await fetch(
+                'https://fantasy.premierleague.com/api/fixtures?future=1'
+            );
+
+            const data = await res.json();
+            const gameweek = data[0].event - 1;
+
             response.bannerData = {
                 id: bannerData.id,
                 name: bannerData.name,
@@ -435,7 +442,7 @@ const Query = {
                 inactive: inactive,
                 bust: bust,
                 eliminated: eliminated,
-                gameweek: bannerData.gameweek,
+                gameweek: gameweek,
             };
 
             response.status = 200;

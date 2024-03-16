@@ -4,50 +4,35 @@ import { useState, useEffect } from 'react';
 import { getPoolBannerData } from '@/lib/actions/getPoolBannerData';
 import Spinner from './UI/spinner';
 
-// type PoolBannerData = {
-//     id: string;
-//     name: string;
-//     entryFee: number;
-//     treasury: number;
-//     fee: number;
-//     active: number;
-//     bust: number;
-//     inactive: number;
-//     eliminated: number;
-//     total: number;
-//     gameweek: number;
-// };
+type PoolBannerData = {
+    id: string;
+    name: string;
+    entryFee: number;
+    treasury: number;
+    fee: number;
+    active: number;
+    bust: number;
+    inactive: number;
+    eliminated: number;
+    total: number;
+    gameweek: number;
+};
 
-// const emptyState = {
-//     id: '',
-//     name: '',
-//     entryFee: 0,
-//     treasury: 0,
-//     fee: 0,
-//     active: 0,
-//     bust: 0,
-//     inactive: 0,
-//     eliminated: 0,
-//     total: 0,
-//     gameweek: 0,
-// };
+let emptyStats = [
+    { name: 'Gameweek ', value: 0, unit: 'OK' },
+    { name: 'Total Entries', value: 0 },
+    { name: 'Entry Fee', value: `$0`, unit: 'CAD' },
+    { name: 'Treasury', value: `$0`, unit: 'CAD' },
+    { name: 'Active', value: 0 },
+    { name: 'Bust', value: 0 },
+    { name: 'Inactive', value: 0 },
+    { name: 'Eliminated', value: 0 },
+];
 
 export default function PoolBanner() {
     const poolState = useAppSelector((state) => state.poolReducer.data);
     const [loading, setLoading] = useState(false);
-    // const [pool, setPool] = useState(emptyState);
-
-    let emptyStats = [
-        { name: 'Gameweek ', value: 0, unit: 'OK' },
-        { name: 'Total Entries', value: 0 },
-        { name: 'Entry Fee', value: `$0`, unit: 'CAD' },
-        { name: 'Treasury', value: `$0`, unit: 'CAD' },
-        { name: 'Active', value: 0 },
-        { name: 'Bust', value: 0 },
-        { name: 'Inactive', value: 0 },
-        { name: 'Eliminated', value: 0 },
-    ];
-    const [stats, setStats] = useState(emptyStats);
+    const [stats, setStats] = useState<any[]>(emptyStats);
 
     async function fetchPoolBannerData(poolId: string) {
         console.log('poolId', poolId);
