@@ -34,13 +34,11 @@ import { empty } from '@apollo/client';
 //     gameweek: 0,
 // };
 
-
-
 export default function PoolBanner() {
     const poolState = useAppSelector((state) => state.poolReducer.data);
     const [loading, setLoading] = useState(false);
     // const [pool, setPool] = useState(emptyState);
-    
+
     let emptyStats = [
         { name: 'Gameweek ', value: 0, unit: 'OK' },
         { name: 'Total Entries', value: 0 },
@@ -52,24 +50,34 @@ export default function PoolBanner() {
         { name: 'Eliminated', value: 0 },
     ];
     const [stats, setStats] = useState(emptyStats);
-    
-    
-    console.log('stats', stats);
 
     async function fetchPoolBannerData(poolId: string) {
         setLoading(true);
         const response = await getPoolBannerData(poolId);
         const newStats = [
-            { name: 'Gameweek ', value: response.bannerData.gameweek, unit: 'OK' },
+            {
+                name: 'Gameweek ',
+                value: response.bannerData.gameweek,
+                unit: 'OK',
+            },
             { name: 'Total Entries', value: response.bannerData.total },
-            { name: 'Entry Fee', value: `$${response.bannerData.fee}`, unit: 'CAD' },
-            { name: 'Treasury', value: `$${response.bannerData.treasury}`, unit: 'CAD' },
+            {
+                name: 'Entry Fee',
+                value: `$${response.bannerData.fee}`,
+                unit: 'CAD',
+            },
+            {
+                name: 'Treasury',
+                value: `$${response.bannerData.treasury}`,
+                unit: 'CAD',
+            },
             { name: 'Active', value: response.bannerData.active },
             { name: 'Bust', value: response.bannerData.bust },
             { name: 'Inactive', value: response.bannerData.inactive },
             { name: 'Eliminated', value: response.bannerData.eliminated },
         ];
-        setStats(newStats)
+        console.log('newStats', newStats);
+        setStats(newStats);
         // setPool(response.bannerData);
         setLoading(false);
     }
@@ -122,7 +130,6 @@ export default function PoolBanner() {
                                     ) : null}
                                 </div>
                             </div>
-                            
                         ))}
                     </div>
                 )}
