@@ -3,6 +3,9 @@ import { getClient } from '../apollo/client';
 import gql from 'graphql-tag';
 
 export async function getPoolBannerData(id: string) {
+    if (id === '') {
+        return;
+    }
     const query = gql`
         query PoolBannerData($input: String!) {
             poolBannerData(input: $input) {
@@ -31,6 +34,8 @@ export async function getPoolBannerData(id: string) {
         query,
         variables,
     });
+
+    console.log('data', data);
 
     return data.poolBannerData;
 }

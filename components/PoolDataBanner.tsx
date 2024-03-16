@@ -3,8 +3,6 @@ import { useAppSelector } from '@/lib/store/hooks';
 import { useState, useEffect } from 'react';
 import { getPoolBannerData } from '@/lib/actions/getPoolBannerData';
 import Spinner from './UI/spinner';
-import { any } from 'zod';
-import { empty } from '@apollo/client';
 
 // type PoolBannerData = {
 //     id: string;
