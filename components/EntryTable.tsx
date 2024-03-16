@@ -49,7 +49,6 @@ export default function EntryTable() {
     async function fetchEntries(poolId: string) {
         setLoading(true);
         const response = await getPoolEntries(poolId);
-
         setEntries(response.entries);
         setLoading(false);
     }

@@ -54,6 +54,7 @@ export default function PoolBanner() {
     async function fetchPoolBannerData(poolId: string) {
         setLoading(true);
         const response = await getPoolBannerData(poolId);
+        console.log('response', response.bannerData);
         const newStats = [
             {
                 name: 'Gameweek ',
@@ -89,8 +90,6 @@ export default function PoolBanner() {
 
         // create the API route to get this data
         fetchPoolBannerData(poolState.active);
-
-        // set the pool to the data returned from the server
     }, [poolState.active]);
 
     return (
