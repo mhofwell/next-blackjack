@@ -10,8 +10,8 @@ export default async function PoolFrame() {
     // get the session
     const session = await getSession();
 
-    // const id = session.cuid;
-    const id = testUser;
+    const id = session.cuid;
+    // const id = testUser;
 
     // Server action here to get the data for the PoolSelector.
     const optionsData = await getSelectorOptions(id);
