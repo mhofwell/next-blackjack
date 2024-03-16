@@ -8,7 +8,6 @@ import { redirect } from 'next/navigation';
 type SignUpCredentials = z.infer<typeof SignUpSchema>;
 
 export async function signUserUp(formData: SignUpCredentials) {
-
     const formDataToSubmit = {
         input: formData,
     };
@@ -26,6 +25,8 @@ export async function signUserUp(formData: SignUpCredentials) {
         mutation: mutation,
         variables: formDataToSubmit,
     });
+
+    console.log('data', data);
 
     if (data.signup.error?.length > 0) {
         return data.signup.error;

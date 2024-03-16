@@ -20,6 +20,8 @@ type UserCreationData = {
     username: string;
     email: string;
     hashedPassword: string;
+    fn: string;
+    ln: string;
 };
 
 type Player = {
@@ -96,6 +98,8 @@ const Mutation = {
             // create the user object to save in the database
             const userData: UserCreationData = {
                 username: username,
+                fn: username,
+                ln: '',
                 email: email,
                 hashedPassword: hash,
             };

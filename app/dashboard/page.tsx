@@ -37,12 +37,12 @@ async function updatePoolData(id: string) {
 
 export default async function Dashboard() {
     const session = await getSession();
-    // const id = session.cuid;
-    const id = testUser;
+    const id = session.cuid;
+    // const id = testUser;
 
     // server action to set status and G, OG, NG for each entry. Save to DB. or Save to component/Redux state. Maybe we should move this into the banner
-    // it can create a loading state for the overview, and it won't take that long to load all-up.  
-    // that is not the right result for someone who has 125 pools with average 50 people each. That won't work. 
+    // it can create a loading state for the overview, and it won't take that long to load all-up.
+    // that is not the right result for someone who has 125 pools with average 50 people each. That won't work.
     updatePoolData(id);
 
     // server action to get the data for the PoolSelector.
@@ -59,7 +59,7 @@ export default async function Dashboard() {
                         />
                     </div>
                 </div>
-    
+
                 <div className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8 ">
                     <div className="rounded-lg bg-white dark:bg-gray-900 px-5 py-6 shadow sm:px-6">
                         <div>
