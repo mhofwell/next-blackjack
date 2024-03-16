@@ -52,6 +52,7 @@ export default function PoolBanner() {
     const [stats, setStats] = useState(emptyStats);
 
     async function fetchPoolBannerData(poolId: string) {
+        console.log('poolId', poolId);
         setLoading(true);
         const response = await getPoolBannerData(poolId);
         console.log('response', response.bannerData);
@@ -89,6 +90,7 @@ export default function PoolBanner() {
         }
 
         // create the API route to get this data
+        console.log('poolState.active', poolState.active);
         fetchPoolBannerData(poolState.active);
     }, [poolState.active]);
 
