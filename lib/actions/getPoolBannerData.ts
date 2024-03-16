@@ -35,7 +35,5 @@ export async function getPoolBannerData(id: string) {
         variables,
     });
 
-    console.log('data', data);
-
     return data.poolBannerData;
 }
