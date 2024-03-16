@@ -55,6 +55,8 @@ export async function logUserIn(formData: LoginCredentials) {
             return response;
         }
 
+        validatedData.data.email = validatedData.data.email.toLowerCase();
+
         const formDataToSubmit = {
             input: validatedData.data,
         };
