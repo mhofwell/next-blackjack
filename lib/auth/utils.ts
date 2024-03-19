@@ -21,8 +21,8 @@ export async function decrypt(input: string): Promise<any> {
 }
 
 export async function createSession(cuid: string) {
-    // Create the session
-    const expires = new Date(Date.now() + 10 * 20000);
+    // Create the sessions
+    const expires = new Date(Date.now() + 100 * 10000);
     const session = await encrypt({ cuid, expires });
 
     // Save the session in a cookie
@@ -42,7 +42,7 @@ export async function updateSession(request: NextRequest) {
 
     // Refresh the session so it doesn't expire
     const parsed = await decrypt(session);
-    parsed.expires = new Date(Date.now() + 10 * 1000);
+    parsed.expires = new Date(Date.now() + 100 * 10000);
     const res = NextResponse.next();
     res.cookies.set({
         name: 'plbj-session',
