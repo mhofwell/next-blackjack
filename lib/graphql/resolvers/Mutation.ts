@@ -217,7 +217,6 @@ const Mutation = {
                     entry.net_goals = NG;
 
                     // set paid for the entry
-
                     entry.paid = 'YES';
 
                     // set status for this entry

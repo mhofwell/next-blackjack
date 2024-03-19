@@ -191,9 +191,9 @@ const users = [
             league: 'PL',
             pool: 'UK',
             p1: 195,
-            p2: 143,
+            p2: 211,
             p3: 199,
-            p4: 416,
+            p4: 206,
         },
     },
     {
@@ -314,7 +314,6 @@ const users = [
         },
     },
 ];
-
 
 const picks = [
     'Alexander-Arnold', // OK

@@ -6,6 +6,7 @@ type OverviewData = {
     activeEntries: number;
     totalEntries: number;
     gameweek: number;
+    // add currency type
 };
 
 export default async function OverviewBanner({

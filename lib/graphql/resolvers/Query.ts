@@ -1,4 +1,5 @@
 import { sortEntries } from '@/lib/tools/sortEntries';
+import { createKey } from 'next/dist/shared/lib/router/router';
 
 type LoginResponse = {
     status: number;
@@ -257,7 +258,7 @@ const Query = {
                     gameweek,
                     activeEntries,
                     totalEntries,
-                    totalTreasury: totalTreasury._sum.treasury,
+                    totalTreasury: totalTreasury._sum.treasury || 0,
                 },
             };
 

@@ -180,8 +180,7 @@ async function main() {
                 season: 2023,
                 league: 'PL',
                 fee: 15,
-                gameweek: 29,
-                treasury: 165.00,
+                treasury: 165.0,
                 currency: 'CAD',
             },
             {
@@ -190,15 +189,14 @@ async function main() {
                 season: 2023,
                 league: 'PL',
                 fee: 15,
-                gameweek: 29,
-                treasury: 195.00,
+                treasury: 195.0,
                 currency: 'GBP',
             },
         ],
     });
 
     console.log(pools);
-    
+
     // Entries of users attached to pools
 
     for (const user of users) {

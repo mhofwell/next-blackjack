@@ -35,10 +35,8 @@ export default function PoolBanner() {
     const [stats, setStats] = useState<any[]>(emptyStats);
 
     async function fetchPoolBannerData(poolId: string) {
-        console.log('poolId', poolId);
         setLoading(true);
         const response = await getPoolBannerData(poolId);
-        console.log('response', response.bannerData);
         const newStats = [
             {
                 name: 'Gameweek ',
@@ -61,9 +59,7 @@ export default function PoolBanner() {
             { name: 'Inactive', value: response.bannerData.inactive },
             { name: 'Eliminated', value: response.bannerData.eliminated },
         ];
-        console.log('newStats', newStats);
         setStats(newStats);
-        // setPool(response.bannerData);
         setLoading(false);
     }
 
@@ -72,8 +68,6 @@ export default function PoolBanner() {
             return;
         }
 
-        // create the API route to get this data
-        console.log('poolState.active', poolState.active);
         fetchPoolBannerData(poolState.active);
     }, [poolState.active]);
 
