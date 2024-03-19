@@ -22,7 +22,7 @@ export async function decrypt(input: string): Promise<any> {
 
 export async function createSession(cuid: string) {
     // Create the session
-    const expires = new Date(Date.now() + 10 * 10000);
+    const expires = new Date(Date.now() + 10 * 20000);
     const session = await encrypt({ cuid, expires });
 
     // Save the session in a cookie
