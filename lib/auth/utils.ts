@@ -35,7 +35,6 @@ export async function getSession() {
     if (!session) return null;
     return await decrypt(session);
 }
-
 export async function updateSession(request: NextRequest) {
     const session = request.cookies.get('plbj-session')?.value;
     if (!session) return;
