@@ -9,6 +9,7 @@ import { getInitials } from '@/lib/tools/getInitials';
 import { getEntryCardData } from '@/lib/actions/getEntryCardData';
 import Spinner from './UI/spinner';
 import { getPlayerData } from '@/lib/actions/getPlayerData';
+import { useAppDispatch } from '@/lib/store/hooks';
 
 type EntryData = {
     id: string;
@@ -44,41 +45,47 @@ type User = {
     team: Team;
 };
 
-export default function EntryCard() {
-    const entryState = useAppSelector((state) => state.entryReducer.data);
-    const [loading, setLoading] = useState(false);
-    const [entry, setEntry] = useState<EntryData>({
+const emptyState = {
+    id: '',
+    rank: '1',
+    status: '',
+    paid: '',
+    user: {
         id: '',
-        rank: '1',
-        status: '',
-        paid: '',
-        user: {
-            id: '',
-            username: '',
-            email: '',
-            avatar: '',
-            team: {
-                id: '',
-                name: '',
-            },
-        },
+        username: '',
+        email: '',
+        avatar: '',
         team: {
             id: '',
             name: '',
         },
-        email: '',
-        avatar: '',
-        players: [
-            {
-                id: '',
-                fn: '-',
-                ln: '',
-                goals: 0,
-                own_goals: 0,
-                net_goals: 0,
-            },
-        ],
-    });
+    },
+    team: {
+        id: '',
+        name: '',
+    },
+    email: '',
+    avatar: '',
+    players: [
+        {
+            id: '',
+            fn: '-',
+            ln: '',
+            goals: 0,
+            own_goals: 0,
+            net_goals: 0,
+        },
+    ],
+};
+
+export default function EntryCard() {
+    const entryState = useAppSelector((state) => state.entryReducer.data);
+    const poolState = useAppSelector((state) => state.poolReducer.data);
+
+    const [loading, setLoading] = useState(false);
+    const [entry, setEntry] = useState<EntryData>(emptyState);
+
+    const dispatch = useAppDispatch();
 
     async function fetchEntry(entryId: string) {
         setLoading(true);
@@ -86,7 +93,6 @@ export default function EntryCard() {
         const entryCardData = await getEntryCardData(entryId);
         const playerData = await getPlayerData(entryCardData.entry.players);
 
-        // entryCardData.entry.rank = '1';
         entryCardData.entry.players = playerData;
 
         setEntry(entryCardData.entry);
@@ -102,6 +108,16 @@ export default function EntryCard() {
         // get the entry card data
         fetchEntry(entryState.active);
     }, [entryState.active]);
+
+    useEffect(() => {
+        // early return for no pool active
+        if (poolState.active === '') {
+            return;
+        }
+
+        // get the entry card data
+        setEntry(emptyState);
+    }, [poolState.active]);
 
     return loading ? (
         <div className="flex items-center justify-center min-h-[400px]">

@@ -29,22 +29,22 @@ type Entry = {
     user: AllEntriesUser;
 };
 
+const emptyState = {
+    id: '',
+    net_goals: 0,
+    status: 'INACTIVE',
+    paid: '',
+    user: {
+        id: '',
+        username: '',
+    },
+};
+
 export default function EntryTable() {
     const poolState = useAppSelector((state) => state.poolReducer.data);
     const dispatch = useAppDispatch();
     const [loading, setLoading] = useState(false);
-    let [entries, setEntries] = useState<Entry[]>([
-        {
-            id: '',
-            net_goals: 0,
-            status: 'INACTIVE',
-            paid: '',
-            user: {
-                id: '',
-                username: '',
-            },
-        },
-    ]);
+    let [entries, setEntries] = useState<Entry[]>([emptyState]);
 
     async function fetchEntries(poolId: string) {
         setLoading(true);
@@ -96,7 +96,11 @@ export default function EntryTable() {
                         <TableCell>1</TableCell>
                         <TableCell>
                             <Avatar
-                                initials={getInitials(entry.user.username)}
+                                initials={
+                                    entry.user
+                                        ? getInitials(entry.user.username)
+                                        : '?'
+                                }
                                 className="size-6"
                                 // src={entry.avatar}
                                 alt={entry.user.username}
@@ -105,7 +109,9 @@ export default function EntryTable() {
                         <TableCell className="font-sm">
                             {entry.user.username}
                         </TableCell>
-                        <TableCell>{entry.net_goals}</TableCell>
+                        <TableCell>
+                            {entry.net_goals}
+                        </TableCell>
                         <TableCell className="text-zinc-500">
                             <Badge
                                 color={

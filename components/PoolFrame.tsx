@@ -29,7 +29,6 @@ export default async function PoolFrame() {
             </div>
             <div className="flex">
                 <div className="w-1/2 mt-5 mr-5 ">
-                    {/* <div className="border border-gray-800 p-5 rounded-xl min-h-96"> */}
                     {/* listen for state change for activeEntryCard and query the database for info. */}
                     <div className="border border-gray-800 p-5 rounded-xl min-h-96">
                         <EntryCard />
