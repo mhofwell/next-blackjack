@@ -9,7 +9,6 @@ import { getInitials } from '@/lib/tools/getInitials';
 import { getEntryCardData } from '@/lib/actions/getEntryCardData';
 import Spinner from './UI/spinner';
 import { getPlayerData } from '@/lib/actions/getPlayerData';
-import { useAppDispatch } from '@/lib/store/hooks';
 
 type EntryData = {
     id: string;
@@ -84,8 +83,6 @@ export default function EntryCard() {
 
     const [loading, setLoading] = useState(false);
     const [entry, setEntry] = useState<EntryData>(emptyState);
-
-    const dispatch = useAppDispatch();
 
     async function fetchEntry(entryId: string) {
         setLoading(true);
