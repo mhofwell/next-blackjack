@@ -104,11 +104,11 @@ export default function EntryCard() {
     }, [entryState.active]);
 
     return loading ? (
-        <div className="flex items-center justify-center min-h-[600px]">
+        <div className="flex items-center justify-center min-h-[400px]">
             <Spinner />
         </div>
     ) : (
-        <div className="border border-gray-800 p-5 rounded-xl ">
+        <div>
             <div className="flex pb-5 ">
                 <div className="flex ">
                     <Avatar
@@ -133,7 +133,7 @@ export default function EntryCard() {
                             </Text>
                         </div>
                         {entry.id ? (
-                            <div className="mt-1 justify-end">
+                            <div className="mt-1 justify-end overflow-auto">
                                 <Badge
                                     color={
                                         entry.status === 'ACTIVE'
@@ -152,7 +152,7 @@ export default function EntryCard() {
                                     color={
                                         entry.paid === 'YES' ? 'fuchsia' : 'red'
                                     }
-                                    className="ml-2"
+                                    className="ml-5"
                                 >
                                     {entry.paid === 'YES' ? 'PAID' : 'OWING'}
                                 </Badge>{' '}
