@@ -5,16 +5,19 @@ const typeDefs = gql`
         hello: String!
         user(id: ID!): User!
         login(input: LoginCredentials!): LoginResponse!
-        overview(input: String!): OverviewResponse!
-        options(input: String!): OptionsResponse!
+        options(input: String!): [PoolOption]
         poolEntries(input: String!): EntryResponse!
-        poolBannerData(input: String!): PoolBannerResponse!
+        poolBannerData(input: String!): PoolBannerData
         userEntry(input: String!): UserEntryResponse!
     }
 
     type Mutation {
         signup(input: SignUpCredentials!): BasicResponse!
-        updatePoolData(input: String!): BasicResponse!
+        updatePoolData(input: String!): OverviewData
+    }
+
+    type PoolCount {
+        count: Int!
     }
 
     type User {
@@ -72,12 +75,6 @@ const typeDefs = gql`
         name: String!
     }
 
-    type PoolBannerResponse {
-        status: Int!
-        errors: [String]
-        bannerData: PoolBannerData
-    }
-
     type PoolBannerData {
         id: String!
         name: String!
@@ -91,21 +88,9 @@ const typeDefs = gql`
         gameweek: Int!
     }
 
-    type OptionsResponse {
-        status: Int!
-        errors: [String]
-        options: [PoolSelectOption!]
-    }
-
-    type PoolSelectOption {
+    type PoolOption {
         id: String!
         name: String!
-    }
-
-    type OverviewResponse {
-        status: Int!
-        errors: [String]
-        overview: OverviewData
     }
 
     type OverviewData {

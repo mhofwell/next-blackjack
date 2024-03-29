@@ -1,3 +1,4 @@
+'use server';
 import { Badge } from './UI/badge';
 
 type OverviewData = {
@@ -10,25 +11,27 @@ type OverviewData = {
 };
 
 export default async function OverviewBanner({
-    overviewData,
+    overview,
 }: {
-    overviewData: OverviewData;
+    overview: OverviewData;
 }) {
     const stats = [
-        { name: 'Active Pools', value: overviewData.activePools },
-        { name: 'Gameweek', value: overviewData.gameweek },
+        { name: 'Active Pools', value: overview?.activePools || 0 },
+        { name: 'Gameweek', value: overview?.gameweek || 0 },
         {
             name: 'Active Entries',
-            value: `${overviewData.activeEntries}/${overviewData.totalEntries}`,
+            value: overview
+                ? `${overview?.activeEntries}/${overview?.totalEntries}`
+                : 0,
             unit: 'OK',
         },
         {
             name: 'Total Treasury',
-            value: `$${overviewData.totalTreasury}`,
+            value: overview ? `$${overview?.totalTreasury}` : 0,
             unit: 'CAD',
         },
     ];
-    
+
     return (
         <div className="bg-gray-900">
             <div className="mx-auto max-w-7xl">

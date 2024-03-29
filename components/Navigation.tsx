@@ -5,22 +5,21 @@ import { Fragment } from 'react';
 import { logout } from '@/lib/auth/logout';
 import { Avatar } from './UI/avatar';
 import { Text } from './UI/text';
-
 import { useAppSelector } from '@/lib/store/hooks';
 
-interface User {
+type User = {
     id: string;
     username: string;
     avatar: string;
     team: string;
     email: string;
-}
+};
 
-interface NavigationItem {
+type NavigationItem = {
     name: string;
     href: string;
     current: boolean;
-}
+};
 
 const navigation: NavigationItem[] = [
     { name: 'Dashboard', href: '#', current: true },

@@ -1,25 +1,37 @@
 'use client';
-
 import { Description, Field, FieldGroup, Fieldset } from './UI/fieldset';
 import { Select } from './UI/select';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { setActivePool } from '@/lib/store/slices/pool-slice';
+import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr';
+import { OPTIONS_QUERY } from '@/lib/graphql/queries';
+import { useEffect } from 'react';
 
-type Option = {
+type PoolOption = {
     id: string;
     name: string;
 };
 
-export default function PoolSelector({ options }: { options: Option[] }) {
+export default function PoolSelector({ id }: { id: string }) {
     const dispatch = useAppDispatch();
 
-    async function handlePoolSelect(
-        event: React.ChangeEvent<HTMLSelectElement>
-    ) {
-        // set state with the id of the selected pool
-        const payload: string = event.target.value;
-        dispatch(setActivePool(payload));
+    const { data, loading, error } = useQuery(OPTIONS_QUERY, {
+        variables: { input: id },
+    });
+
+    let disabled: boolean = false;
+
+    if (error) {
+        console.error(error);
+        disabled = true;
     }
+
+    const options: PoolOption[] = data?.options || [];
+
+    useEffect(() => {
+        dispatch(setActivePool(''));
+    }),
+        [];
 
     return (
         <Fieldset>
@@ -29,20 +41,29 @@ export default function PoolSelector({ options }: { options: Option[] }) {
                         <Description className="w-1/2">
                             Select from all of the pools that you organize.
                         </Description>
+
                         <Select
                             className="w-1/4"
                             name="pool"
-                            onChange={handlePoolSelect}
-                            defaultValue="Select a pool"
+                            onChange={(e) =>
+                                dispatch(setActivePool(e.target.value))
+                            }
+                            defaultValue={
+                                options ? 'Select a pool' : 'No pools available'
+                            }
+                            disabled={
+                                !options || options.length === 0 || loading
+                            }
                         >
                             <option value="Select a pool" disabled>
                                 Select a pool
                             </option>
-                            {options.map((option: Option) => (
-                                <option value={option.id} key={option.id}>
-                                    {option.name}
-                                </option>
-                            ))}
+                            {options &&
+                                options.map((option: PoolOption) => (
+                                    <option value={option.id} key={option.id}>
+                                        {option.name}
+                                    </option>
+                                ))}
                         </Select>
                     </div>
                 </Field>

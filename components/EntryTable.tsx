@@ -13,7 +13,7 @@ import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
 import { useState, useEffect } from 'react';
 import { getPoolEntries } from '@/lib/actions/getPoolEntries';
 import { getInitials } from '@/lib/tools/getInitials';
-import Spinner from './UI/spinner';
+import SpinnerCentered from './UI/spinnerCentered';
 import { setActiveEntry } from '@/lib/store/slices/entry-slice';
 
 type AllEntriesUser = {
@@ -72,7 +72,7 @@ export default function EntryTable() {
 
     return loading ? (
         <div className="flex items-center justify-center min-h-[600px]">
-            <Spinner />
+            <SpinnerCentered />
         </div>
     ) : (
         <Table>
@@ -109,9 +109,7 @@ export default function EntryTable() {
                         <TableCell className="font-sm">
                             {entry.user.username}
                         </TableCell>
-                        <TableCell>
-                            {entry.net_goals}
-                        </TableCell>
+                        <TableCell>{entry.net_goals}</TableCell>
                         <TableCell className="text-zinc-500">
                             <Badge
                                 color={

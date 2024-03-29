@@ -35,5 +35,11 @@ export async function getPoolEntries(id: string) {
         variables,
     });
 
+    if (data.poolEntries.status === 200) {
+
     return data.poolEntries;
+    } else {
+        console.error('Error: ', data.poolEntries.errors);
+        throw new Error('Something went wrong while fetching pool entries.');
+    }
 }

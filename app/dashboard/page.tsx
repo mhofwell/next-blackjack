@@ -1,63 +1,60 @@
-import { Metadata } from 'next';
 import PoolFrame from '@/components/PoolFrame';
 import Footer from '@/components/Footer';
 import OverviewDataBanner from '../../components/OverviewDataBanner';
+import { Metadata } from 'next';
 import { getSession } from '@/lib/auth/utils';
-import { getOverviewData } from '@/lib/actions/getOverviewData';
-import { getClient } from '@/lib/apollo/client';
-import gql from 'graphql-tag';
 import { redirect } from 'next/navigation';
+import { getClient } from '@/lib/apollo/client';
+import { UPDATE_POOL_DATA_MUTATION } from '@/lib/graphql/queries';
+
+export const dynamic = 'force-dynamic';
+
+type OverviewData = {
+    activePools: number;
+    totalTreasury: number;
+    activeEntries: number;
+    totalEntries: number;
+    gameweek: number;
+    // add currency type
+};
 
 export const metadata: Metadata = {
     title: 'Dasbhoard',
 };
 
-export const dynamic = 'force-dynamic';
-
-async function updatePoolData(id: string) {
-    const mutation = gql`
-        mutation Mutation($input: String!) {
-            updatePoolData(input: $input) {
-                status
-                errors
-            }
-        }
-    `;
-
-    const variables = {
-        input: id,
-    };
-
-    const updateStatus = await getClient().mutate({
-        mutation,
-        variables,
-        fetchPolicy: 'no-cache', // this is important to get the latest data
-    });
-}
-
 export default async function Dashboard() {
     const session = await getSession();
 
+    // change this to !auth where we get the session and check the db for the user's session.
     if (!session) {
         redirect('/login');
     }
 
-    const id = session.cuid;
+    const id: string = session.cuid;
 
-    // initialze the game state
-    updatePoolData(id);
+    const { data, errors } = await getClient().mutate({
+        mutation: UPDATE_POOL_DATA_MUTATION,
+        variables: {
+            input: id,
+        },
+    });
 
-    // server action to get the data for the PoolSelector.
-    const overviewData = await getOverviewData(id);
+    if (errors) {
+        console.error('errors', errors);
+    }
+
+    const overview: OverviewData = data?.updatePoolData || {};
 
     return (
         <div className="h-screen">
             <section className="-mt-32">
                 <div className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8 ">
                     <div className="rounded-lg bg-white dark:bg-gray-900 px-5 py-6 shadow sm:px-6">
-                        <OverviewDataBanner
-                            overviewData={overviewData.overview}
-                        />
+                        {errors ? (
+                            <h1>App not available.</h1>
+                        ) : (
+                            <OverviewDataBanner overview={overview} />
+                        )}
                     </div>
                 </div>
 

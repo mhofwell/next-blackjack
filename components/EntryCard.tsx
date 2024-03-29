@@ -97,7 +97,7 @@ export default function EntryCard() {
     }
 
     useEffect(() => {
-        // early return for no selector active
+        // early return for no entry active
         if (entryState.active === '') {
             return;
         }
@@ -107,12 +107,7 @@ export default function EntryCard() {
     }, [entryState.active]);
 
     useEffect(() => {
-        // early return for no pool active
-        if (poolState.active === '') {
-            return;
-        }
-
-        // get the entry card data
+        // set the empty entry state
         setEntry(emptyState);
     }, [poolState.active]);
 
