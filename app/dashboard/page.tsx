@@ -38,11 +38,7 @@ export default async function Dashboard() {
             input: id,
         },
     });
-
-    console.log('db', process.env.DATABASE_URL);
-    console.log('pd', process.env.RAILWAY_PRIVATE_DOMAIN);
-    console.log('port', process.env.PORT);
-
+    
     if (errors) {
         console.error('errors', errors);
     }

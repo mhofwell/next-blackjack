@@ -9,6 +9,8 @@ import {
 } from '@apollo/experimental-nextjs-app-support/ssr';
 import SERVER_URL from '@/config';
 
+console.log('serverurl', SERVER_URL);
+
 // have a function to create a client for you
 function makeClient() {
     const httpLink = new HttpLink({

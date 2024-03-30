@@ -22,6 +22,14 @@ export const OPTIONS_QUERY = gql`
     }
 `;
 
+export const DB_QUERY = gql`
+    query database($input: String!) {
+        database(input: $input) {
+            SERVER_URL
+        }
+    }
+`;
+
 export const POOL_BANNER_DATA_QUERY = gql`
     query PoolBannerData($input: String!) {
         poolBannerData(input: $input) {

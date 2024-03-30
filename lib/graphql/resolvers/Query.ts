@@ -1,4 +1,5 @@
 import { sortEntries } from '@/lib/tools/sortEntries';
+import SERVER_URL from '@/config';
 
 type LoginResponse = {
     status: number;
@@ -80,6 +81,10 @@ type PoolBannerData = {
     gameweek: number;
 };
 
+type DatabaseUrl = {
+    SERVER_URL: string;
+};
+
 const Query = {
     hello: async (_parent: any, _args: any, contextValue: any) => {
         const { greeting } = contextValue;
@@ -88,6 +93,12 @@ const Query = {
         } catch (error) {
             console.error(error);
         }
+    },
+    databaseUrl: async (_parent: any, _args: any, _context: any) => {
+        const databaseUrl: DatabaseUrl = {
+            SERVER_URL: SERVER_URL,
+        };
+        return databaseUrl;
     },
     user: async (_parent: any, args: any, context: any) => {
         const id = args.input;
