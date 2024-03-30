@@ -23,8 +23,8 @@ export const OPTIONS_QUERY = gql`
 `;
 
 export const DB_QUERY = gql`
-    query database($input: String!) {
-        database(input: $input) {
+    query Query {
+        serverUrl {
             SERVER_URL
         }
     }

@@ -94,7 +94,7 @@ const Query = {
             console.error(error);
         }
     },
-    databaseUrl: async (_parent: any, _args: any, _context: any) => {
+    serverUrl: async (_parent: any, _args: any, _context: any) => {
         const databaseUrl: DatabaseUrl = {
             SERVER_URL: SERVER_URL,
         };
