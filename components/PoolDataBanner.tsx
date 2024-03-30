@@ -1,8 +1,8 @@
 'use client';
+import ErrorComponent from '@/app/dashboard/error';
 import { useAppSelector } from '@/lib/store/hooks';
 import { POOL_BANNER_DATA_QUERY } from '@/lib/graphql/queries';
 import { useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr';
-import ErrorComponent from '@/app/dashboard/error';
 
 type PoolBannerData = {
     id: string;
@@ -18,9 +18,9 @@ type PoolBannerData = {
     gameweek: number;
 };
 
-type QueryResponse = {
+interface QueryResponse {
     poolBannerData: PoolBannerData;
-};
+}
 
 export default function PoolDataBanner() {
     const poolState = useAppSelector((state) => state.poolReducer.data);

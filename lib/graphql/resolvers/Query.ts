@@ -19,14 +19,6 @@ type Team = {
     name: string;
 };
 
-type OverviewData = {
-    activePools: number;
-    totalTreasury: number;
-    activeEntries: number;
-    totalEntries: number;
-    gameweek: number;
-};
-
 type PoolOptions = {
     id: string;
     name: string[];
@@ -73,12 +65,6 @@ type ListEntry = {
         id: string;
         username: string;
     };
-};
-
-type PoolBannerResponse = {
-    status: number;
-    errors: string[];
-    bannerData: PoolBannerData;
 };
 
 type PoolBannerData = {
@@ -308,21 +294,8 @@ const Query = {
         const { prisma } = context;
         const id = args.input;
 
-        let response: PoolBannerData = {
-            id: '',
-            name: '',
-            treasury: 0,
-            fee: 0,
-            total: 0,
-            active: 0,
-            inactive: 0,
-            bust: 0,
-            eliminated: 0,
-            gameweek: 0,
-        };
-
         if (!id) {
-            return response; // early return for no pool ID
+            return; // early return for no pool ID
         }
 
         const bannerData = await prisma.pool.findFirst({
@@ -369,7 +342,7 @@ const Query = {
         const data = await res.json();
         const gameweek = data[0].event - 1;
 
-        response = {
+        const response: PoolBannerData = {
             id: bannerData.id,
             name: bannerData.name,
             treasury: bannerData.treasury,

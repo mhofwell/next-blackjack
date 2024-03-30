@@ -3,11 +3,11 @@ import PoolDataBanner from './PoolDataBanner';
 import EntryCard from './EntryCard';
 import PoolSelector from './PoolSelector';
 import AllEntriesList from './AllEntriesList';
+import ErrorComponent from '@/app/dashboard/error';
+import SpinnerCentered from './UI/spinnerCentered';
 import { getSession } from '@/lib/auth/utils';
 import { Suspense } from 'react';
-import SpinnerCentered from './UI/spinnerCentered';
 import { ErrorBoundary } from 'next/dist/client/components/error-boundary';
-import ErrorComponent from '@/app/dashboard/error';
 
 export default async function PoolFrame() {
     // get the session
@@ -35,10 +35,12 @@ export default async function PoolFrame() {
                 <div className="flex">
                     <div className="w-1/2 mt-5 mr-5 ">
                         <div className="border border-gray-800 p-5 rounded-xl min-h-96">
+                            {/* add suspense */}
                             <EntryCard />
                         </div>
                     </div>
                     <div className="w-1/2 mt-5 ml-5 min-h-[600px]">
+                        {/* add suspense */}
                         <AllEntriesList />
                     </div>
                 </div>

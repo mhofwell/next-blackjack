@@ -17,7 +17,7 @@ export default function ErrorComponent({
     return (
         <div className="flex m-16 items-center justify-center ">
             <div role="status" className="pr-2">
-                <h2>{error.message}</h2>
+                <h2>Something went wrong!</h2>
                 {/* <button
                     onClick={
                         // Attempt to recover by trying to re-render the segment
