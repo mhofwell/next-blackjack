@@ -10,9 +10,7 @@ import {
 import SERVER_URL from '@/config';
 
 const URL = SERVER_URL ? SERVER_URL : process.env.SERVER_URL;
-console.log('client side url', URL);
 
-// const SURL = getServerCredentials()
 // have a function to create a client for you
 function makeClient() {
     const httpLink = new HttpLink({

@@ -177,7 +177,8 @@ const Mutation = {
 
         // early return for no pools found
         if (pools.length === 0) {
-            throw new Error('No pools found.');
+            console.log('No pools found for user.');
+            return;
         }
 
         // calculate gameweek

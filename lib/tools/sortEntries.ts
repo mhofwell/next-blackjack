@@ -9,6 +9,7 @@ type Entry = {
     id: string;
     net_goals: number;
     status: string;
+    paid: boolean;
     user: {
         id: string;
         username: string;

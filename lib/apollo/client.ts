@@ -4,7 +4,6 @@ import SERVER_URL from '@/config';
 
 
 const URL = SERVER_URL ? SERVER_URL : process.env.SERVER_URL;
-console.log('server-side client', URL);
 
 export const { getClient } = registerApolloClient(() => {
     return new ApolloClient({

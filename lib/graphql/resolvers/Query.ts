@@ -7,6 +7,12 @@ type LoginResponse = {
     errors: string[];
 };
 
+type PlayerData = {
+    id: number;
+    fn: string;
+    ln: string;
+};
+
 type User = {
     id: string;
     username: string;
@@ -25,43 +31,34 @@ type PoolOptions = {
     name: string[];
 };
 
-type EntryResponse = {
-    status: number;
-    errors: string[];
-    entries: ListEntry[];
-};
-
-type EntryCardResponse = {
-    status: number;
-    errors: string[];
-    entry: EntryCardData;
-};
-
 type EntryCardData = {
     id: string;
     paid: string;
     status: string;
-    user: {
-        id: string;
-        username: string;
-        email: string;
-        avatar: string;
-        team: {
-            id: number;
-            name: string;
-        };
-    };
-    players: {
-        id: string;
-        fn: string;
-        ln: string;
-    };
+    user: User;
+    players: Player[] | PlayerWithGoals[];
+};
+
+type Player = {
+    id: number;
+    fn: string;
+    ln: string;
+};
+
+type PlayerWithGoals = {
+    id: number;
+    fn: string;
+    ln: string;
+    goals: number;
+    own_goals: number;
+    net_goals: number;
 };
 
 type ListEntry = {
     id: string;
     net_goals: number;
     status: string;
+    paid: boolean;
     user: {
         id: string;
         username: string;
@@ -219,7 +216,6 @@ const Query = {
             return response;
         }
     },
-
     options: async (_parent: any, args: any, context: any) => {
         const { prisma } = context;
         const id = args.input;
@@ -245,60 +241,35 @@ const Query = {
         const { prisma } = context;
         const id = args.input;
 
-        let response: EntryResponse = {
-            status: 0,
-            errors: [],
-            entries: [
-                {
-                    id: '',
-                    net_goals: 0,
-                    status: '',
-                    user: {
-                        id: '',
-                        username: '',
-                    },
-                },
-            ],
-        };
-        try {
-            const entries = await prisma.entry.findMany({
-                where: {
-                    pool: {
-                        id,
-                    },
-                },
-                select: {
-                    id: true,
-                    net_goals: true,
-                    status: true,
-                    paid: true,
-                    user: {
-                        select: {
-                            id: true,
-                            username: true,
-                        },
-                    },
-                },
-            });
-
-            if (entries.length === 0) {
-                return response; // early return for no entries found
-            }
-
-            const sortedArray = sortEntries(entries);
-
-            // could add the rank in here.
-
-            response.status = 200;
-            response.entries = sortedArray;
-            await prisma.$disconnect();
-            return response;
-        } catch (error: any) {
-            await prisma.$disconnect();
-            response.status = 400;
-            response.errors = [error.message];
-            return response;
+        if (!id) {
+            return; // early return for no pool ID
         }
+
+        const entries = await prisma.entry.findMany({
+            where: {
+                pool: {
+                    id,
+                },
+            },
+            select: {
+                id: true,
+                net_goals: true,
+                status: true,
+                paid: true,
+                user: {
+                    select: {
+                        id: true,
+                        username: true,
+                    },
+                },
+            },
+        });
+
+        let response: ListEntry[] = sortEntries(entries);
+
+        // could add the rank in here.
+        await prisma.$disconnect();
+        return response;
     },
     poolBannerData: async (_parent: any, args: any, context: any) => {
         // get the banner data for a pool
@@ -374,75 +345,74 @@ const Query = {
         const { prisma } = context;
         const { input } = args;
 
-        let response: EntryCardResponse = {
-            status: 0,
-            errors: [],
-            entry: {
-                id: '',
-                paid: '',
-                status: '',
-                user: {
-                    id: '',
-                    username: '',
-                    email: '',
-                    avatar: '',
-                    team: {
-                        id: 0,
-                        name: '',
-                    },
-                },
-                players: {
-                    id: '',
-                    fn: '',
-                    ln: '',
-                },
-            },
-        };
+        if (!input) {
+            return; // early return for no entry ID
+        }
 
-        try {
-            const entry = await prisma.entry.findFirst({
-                where: {
-                    id: input,
-                },
-                select: {
-                    id: true,
-                    status: true,
-                    paid: true,
-                    user: {
-                        select: {
-                            id: true,
-                            username: true,
-                            email: true,
-                            avatar: true,
-                            team: {
-                                select: {
-                                    id: true,
-                                    name: true,
-                                },
+        const entry: EntryCardData = await prisma.entry.findFirst({
+            where: {
+                id: input,
+            },
+            select: {
+                id: true,
+                status: true,
+                paid: true,
+                user: {
+                    select: {
+                        id: true,
+                        username: true,
+                        email: true,
+                        avatar: true,
+                        team: {
+                            select: {
+                                id: true,
+                                name: true,
                             },
                         },
                     },
-                    players: {
-                        select: {
-                            id: true,
-                            fn: true,
-                            ln: true,
-                        },
+                },
+                players: {
+                    select: {
+                        id: true,
+                        fn: true,
+                        ln: true,
                     },
                 },
-            });
+            },
+        });
 
-            response.status = 200;
-            response.entry = entry;
+        const epl = await fetch(
+            'https://fantasy.premierleague.com/api/bootstrap-static/'
+        );
 
-            await prisma.$disconnect();
-            return response;
-        } catch (error: any) {
-            await prisma.$disconnect();
-            response.status = 400;
-            response.errors = [error.message];
-            return response;
-        }
+        const eplData = await epl.json();
+
+        let playersWithGoalsArray: PlayerWithGoals[] = [];
+
+        entry.players.forEach((player: PlayerData) => {
+            const playerData = eplData.elements.find(
+                (element: { id: number }) => {
+                    return element.id === player.id;
+                }
+            );
+
+            if (playerData) {
+                playersWithGoalsArray.push({
+                    id: player.id,
+                    fn: player.fn,
+                    ln: player.ln,
+                    goals: playerData.goals_scored,
+                    own_goals: playerData.own_goals,
+                    net_goals: playerData.goals_scored - playerData.own_goals,
+                });
+            }
+        });
+
+        entry.players = playersWithGoalsArray;
+
+        await prisma.$disconnect();
+
+        return entry;
     },
 };
 

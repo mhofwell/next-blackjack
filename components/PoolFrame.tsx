@@ -33,15 +33,23 @@ export default async function PoolFrame() {
                     </div>
                 </div>
                 <div className="flex">
-                    <div className="w-1/2 mt-5 mr-5 ">
+                    <div className="w-1/2 mt-5 mr-5">
                         <div className="border border-gray-800 p-5 rounded-xl min-h-96">
-                            {/* add suspense */}
-                            <EntryCard />
+                            {/* The best thing to do here to center the spinners is to do the flex items-center stuff here */}
+                            <Suspense fallback={<SpinnerCentered />}>
+                                <EntryCard />
+                            </Suspense>
                         </div>
                     </div>
                     <div className="w-1/2 mt-5 ml-5 min-h-[600px]">
-                        {/* add suspense */}
-                        <AllEntriesList />
+                        <div className="bg-gray-900 border border-gray-800 rounded-xl ">
+                            <div className="mx-auto max-w-7xl">
+                            {/* The best thing to do here to center the spinners is to do the flex items-center stuff here */}
+                                <Suspense fallback={<SpinnerCentered />}>
+                                    <AllEntriesList />
+                                </Suspense>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </ErrorBoundary>

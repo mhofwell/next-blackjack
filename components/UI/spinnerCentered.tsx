@@ -1,5 +1,6 @@
 export default function SpinnerCentered() {
     return (
+        //  move the m-16 over to the PoolFrame component
         <div className="flex m-16 items-center justify-center ">
             <div role="status" className="pr-2">
                 <svg

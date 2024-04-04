@@ -30,6 +30,21 @@ export const DB_QUERY = gql`
     }
 `;
 
+export const POOL_ENTRIES_QUERY = gql`
+    query PoolEntries($input: String!) {
+        poolEntries(input: $input) {
+            id
+            net_goals
+            status
+            paid
+            user {
+                id
+                username
+            }
+        }
+    }
+`;
+
 export const POOL_BANNER_DATA_QUERY = gql`
     query PoolBannerData($input: String!) {
         poolBannerData(input: $input) {
@@ -43,6 +58,34 @@ export const POOL_BANNER_DATA_QUERY = gql`
             bust
             eliminated
             gameweek
+        }
+    }
+`;
+
+export const USER_ENTRY_QUERY = gql`
+    query UserEntry($input: String!) {
+        userEntry(input: $input) {
+            id
+            paid
+            status
+            players {
+                id
+                fn
+                ln
+                goals
+                own_goals
+                net_goals
+            }
+            user {
+                id
+                username
+                email
+                avatar
+                team {
+                    id
+                    name
+                }
+            }
         }
     }
 `;

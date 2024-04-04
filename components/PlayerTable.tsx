@@ -10,7 +10,7 @@ import {
 import { Text } from './UI/text';
 
 type Player = {
-    id: string;
+    id: number;
     fn: string;
     ln: string;
     goals: number;
@@ -18,13 +18,13 @@ type Player = {
     net_goals: number;
 };
 
-export default function PlayerTable({ players }: { players: Player[] }) {
-
+export default async function PlayerTable({ players }: { players: Player[] }) {
     let totals = {
         goals: 0,
         own_goals: 0,
         net_goals: 0,
     };
+    
     function getTotals() {
         players.forEach((player) => {
             totals.goals += player.goals;

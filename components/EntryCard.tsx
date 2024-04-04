@@ -4,22 +4,21 @@ import { Text } from './UI/text';
 import { Badge } from './UI/badge';
 import PlayerTable from './PlayerTable';
 import { useAppSelector } from '@/lib/store/hooks';
-import { useState, useEffect } from 'react';
 import { getInitials } from '@/lib/tools/getInitials';
-import { getEntryCardData } from '@/lib/actions/getEntryCardData';
-import Spinner from './UI/spinner';
-import { getPlayerData } from '@/lib/actions/getPlayerData';
+import { USER_ENTRY_QUERY } from '@/lib/graphql/queries';
+import { useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr';
+import ErrorComponent from '@/app/dashboard/error';
+import { useEffect } from 'react';
+import { useAppDispatch } from '@/lib/store/hooks';
+import { resetActiveEntry } from '@/lib/store/slices/entry-slice';
 
 type EntryData = {
     id: string;
-    rank: string;
-    status: string;
+    // rank: string;
     paid: string;
-    user: User;
-    team: Team;
-    email: string;
-    avatar: string;
+    status: string;
     players: Player[];
+    user: User;
 };
 
 type Team = {
@@ -28,7 +27,7 @@ type Team = {
 };
 
 type Player = {
-    id: string;
+    id: number;
     fn: string;
     ln: string;
     goals: number;
@@ -44,78 +43,66 @@ type User = {
     team: Team;
 };
 
-const emptyState = {
-    id: '',
-    rank: '1',
-    status: '',
-    paid: '',
-    user: {
-        id: '',
-        username: '',
-        email: '',
-        avatar: '',
-        team: {
-            id: '',
-            name: '',
-        },
-    },
-    team: {
-        id: '',
-        name: '',
-    },
-    email: '',
-    avatar: '',
-    players: [
-        {
-            id: '',
-            fn: '-',
-            ln: '',
-            goals: 0,
-            own_goals: 0,
-            net_goals: 0,
-        },
-    ],
+type QueryResponse = {
+    userEntry: EntryData;
 };
 
 export default function EntryCard() {
     const entryState = useAppSelector((state) => state.entryReducer.data);
     const poolState = useAppSelector((state) => state.poolReducer.data);
 
-    const [loading, setLoading] = useState(false);
-    const [entry, setEntry] = useState<EntryData>(emptyState);
+    const dispatch = useAppDispatch();
 
-    async function fetchEntry(entryId: string) {
-        setLoading(true);
+    const { data, error } = useSuspenseQuery<QueryResponse>(USER_ENTRY_QUERY, {
+        errorPolicy: 'all',
+        variables: { input: entryState.active },
+        fetchPolicy: 'no-cache',
+    });
 
-        const entryCardData = await getEntryCardData(entryId);
-        const playerData = await getPlayerData(entryCardData.entry.players);
-
-        entryCardData.entry.players = playerData;
-
-        setEntry(entryCardData.entry);
-        setLoading(false);
+    if (error) {
+        return (
+            <ErrorComponent
+                error={error}
+                // add reset function
+                reset={() => {}}
+            />
+        );
     }
 
-    useEffect(() => {
-        // early return for no entry active
-        if (entryState.active === '') {
-            return;
-        }
+    const entryCardData: EntryData | undefined = data?.userEntry;
 
-        // get the entry card data
-        fetchEntry(entryState.active);
-    }, [entryState.active]);
+    let entry: EntryData = {
+        id: entryCardData?.id || '',
+        paid: entryCardData?.paid || '',
+        status: entryCardData?.status || '',
+        // rank: entryCardData?.rank || '',
+        players: entryCardData?.players || [
+            {
+                id: 0,
+                fn: '-',
+                ln: '',
+                goals: 0,
+                own_goals: 0,
+                net_goals: 0,
+            },
+        ],
+        user: {
+            id: entryCardData?.user.id || '',
+            username: entryCardData?.user.username || '',
+            email: entryCardData?.user.email || '',
+            avatar: entryCardData?.user.avatar || '',
+            team: {
+                id: entryCardData?.user.team.id || '',
+                name: entryCardData?.user.team.name || '',
+            },
+        },
+    };
 
     useEffect(() => {
-        // set the empty entry state
-        setEntry(emptyState);
+        dispatch(resetActiveEntry());
     }, [poolState.active]);
 
-    return loading ? (
-        <div className="flex items-center justify-center min-h-[400px]">
-            <Spinner />
-        </div>
-    ) : (
+    return (
         <div>
             <div className="flex pb-5 ">
                 <div className="flex ">

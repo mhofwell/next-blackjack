@@ -30,6 +30,7 @@ export default function PoolDataBanner() {
         {
             errorPolicy: 'all',
             variables: { input: poolState.active },
+            fetchPolicy: 'no-cache',
         }
     );
 

@@ -6,6 +6,10 @@ import { logout } from '@/lib/auth/logout';
 import { Avatar } from './UI/avatar';
 import { Text } from './UI/text';
 import { useAppSelector } from '@/lib/store/hooks';
+import { useDispatch } from 'react-redux';
+import { resetActiveEntry } from '@/lib/store/slices/entry-slice';
+import { resetActivePool } from '@/lib/store/slices/pool-slice';
+import { resetAuthState } from '@/lib/store/slices/auth-slice';
 
 type User = {
     id: string;
@@ -27,6 +31,7 @@ const navigation: NavigationItem[] = [
 
 export default function Navigation() {
     const selector = useAppSelector((state) => state.authReducer.data);
+    const dispatch = useDispatch();
 
     const user: User = {
         id: selector.id,
@@ -56,6 +61,9 @@ export default function Navigation() {
 
     function handleClick() {
         // add remove auth state from redux store before logout
+        dispatch(resetActivePool([]));
+        dispatch(resetActiveEntry());
+        dispatch(resetAuthState());
         logout();
     }
 

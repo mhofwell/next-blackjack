@@ -22,8 +22,12 @@ export const entry = createSlice({
             // set the active entry
             state.data.active = action.payload;
         },
+        resetActiveEntry: () => {
+            // reset state
+            return initialState;
+        },
     },
 });
 
-export const { setActiveEntry } = entry.actions;
+export const { setActiveEntry, resetActiveEntry } = entry.actions;
 export default entry.reducer;

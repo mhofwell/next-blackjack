@@ -22,16 +22,17 @@ export const pool = createSlice({
     name: 'pool',
     initialState,
     reducers: {
-        addPools: (state, action: PayloadAction<Pool[]>) => {
-            // save the pools to the store
-            state.data.active = action.payload[0].id;
+        resetActivePool: (_state, _action: PayloadAction<Pool[]>) => {
+            // reset state
+            return initialState;
         },
         setActivePool: (state, action: PayloadAction<string>) => {
             // set the active pool
+
             state.data.active = action.payload;
         },
     },
 });
 
-export const { addPools, setActivePool } = pool.actions;
+export const { resetActivePool, setActivePool } = pool.actions;
 export default pool.reducer;

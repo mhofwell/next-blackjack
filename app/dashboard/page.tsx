@@ -38,7 +38,7 @@ export default async function Dashboard() {
             input: id,
         },
     });
-    
+
     if (errors) {
         console.error('errors', errors);
     }

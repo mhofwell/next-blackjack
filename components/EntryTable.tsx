@@ -7,14 +7,14 @@ import {
     TableHeader,
     TableRow,
 } from './UI/table';
+import ErrorComponent from '@/app/dashboard/error';
 import { Badge } from './UI/badge';
 import { Avatar } from './UI/avatar';
 import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
-import { useState, useEffect } from 'react';
-import { getPoolEntries } from '@/lib/actions/getPoolEntries';
 import { getInitials } from '@/lib/tools/getInitials';
-import SpinnerCentered from './UI/spinnerCentered';
 import { setActiveEntry } from '@/lib/store/slices/entry-slice';
+import { useSuspenseQuery } from '@apollo/client';
+import { POOL_ENTRIES_QUERY } from '@/lib/graphql/queries';
 
 type AllEntriesUser = {
     id: string;
@@ -29,29 +29,47 @@ type Entry = {
     user: AllEntriesUser;
 };
 
-const emptyState = {
-    id: '',
-    net_goals: 0,
-    status: 'INACTIVE',
-    paid: '',
-    user: {
-        id: '',
-        username: '',
+interface QueryResponse {
+    poolEntries: Entry[];
+}
+
+const emptyState = [
+    {
+        id: '1',
+        net_goals: 0,
+        status: 'INACTIVE',
+        paid: 'false',
+        user: {
+            id: '1',
+            username: '',
+        },
     },
-};
+];
 
 export default function EntryTable() {
     const poolState = useAppSelector((state) => state.poolReducer.data);
     const dispatch = useAppDispatch();
-    const [loading, setLoading] = useState(false);
-    let [entries, setEntries] = useState<Entry[]>([emptyState]);
 
-    async function fetchEntries(poolId: string) {
-        setLoading(true);
-        const response = await getPoolEntries(poolId);
-        setEntries(response.entries);
-        setLoading(false);
+    const { data, error } = useSuspenseQuery<QueryResponse>(
+        POOL_ENTRIES_QUERY,
+        {
+            errorPolicy: 'all',
+            variables: { input: poolState.active },
+            fetchPolicy: 'no-cache',
+        }
+    );
+
+    if (error) {
+        return (
+            <ErrorComponent
+                error={error}
+                // add reset function
+                reset={() => {}}
+            />
+        );
     }
+
+    const entries: Entry[] = data?.poolEntries || emptyState;
 
     async function handleEntryClick(
         event: React.MouseEvent<HTMLTableRowElement>
@@ -60,21 +78,7 @@ export default function EntryTable() {
         dispatch(setActiveEntry(payload));
     }
 
-    useEffect(() => {
-        // early return for inactive pool state
-        if (poolState.active === '') {
-            return;
-        }
-
-        // get the pool data
-        fetchEntries(poolState.active);
-    }, [poolState.active]);
-
-    return loading ? (
-        <div className="flex items-center justify-center min-h-[600px]">
-            <SpinnerCentered />
-        </div>
-    ) : (
+    return (
         <Table>
             <TableHead>
                 <TableRow>

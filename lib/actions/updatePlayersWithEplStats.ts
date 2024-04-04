@@ -14,7 +14,7 @@ type FormattedPlayerData = {
     net_goals: number;
 };
 
-export async function getPlayerData(players: PlayerData[]) {
+export async function updatePlayersWithEplStats(players: PlayerData[]) {
     let formattedArray: FormattedPlayerData[] = [];
 
     const epl = await fetch(
