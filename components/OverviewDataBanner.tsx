@@ -32,6 +32,8 @@ export default async function OverviewBanner({
         },
     ];
 
+    // you can try and put the overviewDataBanner loading and error state here
+
     return (
         <div className="bg-gray-900">
             <div className="mx-auto max-w-7xl">

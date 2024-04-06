@@ -6,6 +6,9 @@ import { getSession } from '@/lib/auth/utils';
 import { redirect } from 'next/navigation';
 import { getClient } from '@/lib/apollo/client';
 import { UPDATE_POOL_DATA_MUTATION } from '@/lib/graphql/queries';
+import { Toaster } from 'react-hot-toast';
+import ErrorComponent from './error';
+import ImageSelector from '@/components/ImageSelector';
 
 export const dynamic = 'force-dynamic';
 
@@ -40,7 +43,13 @@ export default async function Dashboard() {
     });
 
     if (errors) {
-        console.error('errors', errors);
+        return (
+            <ErrorComponent
+                error={errors}
+                // add reset function
+                reset={() => {}}
+            />
+        );
     }
 
     const overview: OverviewData = data?.updatePoolData || {};
@@ -67,6 +76,39 @@ export default async function Dashboard() {
                     <div className="w-full">
                         <Footer />
                     </div>
+                    <Toaster
+                        position="bottom-right"
+                        reverseOrder={true}
+                        toastOptions={{
+                            success: {
+                                icon: '🎉',
+                                className: 'text-sm',
+                                style: {
+                                    borderRadius: '10px',
+                                    background: 'rgb(31, 41, 55)',
+                                    color: 'rgb(190 242 100)',
+                                },
+                            },
+                            loading: {
+                                // icon: '',
+                                className: 'text-sm',
+                                style: {
+                                    borderRadius: '10px',
+                                    background: 'rgb(31, 41, 55)',
+                                    color: 'rgb(167 139 250)',
+                                },
+                            },
+                            error: {
+                                className: 'text-sm',
+                                icon: '🤷‍♂️',
+                                style: {
+                                    borderRadius: '10px',
+                                    background: 'rgb(31, 41, 55)',
+                                    color: 'rgb(248 113 113)',
+                                },
+                            },
+                        }}
+                    />
                 </div>
             </section>
         </div>

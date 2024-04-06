@@ -1,17 +1,18 @@
 'use client'; // Error components must be Client Components
 
+import { ApolloError, GraphQLErrors } from '@apollo/client/errors';
 import { useEffect } from 'react';
 
 export default function ErrorComponent({
     error,
     reset,
 }: {
-    error: Error & { digest?: string };
+    error: (Error & { digest?: string }) | GraphQLErrors | ApolloError;
     reset: () => void;
 }) {
     useEffect(() => {
         // Log the error to an error reporting service
-        console.error(error);
+        // console.error(error);
     }, [error]);
 
     return (

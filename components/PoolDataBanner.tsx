@@ -1,8 +1,12 @@
 'use client';
-import ErrorComponent from '@/app/dashboard/error';
 import { useAppSelector } from '@/lib/store/hooks';
 import { POOL_BANNER_DATA_QUERY } from '@/lib/graphql/queries';
-import { useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr';
+import { serverActionQuery } from '@/lib/actions/serverActionQuery';
+import { useEffect, useState } from 'react';
+import Spinner from './UI/spinner';
+import toast from 'react-hot-toast';
+import ErrorComponent from '@/app/dashboard/error';
+import { ApolloError } from '@apollo/client';
 
 type PoolBannerData = {
     id: string;
@@ -18,21 +22,78 @@ type PoolBannerData = {
     gameweek: number;
 };
 
-interface QueryResponse {
-    poolBannerData: PoolBannerData;
+type PoolState = {
+    active: string;
+};
+
+async function fetchData(
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+    setError: React.Dispatch<React.SetStateAction<ApolloError | null>>,
+    setBannerData: React.Dispatch<React.SetStateAction<PoolBannerData | null>>,
+    poolState: PoolState
+) {
+    setError(null);
+    setLoading(true);
+    const variables = {
+        input: poolState.active,
+    };
+
+    const { data, error } = await serverActionQuery(
+        POOL_BANNER_DATA_QUERY,
+        variables
+    );
+
+    if (data) {
+        setBannerData(data.poolBannerData);
+    }
+
+    if (error) {
+        setError(error);
+    }
+    setLoading(false);
 }
 
 export default function PoolDataBanner() {
-    const poolState = useAppSelector((state) => state.poolReducer.data);
-
-    const { data, error } = useSuspenseQuery<QueryResponse>(
-        POOL_BANNER_DATA_QUERY,
-        {
-            errorPolicy: 'all',
-            variables: { input: poolState.active },
-            fetchPolicy: 'no-cache',
-        }
+    const poolState: PoolState = useAppSelector(
+        (state) => state.poolReducer.data
     );
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<ApolloError | null>(null);
+    const [bannerData, setBannerData] = useState<PoolBannerData | null>(null);
+
+    useEffect(() => {
+        if (poolState.active === '') return;
+        toast.promise(
+            fetchData(setLoading, setError, setBannerData, poolState),
+            {
+                loading: 'Fetching data...',
+                success: 'Success!',
+                error: 'Failed to load pool data.',
+            }
+        );
+    }, [poolState.active]);
+
+    const stats = [
+        {
+            name: 'Gameweek ',
+            value: bannerData?.gameweek || 0,
+        },
+        { name: 'Total Entries', value: bannerData?.total || 0 },
+        {
+            name: 'Entry Fee',
+            value: bannerData?.fee ? `$${bannerData.fee}` : '$0',
+            unit: 'CAD',
+        },
+        {
+            name: 'Treasury',
+            value: bannerData?.treasury ? `$${bannerData.treasury}` : '$0',
+            unit: 'CAD',
+        },
+        { name: 'Active', value: bannerData?.active || 0 },
+        { name: 'Bust', value: bannerData?.bust || 0 },
+        { name: 'Inactive', value: bannerData?.inactive || 0 },
+        { name: 'Eliminated', value: bannerData?.eliminated || 0 },
+    ];
 
     if (error) {
         return (
@@ -44,31 +105,13 @@ export default function PoolDataBanner() {
         );
     }
 
-    const poolBannerData: PoolBannerData | undefined = data?.poolBannerData;
-
-    const stats = [
-        {
-            name: 'Gameweek ',
-            value: poolBannerData?.gameweek || 0,
-        },
-        { name: 'Total Entries', value: poolBannerData?.total || 0 },
-        {
-            name: 'Entry Fee',
-            value: poolBannerData?.fee ? `$${poolBannerData.fee}` : '$0',
-            unit: 'CAD',
-        },
-        {
-            name: 'Treasury',
-            value: poolBannerData?.treasury
-                ? `$${poolBannerData.treasury}`
-                : '$0',
-            unit: 'CAD',
-        },
-        { name: 'Active', value: poolBannerData?.active || 0 },
-        { name: 'Bust', value: poolBannerData?.bust || 0 },
-        { name: 'Inactive', value: poolBannerData?.inactive || 0 },
-        { name: 'Eliminated', value: poolBannerData?.eliminated || 0 },
-    ];
+    if (loading) {
+        return (
+            <div className="flex m-16 justify-center items-center h-full">
+                <Spinner />
+            </div>
+        );
+    }
 
     return (
         <div className="grid grid-cols-1 gap-px bg-white/5 sm:grid-cols-2 lg:grid-cols-4">

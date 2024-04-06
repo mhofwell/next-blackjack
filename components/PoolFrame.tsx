@@ -26,9 +26,7 @@ export default async function PoolFrame() {
                 <div className="pt-5 w-full">
                     <div className="bg-gray-900 py-5 border border-gray-800 rounded-xl">
                         <div className="mx-auto max-w-7xl">
-                            <Suspense fallback={<SpinnerCentered />}>
-                                <PoolDataBanner />
-                            </Suspense>
+                            <PoolDataBanner />
                         </div>
                     </div>
                 </div>
@@ -44,7 +42,7 @@ export default async function PoolFrame() {
                     <div className="w-1/2 mt-5 ml-5 min-h-[600px]">
                         <div className="bg-gray-900 border border-gray-800 rounded-xl ">
                             <div className="mx-auto max-w-7xl">
-                            {/* The best thing to do here to center the spinners is to do the flex items-center stuff here */}
+                                {/* The best thing to do here to center the spinners is to do the flex items-center stuff here */}
                                 <Suspense fallback={<SpinnerCentered />}>
                                     <AllEntriesList />
                                 </Suspense>

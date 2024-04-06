@@ -30,8 +30,7 @@ export default function PoolSelector({ id }: { id: string }) {
 
     useEffect(() => {
         dispatch(setActivePool(''));
-    }),
-        [];
+    }, []);
 
     return (
         <Fieldset>

@@ -1,5 +1,4 @@
 import { sortEntries } from '@/lib/tools/sortEntries';
-import SERVER_URL from '@/config';
 
 type LoginResponse = {
     status: number;
@@ -78,10 +77,6 @@ type PoolBannerData = {
     gameweek: number;
 };
 
-type DatabaseUrl = {
-    SERVER_URL: string;
-};
-
 const Query = {
     hello: async (_parent: any, _args: any, contextValue: any) => {
         const { greeting } = contextValue;
@@ -90,12 +85,6 @@ const Query = {
         } catch (error) {
             console.error(error);
         }
-    },
-    serverUrl: async (_parent: any, _args: any, _context: any) => {
-        const databaseUrl: DatabaseUrl = {
-            SERVER_URL: SERVER_URL,
-        };
-        return databaseUrl;
     },
     user: async (_parent: any, args: any, context: any) => {
         const id = args.input;
@@ -316,14 +305,13 @@ const Query = {
             }
         });
 
+        // try {
         // get the latest gameweek from EPL API
         const res = await fetch(
             'https://fantasy.premierleague.com/api/fixtures?future=1'
         );
-
         const data = await res.json();
         const gameweek = data[0].event - 1;
-
         const response: PoolBannerData = {
             id: bannerData.id,
             name: bannerData.name,

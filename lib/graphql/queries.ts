@@ -22,14 +22,6 @@ export const OPTIONS_QUERY = gql`
     }
 `;
 
-export const DB_QUERY = gql`
-    query Query {
-        serverUrl {
-            SERVER_URL
-        }
-    }
-`;
-
 export const POOL_ENTRIES_QUERY = gql`
     query PoolEntries($input: String!) {
         poolEntries(input: $input) {
@@ -45,7 +37,7 @@ export const POOL_ENTRIES_QUERY = gql`
     }
 `;
 
-export const POOL_BANNER_DATA_QUERY = gql`
+export const POOL_BANNER_DATA_QUERY = `
     query PoolBannerData($input: String!) {
         poolBannerData(input: $input) {
             id

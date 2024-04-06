@@ -3,7 +3,6 @@ import { gql } from 'graphql-tag';
 const typeDefs = gql`
     type Query {
         hello: String!
-        serverUrl: ServerUrl
         user(id: ID!): User!
         login(input: LoginCredentials!): LoginResponse!
         options(input: String!): [PoolOption]
@@ -19,10 +18,6 @@ const typeDefs = gql`
 
     type PoolCount {
         count: Int!
-    }
-
-    type ServerUrl {
-        SERVER_URL: String
     }
 
     type User {
