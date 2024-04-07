@@ -27,6 +27,8 @@ type UserCreationData = {
 
 type Player = {
     id: number;
+    goal_adjustment: number;
+    own_goal_adjustment: number;
 };
 
 type Pool = {
@@ -168,6 +170,8 @@ const Mutation = {
                         players: {
                             select: {
                                 id: true,
+                                goal_adjustment: true, // add adjustment
+                                own_goal_adjustment: true, // add adjustment
                             },
                         },
                     },
@@ -218,7 +222,9 @@ const Mutation = {
                             G += playerData.goals_scored;
                             count += 1;
                         }
-                        OG += playerData.own_goals;
+                        //sum adjustments
+                        G += player.goal_adjustment;
+                        OG += player.own_goal_adjustment;
                     }
                 });
 

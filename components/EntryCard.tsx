@@ -53,11 +53,19 @@ export default function EntryCard() {
 
     const dispatch = useAppDispatch();
 
+    useEffect(() => {
+        dispatch(resetActiveEntry());
+    }, [poolState.active]);
+
     const { data, error } = useSuspenseQuery<QueryResponse>(USER_ENTRY_QUERY, {
         errorPolicy: 'all',
         variables: { input: entryState.active },
         fetchPolicy: 'no-cache',
     });
+
+    console.log('data', data?.userEntry);
+    console.log('error', error);
+    console.log('entryState', entryState.active);
 
     if (error) {
         return (
@@ -97,10 +105,6 @@ export default function EntryCard() {
             },
         },
     };
-
-    useEffect(() => {
-        dispatch(resetActiveEntry());
-    }, [poolState.active]);
 
     return (
         <div>

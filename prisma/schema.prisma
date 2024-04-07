@@ -62,15 +62,17 @@ model Entry {
 }
 
 model Player {
-  id        Int      @id @unique
-  fn        String
-  ln        String
-  team      Team     @relation(fields: [teamId], references: [id])
-  teamId    Int
-  avatar    String?
-  entry     Entry[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                  Int      @id @unique
+  fn                  String
+  ln                  String
+  team                Team     @relation(fields: [teamId], references: [id])
+  teamId              Int
+  avatar              String?
+  goal_adjustment     Int      @default(0)
+  own_goal_adjustment Int      @default(0)
+  entry               Entry[]
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
 }
 
 model Team {

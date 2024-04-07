@@ -6,12 +6,6 @@ type LoginResponse = {
     errors: string[];
 };
 
-type PlayerData = {
-    id: number;
-    fn: string;
-    ln: string;
-};
-
 type User = {
     id: string;
     username: string;
@@ -35,13 +29,23 @@ type EntryCardData = {
     paid: string;
     status: string;
     user: User;
-    players: Player[] | PlayerWithGoals[];
+    players: Player[];
+};
+
+type UpdatedEntryCardData = {
+    id: string;
+    paid: string;
+    status: string;
+    user: User;
+    players: PlayerWithGoals[];
 };
 
 type Player = {
     id: number;
     fn: string;
     ln: string;
+    goal_adjustment: number;
+    own_goal_adjustment: number;
 };
 
 type PlayerWithGoals = {
@@ -333,6 +337,8 @@ const Query = {
         const { prisma } = context;
         const { input } = args;
 
+        console.log('input', input);
+
         if (!input) {
             return; // early return for no entry ID
         }
@@ -364,10 +370,14 @@ const Query = {
                         id: true,
                         fn: true,
                         ln: true,
+                        goal_adjustment: true,
+                        own_goal_adjustment: true,
                     },
                 },
             },
         });
+
+        await prisma.$disconnect();
 
         const epl = await fetch(
             'https://fantasy.premierleague.com/api/bootstrap-static/'
@@ -377,7 +387,7 @@ const Query = {
 
         let playersWithGoalsArray: PlayerWithGoals[] = [];
 
-        entry.players.forEach((player: PlayerData) => {
+        entry.players.forEach((player: Player) => {
             const playerData = eplData.elements.find(
                 (element: { id: number }) => {
                     return element.id === player.id;
@@ -389,18 +399,24 @@ const Query = {
                     id: player.id,
                     fn: player.fn,
                     ln: player.ln,
-                    goals: playerData.goals_scored,
-                    own_goals: playerData.own_goals,
-                    net_goals: playerData.goals_scored - playerData.own_goals,
+                    goals: playerData.goals_scored + player.goal_adjustment,
+                    own_goals:
+                        playerData.own_goals + player.own_goal_adjustment,
+                    net_goals:
+                        playerData.goals_scored -
+                        playerData.own_goals +
+                        (player.goal_adjustment - player.own_goal_adjustment),
                 });
             }
         });
 
-        entry.players = playersWithGoalsArray;
+        const newEntry: UpdatedEntryCardData = {
+            ...entry,
+            players: playersWithGoalsArray,
+        };
+        console.log('newentry', newEntry);
 
-        await prisma.$disconnect();
-
-        return entry;
+        return newEntry;
     },
 };
 
