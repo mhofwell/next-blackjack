@@ -63,10 +63,6 @@ export default function EntryCard() {
         fetchPolicy: 'no-cache',
     });
 
-    console.log('data', data?.userEntry);
-    console.log('error', error);
-    console.log('entryState', entryState.active);
-
     if (error) {
         return (
             <ErrorComponent
