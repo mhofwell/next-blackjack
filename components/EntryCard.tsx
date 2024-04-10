@@ -1,19 +1,13 @@
 'use client';
-import { Avatar } from './UI/avatar';
 import { Text } from './UI/text';
 import { Badge } from './UI/badge';
 import PlayerTable from './PlayerTable';
 import { useAppSelector } from '@/lib/store/hooks';
-import { getInitials } from '@/lib/tools/getInitials';
 import { USER_ENTRY_QUERY } from '@/lib/graphql/queries';
-import { useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr';
 import ErrorComponent from '@/app/dashboard/error';
 import { useEffect, useState } from 'react';
-import { useAppDispatch } from '@/lib/store/hooks';
-import { resetActiveEntry } from '@/lib/store/slices/entry-slice';
 import { serverActionQuery } from '@/lib/actions/serverActionQuery';
 import { ApolloError } from '@apollo/client';
-import Spinner from './UI/spinner';
 import Skeleton from './UI/skeleton';
 
 type EntryData = {
@@ -46,10 +40,6 @@ type User = {
     avatar: string;
     team: Team;
 };
-
-// type QueryResponse = {
-//     userEntry: EntryData;
-// };
 
 async function fetchData(
     setLoading: React.Dispatch<React.SetStateAction<boolean>>,
@@ -94,13 +84,6 @@ export default function EntryCard({ id }: { id: string | null }) {
         // dispatch(resetActiveEntry());
     }, [poolState.active]);
 
-    // const { data, error } = useSuspenseQuery<QueryResponse>(USER_ENTRY_QUERY, {
-    //     errorPolicy: 'all',
-    //     // variables: { input: entryState.active },
-    //     variables: { input: entryId },
-    //     fetchPolicy: 'no-cache',
-    // });
-
     let entry: EntryData = {
         id: entryData?.id || '',
         paid: entryData?.paid || '',
@@ -140,7 +123,6 @@ export default function EntryCard({ id }: { id: string | null }) {
 
     if (loading) {
         return (
-            // <div className="flex justify-center items-center min-h-64 min-w-64">
             <div className="">
                 {/* <Spinner /> */}
                 <Skeleton />

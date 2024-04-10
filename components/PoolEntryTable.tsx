@@ -103,6 +103,7 @@ export default function PoolEntryTable() {
             success: 'Entries fetched!',
             error: 'Failed to load entries.',
         });
+        selectedRow && setSelectedRow(null);
     }, [poolState.active]);
 
     const handleRowClick = (event: React.MouseEvent<HTMLTableRowElement>) => {
