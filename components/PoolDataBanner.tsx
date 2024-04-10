@@ -3,10 +3,10 @@ import { useAppSelector } from '@/lib/store/hooks';
 import { POOL_BANNER_DATA_QUERY } from '@/lib/graphql/queries';
 import { serverActionQuery } from '@/lib/actions/serverActionQuery';
 import { useEffect, useState } from 'react';
-import Spinner from './UI/spinner';
 import toast from 'react-hot-toast';
 import ErrorComponent from '@/app/dashboard/error';
 import { ApolloError } from '@apollo/client';
+import Skeleton from './UI/skeleton-grid';
 
 type PoolBannerData = {
     id: string;
@@ -66,9 +66,9 @@ export default function PoolDataBanner() {
         toast.promise(
             fetchData(setLoading, setError, setBannerData, poolState),
             {
-                loading: 'Fetching data...',
-                success: 'Success!',
-                error: 'Failed to load pool data.',
+                loading: 'Fetching banner...',
+                success: 'Banner fetched!',
+                error: 'Failed to load banner.',
             }
         );
     }, [poolState.active]);
@@ -107,14 +107,14 @@ export default function PoolDataBanner() {
 
     if (loading) {
         return (
-            <div className="flex m-16 justify-center items-center h-full">
-                <Spinner />
+            <div className="flex justify-center items-center h-full">
+                <Skeleton />
             </div>
         );
     }
 
     return (
-        <div className="grid grid-cols-1 gap-px bg-white/5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-px bg-white/5 sm:grid-cols-2 lg:grid-cols-4">
             {stats.map((stat) => (
                 <div
                     key={stat.name}

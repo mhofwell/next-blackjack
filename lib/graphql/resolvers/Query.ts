@@ -57,8 +57,10 @@ type PlayerWithGoals = {
     net_goals: number;
 };
 
-type ListEntry = {
+type Entry = {
     id: string;
+    goals: number;
+    own_goals: number;
     net_goals: number;
     status: string;
     paid: boolean;
@@ -238,7 +240,7 @@ const Query = {
             return; // early return for no pool ID
         }
 
-        const entries = await prisma.entry.findMany({
+        const entries: Entry[] = await prisma.entry.findMany({
             where: {
                 pool: {
                     id,
@@ -246,6 +248,8 @@ const Query = {
             },
             select: {
                 id: true,
+                goals: true,
+                own_goals: true,
                 net_goals: true,
                 status: true,
                 paid: true,
@@ -258,11 +262,11 @@ const Query = {
             },
         });
 
-        let response: ListEntry[] = sortEntries(entries);
+        const sortedEntries: any = sortEntries(entries);
 
         // could add the rank in here.
         await prisma.$disconnect();
-        return response;
+        return sortedEntries;
     },
     poolBannerData: async (_parent: any, args: any, context: any) => {
         // get the banner data for a pool
@@ -297,7 +301,7 @@ const Query = {
         let bust = 0;
         let eliminated = 0;
 
-        bannerData.entries.forEach((entry: ListEntry) => {
+        bannerData.entries.forEach((entry: Entry) => {
             if (entry.status === 'ACTIVE') {
                 active++;
             } else if (entry.status === 'INACTIVE') {
@@ -336,8 +340,6 @@ const Query = {
         // get the entry for a user in a pool
         const { prisma } = context;
         const { input } = args;
-
-        console.log('input', input);
 
         if (!input) {
             return; // early return for no entry ID
@@ -414,7 +416,6 @@ const Query = {
             ...entry,
             players: playersWithGoalsArray,
         };
-        console.log('newentry', newEntry);
 
         return newEntry;
     },

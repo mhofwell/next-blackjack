@@ -43,11 +43,13 @@
         "react-hook-form": "^7.50.1",
         "react-hot-toast": "^2.4.1",
         "react-redux": "^9.1.0",
+        "react-sparkle": "^2.0.0",
         "save-dev": "^0.0.1-security",
         "sharp": "^0.33.2",
         "symbol-observable": "^4.0.0",
         "tailwind-merge": "^2.2.1",
         "tailwindcss-animate": "^1.0.7",
+        "vaul": "^0.9.0",
         "vine": "^0.1.1",
         "zod": "^3.22.4"
     },

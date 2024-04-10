@@ -4,22 +4,9 @@ import OverviewDataBanner from '../../components/OverviewDataBanner';
 import { Metadata } from 'next';
 import { getSession } from '@/lib/auth/utils';
 import { redirect } from 'next/navigation';
-import { getClient } from '@/lib/apollo/client';
-import { UPDATE_POOL_DATA_MUTATION } from '@/lib/graphql/queries';
 import { Toaster } from 'react-hot-toast';
-import ErrorComponent from './error';
-import ImageSelector from '@/components/ImageSelector';
 
 export const dynamic = 'force-dynamic';
-
-type OverviewData = {
-    activePools: number;
-    totalTreasury: number;
-    activeEntries: number;
-    totalEntries: number;
-    gameweek: number;
-    // add currency type
-};
 
 export const metadata: Metadata = {
     title: 'Dasbhoard',
@@ -35,35 +22,12 @@ export default async function Dashboard() {
 
     const id: string = session.cuid;
 
-    const { data, errors } = await getClient().mutate({
-        mutation: UPDATE_POOL_DATA_MUTATION,
-        variables: {
-            input: id,
-        },
-    });
-
-    if (errors) {
-        return (
-            <ErrorComponent
-                error={errors}
-                // add reset function
-                reset={() => {}}
-            />
-        );
-    }
-
-    const overview: OverviewData = data?.updatePoolData || {};
-
     return (
         <div className="h-screen">
             <section className="-mt-32">
                 <div className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8 ">
                     <div className="rounded-lg bg-white dark:bg-gray-900 px-5 py-6 shadow sm:px-6">
-                        {errors ? (
-                            <h1>App not available.</h1>
-                        ) : (
-                            <OverviewDataBanner overview={overview} />
-                        )}
+                        <OverviewDataBanner id={id} />
                     </div>
                 </div>
 

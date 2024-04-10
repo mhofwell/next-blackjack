@@ -3,7 +3,6 @@
 import { DocumentNode } from 'graphql';
 import { getClient } from '../apollo/client';
 import gql from 'graphql-tag';
-import { GraphQLError } from 'graphql';
 
 /**
  * Executes a GraphQL query on the server.

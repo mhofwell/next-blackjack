@@ -3,21 +3,47 @@ import { Description, Field, FieldGroup, Fieldset } from './UI/fieldset';
 import { Select } from './UI/select';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { setActivePool } from '@/lib/store/slices/pool-slice';
-import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr';
 import { OPTIONS_QUERY } from '@/lib/graphql/queries';
 import { useEffect } from 'react';
+import { serverActionQuery } from '@/lib/actions/serverActionQuery';
+import { ApolloError } from '@apollo/client';
+import { useState } from 'react';
 
 type PoolOption = {
     id: string;
     name: string;
 };
 
+async function fetchData(
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+    setError: React.Dispatch<React.SetStateAction<ApolloError | null>>,
+    setOptions: React.Dispatch<React.SetStateAction<PoolOption[] | null>>,
+    id: string
+) {
+    setError(null);
+    setLoading(true);
+
+    const variables = {
+        input: id,
+    };
+
+    const { data, error } = await serverActionQuery(OPTIONS_QUERY, variables);
+
+    if (data) {
+        setOptions(data.options);
+    }
+
+    if (error) {
+        setError(error);
+    }
+    setLoading(false);
+}
+
 export default function PoolSelector({ id }: { id: string }) {
     const dispatch = useAppDispatch();
-
-    const { data, loading, error } = useQuery(OPTIONS_QUERY, {
-        variables: { input: id },
-    });
+    const [error, setError] = useState<ApolloError | null>(null);
+    const [options, setOptions] = useState<PoolOption[] | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
 
     let disabled: boolean = false;
 
@@ -26,10 +52,9 @@ export default function PoolSelector({ id }: { id: string }) {
         disabled = true;
     }
 
-    const options: PoolOption[] = data?.options || [];
-
     useEffect(() => {
         dispatch(setActivePool(''));
+        fetchData(setLoading, setError, setOptions, id);
     }, []);
 
     return (
@@ -47,9 +72,7 @@ export default function PoolSelector({ id }: { id: string }) {
                             onChange={(e) =>
                                 dispatch(setActivePool(e.target.value))
                             }
-                            defaultValue={
-                                options ? 'Select a pool' : 'No pools available'
-                            }
+                            defaultValue={'Select a pool'}
                             disabled={
                                 !options || options.length === 0 || loading
                             }

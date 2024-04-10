@@ -13,7 +13,7 @@ export const OVERVIEW_QUERY = gql`
     }
 `;
 
-export const OPTIONS_QUERY = gql`
+export const OPTIONS_QUERY = `
     query Options($input: String!) {
         options(input: $input) {
             id
@@ -22,10 +22,12 @@ export const OPTIONS_QUERY = gql`
     }
 `;
 
-export const POOL_ENTRIES_QUERY = gql`
+export const POOL_ENTRIES_QUERY = `
     query PoolEntries($input: String!) {
         poolEntries(input: $input) {
             id
+            goals
+            own_goals
             net_goals
             status
             paid
@@ -54,7 +56,7 @@ export const POOL_BANNER_DATA_QUERY = `
     }
 `;
 
-export const USER_ENTRY_QUERY = gql`
+export const USER_ENTRY_QUERY = `
     query UserEntry($input: String!) {
         userEntry(input: $input) {
             id

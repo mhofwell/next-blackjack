@@ -1,4 +1,3 @@
-import { pool } from '@/lib/store/slices/pool-slice';
 import { hashPassword } from '@/lib/tools/password';
 import { validateSignUpInput } from '@/lib/validator/validate';
 import { ZodIssue } from 'zod';
@@ -224,6 +223,11 @@ const Mutation = {
                         }
                         //sum adjustments
                         G += player.goal_adjustment;
+
+                        if (playerData.own_goals > 0) {
+                            OG += playerData.own_goals;
+                        }
+
                         OG += player.own_goal_adjustment;
                     }
                 });

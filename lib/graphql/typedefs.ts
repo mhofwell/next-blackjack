@@ -35,6 +35,8 @@ const typeDefs = gql`
 
     type EntryData {
         id: String!
+        goals: Int!
+        own_goals: Int!
         net_goals: Int!
         status: String!
         paid: String!

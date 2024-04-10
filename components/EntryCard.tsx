@@ -8,9 +8,13 @@ import { getInitials } from '@/lib/tools/getInitials';
 import { USER_ENTRY_QUERY } from '@/lib/graphql/queries';
 import { useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr';
 import ErrorComponent from '@/app/dashboard/error';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { resetActiveEntry } from '@/lib/store/slices/entry-slice';
+import { serverActionQuery } from '@/lib/actions/serverActionQuery';
+import { ApolloError } from '@apollo/client';
+import Spinner from './UI/spinner';
+import Skeleton from './UI/skeleton';
 
 type EntryData = {
     id: string;
@@ -43,25 +47,86 @@ type User = {
     team: Team;
 };
 
-type QueryResponse = {
-    userEntry: EntryData;
-};
+// type QueryResponse = {
+//     userEntry: EntryData;
+// };
 
-export default function EntryCard() {
-    const entryState = useAppSelector((state) => state.entryReducer.data);
+async function fetchData(
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+    setError: React.Dispatch<React.SetStateAction<ApolloError | null>>,
+    setEntryData: React.Dispatch<React.SetStateAction<EntryData | null>>,
+    entryId: string | null
+) {
+    setError(null);
+    setLoading(true);
+    const variables = {
+        input: entryId,
+    };
+
+    const { data, error } = await serverActionQuery(
+        USER_ENTRY_QUERY,
+        variables
+    );
+
+    if (data) {
+        setEntryData(data.userEntry);
+    }
+
+    if (error) {
+        setError(error);
+    }
+    setLoading(false);
+}
+
+export default function EntryCard({ id }: { id: string | null }) {
+    // const entryState = useAppSelector((state) => state.entryReducer.data);
     const poolState = useAppSelector((state) => state.poolReducer.data);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<ApolloError | null>(null);
+    const [entryData, setEntryData] = useState<EntryData | null>(null);
+    const [entryId, setEntryId] = useState(id);
 
-    const dispatch = useAppDispatch();
+    // const dispatch = useAppDispatch();
 
     useEffect(() => {
-        dispatch(resetActiveEntry());
+        setEntryId('');
+        fetchData(setLoading, setError, setEntryData, entryId);
+        // dispatch(resetActiveEntry());
     }, [poolState.active]);
 
-    const { data, error } = useSuspenseQuery<QueryResponse>(USER_ENTRY_QUERY, {
-        errorPolicy: 'all',
-        variables: { input: entryState.active },
-        fetchPolicy: 'no-cache',
-    });
+    // const { data, error } = useSuspenseQuery<QueryResponse>(USER_ENTRY_QUERY, {
+    //     errorPolicy: 'all',
+    //     // variables: { input: entryState.active },
+    //     variables: { input: entryId },
+    //     fetchPolicy: 'no-cache',
+    // });
+
+    let entry: EntryData = {
+        id: entryData?.id || '',
+        paid: entryData?.paid || '',
+        status: entryData?.status || '',
+        // rank: entryData?.rank || '',
+        players: entryData?.players || [
+            {
+                id: 0,
+                fn: '-',
+                ln: '',
+                goals: 0,
+                own_goals: 0,
+                net_goals: 0,
+            },
+        ],
+        user: {
+            id: entryData?.user.id || '',
+            username: entryData?.user.username || '',
+            email: entryData?.user.email || '',
+            avatar: entryData?.user.avatar || '',
+            team: {
+                id: entryData?.user.team.id || '',
+                name: entryData?.user.team.name || '',
+            },
+        },
+    };
 
     if (error) {
         return (
@@ -73,104 +138,40 @@ export default function EntryCard() {
         );
     }
 
-    const entryCardData: EntryData | undefined = data?.userEntry;
-
-    let entry: EntryData = {
-        id: entryCardData?.id || '',
-        paid: entryCardData?.paid || '',
-        status: entryCardData?.status || '',
-        // rank: entryCardData?.rank || '',
-        players: entryCardData?.players || [
-            {
-                id: 0,
-                fn: '-',
-                ln: '',
-                goals: 0,
-                own_goals: 0,
-                net_goals: 0,
-            },
-        ],
-        user: {
-            id: entryCardData?.user.id || '',
-            username: entryCardData?.user.username || '',
-            email: entryCardData?.user.email || '',
-            avatar: entryCardData?.user.avatar || '',
-            team: {
-                id: entryCardData?.user.team.id || '',
-                name: entryCardData?.user.team.name || '',
-            },
-        },
-    };
+    if (loading) {
+        return (
+            // <div className="flex justify-center items-center min-h-64 min-w-64">
+            <div className="">
+                {/* <Spinner /> */}
+                <Skeleton />
+            </div>
+        );
+    }
 
     return (
         <div>
-            <div className="flex pb-5 ">
-                <div className="flex ">
-                    <Avatar
-                        initials={
-                            entry.user ? getInitials(entry.user.username) : '?'
-                        }
-                        className="size-12"
-                    />
-                    <div className="flex ">
-                        <div>
-                            <h2 className="text-xl pl-5 pt-1">
-                                {entry.user.username
-                                    ? entry.user.username
-                                    : 'Entry Details'}
-                            </h2>
-                            <Text className="pl-5">
-                                {' '}
-                                {entry.user.username
-                                    ? // ? `Rank: ${entry.rank}`
-                                      `Rank: 1`
-                                    : 'Select an entry on the right to view details'}
-                            </Text>
-                        </div>
-                        {entry.id ? (
-                            <div className="mt-1 justify-end overflow-auto">
-                                <Badge
-                                    color={
-                                        entry.status === 'ACTIVE'
-                                            ? 'lime'
-                                            : entry.status === 'BUST'
-                                            ? 'amber'
-                                            : entry.status === 'INACTIVE'
-                                            ? 'zinc'
-                                            : 'red'
-                                    }
-                                    className="ml-5"
-                                >
-                                    {entry.status}
-                                </Badge>
-                                <Badge
-                                    color={
-                                        entry.paid === 'YES' ? 'fuchsia' : 'red'
-                                    }
-                                    className="ml-5"
-                                >
-                                    {entry.paid === 'YES' ? 'PAID' : 'OWING'}
-                                </Badge>{' '}
-                            </div>
-                        ) : (
-                            ' '
-                        )}
-                    </div>
-                </div>
-            </div>
-
             <PlayerTable players={entry.players} />
 
-            <div className="pt-10">
-                <h3>Player Details:</h3>
+            <div className="pt-2 flex flex-row space-x-4">
+                {entry.id ? (
+                    <div className="justify-end overflow-auto pt-2">
+                        <Badge color={entry.paid === 'YES' ? 'fuchsia' : 'red'}>
+                            {entry.paid === 'YES' ? 'PAID' : 'OWING'}
+                        </Badge>{' '}
+                    </div>
+                ) : (
+                    ' '
+                )}
 
                 {entry.user && entry.user.email && entry.user.team ? (
-                    <>
+                    <div className="flex flex-row space-x-4">
+                        <div className="pt-1">|</div>
+                        <Text className="text-sm pt-2">{entry.user.email}</Text>
+                        <div className="pt-1">|</div>
                         <Text className="text-sm pt-2">
-                            Email: {entry.user.email}
+                            {entry.user.team.name}
                         </Text>
-                        <Text className="">Club: {entry.user.team.name}</Text>
-                    </>
+                    </div>
                 ) : (
                     <>
                         <br></br> <br></br>

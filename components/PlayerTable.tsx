@@ -18,13 +18,13 @@ type Player = {
     net_goals: number;
 };
 
-export default async function PlayerTable({ players }: { players: Player[] }) {
+export default function PlayerTable({ players }: { players: Player[] }) {
     let totals = {
         goals: 0,
         own_goals: 0,
         net_goals: 0,
     };
-    
+
     function getTotals() {
         players.forEach((player) => {
             totals.goals += player.goals;
@@ -38,10 +38,13 @@ export default async function PlayerTable({ players }: { players: Player[] }) {
     totals = getTotals();
 
     return (
-        <Table dense className="mx-auto">
+        <Table
+            dense
+            // className="[--gutter:theme(spacing.6)] sm:[--gutter:theme(spacing.8)]"
+        >
             <TableHead>
                 <TableRow>
-                    <TableHeader>Footballer</TableHeader>
+                    <TableHeader>Footballer ⚽️</TableHeader>
                     <TableHeader className="">G</TableHeader>
                     <TableHeader className="">OG</TableHeader>
                     <TableHeader className="">NG</TableHeader>

@@ -7,6 +7,8 @@ type EntryStatus = {
 
 type Entry = {
     id: string;
+    goals: number;
+    own_goals: number;
     net_goals: number;
     status: string;
     paid: boolean;

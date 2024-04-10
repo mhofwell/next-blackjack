@@ -22,6 +22,10 @@ const config: Config = {
                     '100%': { opacity: '0', transform: 'scale(0.9)' },
                 },
             },
+            transitionProperty: {
+                width: 'width',
+                spacing: 'margin, padding',
+            },
         },
     },
     plugins: [require('@tailwindcss/forms'), require('autoprefixer')],

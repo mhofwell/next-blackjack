@@ -80,7 +80,7 @@ export default function ReactHookForm() {
     }, [serverErrors, loading]);
 
     return (
-        <div className=" flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 ">
+        <div className="flex flex-col items-center justify-center min-h-screen sm:mx-auto sm:w-full sm:max-w-sm">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                 <Image
                     className="mx-auto h-20 w-20"
@@ -96,9 +96,8 @@ export default function ReactHookForm() {
                     Premiere League Blackjack
                 </h2>
             </div>
-
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 ">
                     <div>
                         <label
                             htmlFor="email"

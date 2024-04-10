@@ -1,5 +1,9 @@
 'use server';
+import ErrorComponent from '@/app/dashboard/error';
+import Skeleton from './UI/skeleton-grid';
 import { Badge } from './UI/badge';
+import { getClient } from '@/lib/apollo/client';
+import { UPDATE_POOL_DATA_MUTATION } from '@/lib/graphql/queries';
 
 type OverviewData = {
     activePools: number;
@@ -10,11 +14,16 @@ type OverviewData = {
     // add currency type
 };
 
-export default async function OverviewBanner({
-    overview,
-}: {
-    overview: OverviewData;
-}) {
+export default async function OverviewBanner({ id }: { id: string }) {
+    const { data, errors } = await getClient().mutate({
+        mutation: UPDATE_POOL_DATA_MUTATION,
+        variables: {
+            input: id,
+        },
+    });
+
+    const overview: OverviewData = data?.updatePoolData;
+
     const stats = [
         { name: 'Active Pools', value: overview?.activePools || 0 },
         { name: 'Gameweek', value: overview?.gameweek || 0 },
@@ -32,16 +41,28 @@ export default async function OverviewBanner({
         },
     ];
 
-    // you can try and put the overviewDataBanner loading and error state here
+    if (errors) {
+        return (
+            <ErrorComponent
+                error={errors}
+                // add reset function
+                reset={() => {}}
+            />
+        );
+    }
 
-    return (
+    return !data ? (
+        <div className="flex justify-center items-center w-full h-full">
+            <Skeleton />
+        </div> // add skeleton loader here
+    ) : (
         <div className="bg-gray-900">
             <div className="mx-auto max-w-7xl">
                 <h2 className="text-2xl pb-5 font-semibold tracking-tight text-white">
                     Overview
                 </h2>
                 <div className="border border-gray-800 p-5 rounded-xl">
-                    <div className="grid grid-cols-1 gap-px bg-white/5 sm:grid-cols-2 lg:grid-cols-4">
+                    <div className="grid grid-cols-2 gap-px bg-white/5 sm:grid-cols-2 lg:grid-cols-4">
                         {stats.map((stat) => (
                             <div
                                 key={stat.name}
