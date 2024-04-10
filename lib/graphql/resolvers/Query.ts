@@ -389,14 +389,15 @@ const Query = {
 
         let playersWithGoalsArray: PlayerWithGoals[] = [];
 
+        entry.players ? entry.players : (entry.players = []);
+
         entry.players.forEach((player: Player) => {
             const playerData = eplData.elements.find(
                 (element: { id: number }) => {
                     return element.id === player.id;
                 }
             );
-
-            if (playerData) {
+            if (playerData.length !== 0) {
                 playersWithGoalsArray.push({
                     id: player.id,
                     fn: player.fn,

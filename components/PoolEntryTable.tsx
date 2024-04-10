@@ -74,10 +74,8 @@ export default function PoolEntryTable() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<ApolloError | null>(null);
     const [entries, setEntries] = useState<Entry[] | null>(null);
-    const [isMobile, setIsMobile] = useState(
-        typeof window !== 'undefined' ? window.innerWidth <= 768 : false
-    );
     const [selectedRow, setSelectedRow] = useState<string | null>(null);
+    const [isMobile, setIsMobile] = useState(false);
 
     let rank = 1;
 
@@ -149,31 +147,17 @@ export default function PoolEntryTable() {
         <>
             <Table
                 dense
-                className="[--gutter:theme(spacing.6)] sm:[--gutter:theme(spacing.8)]"
+                className=" text-xs sm:text-sm [--gutter:theme(spacing.4)] sm:[--gutter:theme(spacing.8)]"
             >
                 <TableHead>
                     <TableRow>
                         <TableHeader>Rank</TableHeader>
-                        <TableHeader>Avatar</TableHeader>
+                        {!isMobile && <TableHeader>Avatar</TableHeader>}
                         <TableHeader>User</TableHeader>
-                        {!isMobile && (
-                            <TableHeader style={{ width: '100px' }}>
-                                G
-                            </TableHeader>
-                        )}
-                        {!isMobile && (
-                            <TableHeader style={{ width: '100px' }}>
-                                OG
-                            </TableHeader>
-                        )}
-                        <TableHeader className="" style={{ width: '100px' }}>
-                            NG
-                        </TableHeader>
-                        {!isMobile && (
-                            <TableHeader style={{ width: '100px' }}>
-                                EXG
-                            </TableHeader>
-                        )}
+                        {!isMobile && <TableHeader>G</TableHeader>}
+                        {!isMobile && <TableHeader>OG</TableHeader>}
+                        <TableHeader>NG</TableHeader>
+                        {!isMobile && <TableHeader>EXG</TableHeader>}
                         <TableHeader>Status</TableHeader>
                         {!isMobile && <TableHeader>Paid</TableHeader>}
                     </TableRow>
@@ -217,20 +201,23 @@ export default function PoolEntryTable() {
                                             ? `${currentRank} 🃏🏆`
                                             : currentRank}
                                     </TableCell>
-                                    <TableCell>
-                                        <Avatar
-                                            initials={
-                                                entry.user
-                                                    ? getInitials(
-                                                          entry.user.username
-                                                      )
-                                                    : '?'
-                                            }
-                                            className="size-6"
-                                            // src={entry.avatar}
-                                            alt={entry.user.username}
-                                        />
-                                    </TableCell>
+                                    {!isMobile && (
+                                        <TableCell>
+                                            <Avatar
+                                                initials={
+                                                    entry.user
+                                                        ? getInitials(
+                                                              entry.user
+                                                                  .username
+                                                          )
+                                                        : '?'
+                                                }
+                                                className="size-6"
+                                                // src={entry.avatar}
+                                                alt={entry.user.username}
+                                            />
+                                        </TableCell>
+                                    )}
                                     <TableCell className="font-sm">
                                         {entry.user.username}
                                     </TableCell>

@@ -40,7 +40,7 @@ export default function PlayerTable({ players }: { players: Player[] }) {
     return (
         <Table
             dense
-            // className="[--gutter:theme(spacing.6)] sm:[--gutter:theme(spacing.8)]"
+            className="[--gutter:theme(spacing.4)] sm:[--gutter:theme(spacing.8)]"
         >
             <TableHead>
                 <TableRow>
@@ -53,8 +53,13 @@ export default function PlayerTable({ players }: { players: Player[] }) {
             <TableBody>
                 {players.map((player) => (
                     <TableRow key={player.id}>
-                        <TableCell className="font-medium">
-                            {player.fn} {player.ln}
+                        <TableCell className="font-medium text-xs sm:text-med">
+                            {player.fn.length + player.ln.length > 15
+                                ? `${player.fn.substring(
+                                      0,
+                                      8
+                                  )}... ${player.ln.substring(0, 5)}...`
+                                : `${player.fn} ${player.ln}`}
                         </TableCell>
                         <TableCell className=" tabular-nums">
                             {player.goals}
@@ -70,7 +75,7 @@ export default function PlayerTable({ players }: { players: Player[] }) {
 
                 <TableRow className="border border-fuscia" key={totals.goals}>
                     <TableCell className="font-medium">
-                        <Text>TOTAL</Text>
+                        <Text className="text-xs sm:text-med">TOTAL</Text>
                     </TableCell>
                     <TableCell className=" tabular-nums">
                         {totals.goals}

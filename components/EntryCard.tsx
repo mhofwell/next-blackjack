@@ -9,6 +9,9 @@ import { useEffect, useState } from 'react';
 import { serverActionQuery } from '@/lib/actions/serverActionQuery';
 import { ApolloError } from '@apollo/client';
 import Skeleton from './UI/skeleton';
+import { useAppDispatch } from '@/lib/store/hooks';
+import { resetActiveEntry } from '@/lib/store/slices/entry-slice';
+import { Avatar } from './UI/avatar';
 
 type EntryData = {
     id: string;
@@ -69,19 +72,19 @@ async function fetchData(
 }
 
 export default function EntryCard({ id }: { id: string | null }) {
-    // const entryState = useAppSelector((state) => state.entryReducer.data);
+    const entryState = useAppSelector((state) => state.entryReducer.data);
     const poolState = useAppSelector((state) => state.poolReducer.data);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<ApolloError | null>(null);
     const [entryData, setEntryData] = useState<EntryData | null>(null);
     const [entryId, setEntryId] = useState(id);
 
-    // const dispatch = useAppDispatch();
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
         setEntryId('');
         fetchData(setLoading, setError, setEntryData, entryId);
-        // dispatch(resetActiveEntry());
+        dispatch(resetActiveEntry());
     }, [poolState.active]);
 
     let entry: EntryData = {
@@ -134,31 +137,43 @@ export default function EntryCard({ id }: { id: string | null }) {
         <div>
             <PlayerTable players={entry.players} />
 
-            <div className="pt-2 flex flex-row space-x-4">
+            <div className="flex flex-col pt-3">
+                <Text className="text-sm pt-2 pb-2 pr-2">Details:</Text>
+                <hr className="border border-gray-800"/>
                 {entry.id ? (
-                    <div className="justify-end overflow-auto pt-2">
+                    <div className="flex space-x-2 overflow-auto pt-3">
                         <Badge color={entry.paid === 'YES' ? 'fuchsia' : 'red'}>
                             {entry.paid === 'YES' ? 'PAID' : 'OWING'}
                         </Badge>{' '}
+                        {entry.user.username === 'Teddy Prosser' ? (
+                            <Avatar
+                                initials={'UFA'}
+                                className="size-8"
+                                src={'/liverpool_small.png'}
+                                alt={entry.user.username}
+                            />
+                        ) : (
+                            <Avatar
+                                initials={'?'}
+                                className="size-8"
+                                // src={'/liverpool_small.png'}
+                                alt={entry.user.username}
+                            />
+                        )}
                     </div>
                 ) : (
                     ' '
                 )}
 
-                {entry.user && entry.user.email && entry.user.team ? (
-                    <div className="flex flex-row space-x-4">
-                        <div className="pt-1">|</div>
-                        <Text className="text-sm pt-2">{entry.user.email}</Text>
-                        <div className="pt-1">|</div>
-                        <Text className="text-sm pt-2">
-                            {entry.user.team.name}
-                        </Text>
+                {/* {entry.user && entry.user.email && entry.user.team ? (
+                    <div className="flex space-x-4">
+                        <div className="text-xs pt-2">{entry.user.email}</div>
                     </div>
                 ) : (
                     <>
                         <br></br> <br></br>
                     </>
-                )}
+                )} */}
             </div>
         </div>
     );

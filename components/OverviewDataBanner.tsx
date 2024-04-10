@@ -32,7 +32,6 @@ export default async function OverviewBanner({ id }: { id: string }) {
             value: overview
                 ? `${overview?.activeEntries}/${overview?.totalEntries}`
                 : 0,
-            unit: 'OK',
         },
         {
             name: 'Total Treasury',
@@ -77,13 +76,7 @@ export default async function OverviewBanner({ id }: { id: string }) {
                                             {stat.value}
                                         </span>
                                     </p>
-                                    {stat.unit === 'OK' ? (
-                                        <div className="py-[10px]">
-                                            <Badge color="fuchsia">
-                                                All Paid
-                                            </Badge>
-                                        </div>
-                                    ) : stat.unit ? (
+                                    {stat.unit ? (
                                         <div className="py-4">
                                             <span className="text-sm text-gray-400">
                                                 {stat.unit}
