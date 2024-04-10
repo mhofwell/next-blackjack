@@ -139,10 +139,13 @@ export default function EntryCard({ id }: { id: string | null }) {
 
             <div className="flex flex-col pt-3">
                 <Text className="text-sm pt-2 pb-2 pr-2">Details:</Text>
-                <hr className="border border-gray-800"/>
+                <hr className="border border-gray-800" />
                 {entry.id ? (
                     <div className="flex space-x-2 overflow-auto pt-3">
-                        <Badge color={entry.paid === 'YES' ? 'fuchsia' : 'red'}>
+                        <Badge
+                            className="text-2xs"
+                            color={entry.paid === 'YES' ? 'fuchsia' : 'red'}
+                        >
                             {entry.paid === 'YES' ? 'PAID' : 'OWING'}
                         </Badge>{' '}
                         {entry.user.username === 'Teddy Prosser' ? (
@@ -164,16 +167,6 @@ export default function EntryCard({ id }: { id: string | null }) {
                 ) : (
                     ' '
                 )}
-
-                {/* {entry.user && entry.user.email && entry.user.team ? (
-                    <div className="flex space-x-4">
-                        <div className="text-xs pt-2">{entry.user.email}</div>
-                    </div>
-                ) : (
-                    <>
-                        <br></br> <br></br>
-                    </>
-                )} */}
             </div>
         </div>
     );

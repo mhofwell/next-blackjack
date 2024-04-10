@@ -147,7 +147,7 @@ export default function PoolEntryTable() {
         <>
             <Table
                 dense
-                className=" text-xs sm:text-sm [--gutter:theme(spacing.4)] sm:[--gutter:theme(spacing.8)]"
+                className=" text-xs sm:text-sm [--gutter:theme(spacing.4)] sm:[--gutter:theme(spacing.6)]"
             >
                 <TableHead>
                     <TableRow>
@@ -171,7 +171,7 @@ export default function PoolEntryTable() {
                         rank++;
 
                         entry.net_goals === 21
-                            ? (entry.status = 'BLACKJACK')
+                            ? (entry.status = '21!')
                             : entry.status;
 
                         return (
@@ -218,7 +218,7 @@ export default function PoolEntryTable() {
                                             />
                                         </TableCell>
                                     )}
-                                    <TableCell className="font-sm">
+                                    <TableCell className="text-xs sm:text-2xs">
                                         {entry.user.username}
                                     </TableCell>
 
@@ -244,7 +244,7 @@ export default function PoolEntryTable() {
                                         <Badge
                                             className="text-xs"
                                             color={
-                                                entry.status === 'BLACKJACK'
+                                                entry.status === '21!'
                                                     ? 'yellow'
                                                     : entry.status === 'ACTIVE'
                                                     ? 'lime'
@@ -263,7 +263,7 @@ export default function PoolEntryTable() {
                                         <TableCell style={{ width: '100px' }}>
                                             {' '}
                                             <Badge
-                                                className="text-xs"
+                                                className="text-2xs"
                                                 color={
                                                     entry.paid === 'YES'
                                                         ? 'fuchsia'
