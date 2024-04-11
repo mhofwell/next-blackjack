@@ -43,6 +43,7 @@ export default async function Dashboard() {
                     <Toaster
                         position="bottom-right"
                         reverseOrder={true}
+                        // need to set conditional toast options here based on light/dark
                         toastOptions={{
                             success: {
                                 icon: '🎉',

@@ -18,7 +18,13 @@ type Player = {
     net_goals: number;
 };
 
-export default function PlayerTable({ players }: { players: Player[] }) {
+export default function PlayerTable({
+    players,
+    isMobile,
+}: {
+    players: Player[];
+    isMobile: boolean;
+}) {
     let totals = {
         goals: 0,
         own_goals: 0,
@@ -54,7 +60,8 @@ export default function PlayerTable({ players }: { players: Player[] }) {
                 {players.map((player) => (
                     <TableRow key={player.id}>
                         <TableCell className="font-medium text-xs sm:text-med">
-                            {player.fn.length + player.ln.length > 15
+                            {player.fn.length + player.ln.length > 15 &&
+                            isMobile
                                 ? `${player.fn.substring(
                                       0,
                                       8

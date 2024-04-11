@@ -80,6 +80,22 @@ export default function EntryCard({ id }: { id: string | null }) {
     const [entryId, setEntryId] = useState(id);
 
     const dispatch = useAppDispatch();
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        // Ensure window is defined
+        if (typeof window !== 'undefined') {
+            const handleResize = () => {
+                setIsMobile(window.innerWidth <= 425);
+            };
+
+            window.addEventListener('resize', handleResize);
+
+            return () => {
+                window.removeEventListener('resize', handleResize);
+            };
+        }
+    }, []);
 
     useEffect(() => {
         setEntryId('');
@@ -134,7 +150,7 @@ export default function EntryCard({ id }: { id: string | null }) {
 
     return (
         <div>
-            <PlayerTable players={entry.players} />
+            <PlayerTable players={entry.players} isMobile={isMobile} />
 
             <div className="flex flex-col pt-3">
                 <Text className="text-sm pt-2 pb-2 pr-2">Details:</Text>
@@ -149,7 +165,6 @@ export default function EntryCard({ id }: { id: string | null }) {
                         </Badge>{' '}
                         {entry.user.username === 'Teddy Prosser' ? (
                             <Avatar
-                                
                                 className="size-8"
                                 src={'/liverpool_small.png'}
                                 alt={entry.user.username}
