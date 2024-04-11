@@ -127,7 +127,6 @@ export default function EntryCard({ id }: { id: string | null }) {
     if (loading) {
         return (
             <div className="">
-                {/* <Spinner /> */}
                 <Skeleton />
             </div>
         );
@@ -150,7 +149,7 @@ export default function EntryCard({ id }: { id: string | null }) {
                         </Badge>{' '}
                         {entry.user.username === 'Teddy Prosser' ? (
                             <Avatar
-                                initials={'UFA'}
+                                
                                 className="size-8"
                                 src={'/liverpool_small.png'}
                                 alt={entry.user.username}

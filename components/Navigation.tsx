@@ -69,8 +69,8 @@ export default function Navigation() {
 
     return (
         <div className="min-h-full">
-            <div className="bg-gray-800 pb-32">
-                <Disclosure as="nav" className="bg-gray-800">
+            <div className="dark:bg-gray-800 bg-gray-100 pb-32">
+                <Disclosure as="nav" className="dark:bg-gray-800 bg-gray-100">
                     {({ open }) => (
                         <>
                             <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
@@ -78,13 +78,8 @@ export default function Navigation() {
                                     <div className="flex h-16 items-center justify-between px-4 sm:px-0">
                                         <div className="flex items-center">
                                             <div className="flex-shrink-0">
-                                                <img
-                                                    className="h-8 w-8"
-                                                    src="/group2.png"
-                                                    width={500}
-                                                    height={500}
-                                                    alt="PL Blackjack Logo"
-                                                />
+                                                <Avatar className="size-12 bg-gray-900" src={"/group2.png"}/>
+                                           
                                             </div>
                                             <div className="hidden md:block">
                                                 <div className="ml-10 flex items-baseline space-x-4">
@@ -94,7 +89,7 @@ export default function Navigation() {
                                                             href={item.href}
                                                             className={classNames(
                                                                 item.current
-                                                                    ? 'bg-gray-900 text-white'
+                                                                    ? ' bg-white text-black border border-gray-600 hover:bg-gray-600 hover:text-white dark:bg-gray-900 dark:text-white'
                                                                     : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                                                                 'rounded-md px-3 py-2 text-sm font-medium'
                                                             )}
@@ -114,7 +109,7 @@ export default function Navigation() {
                                             <div className="ml-4 flex items-center md:ml-6">
                                                 <button
                                                     type="button"
-                                                    className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                                                    className="relative ml-auto border border-gray-600 dark:border-gray-400 dark:text-gray-400 flex-shrink-0 rounded-full bg-white dark:bg-gray-900 hover:bg-gray-600 hover:text-white p-1 text-gray-600 focus:outline-none  focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                                                 >
                                                     <span className="absolute -inset-1.5" />
                                                     <span className="sr-only">
@@ -132,7 +127,7 @@ export default function Navigation() {
                                                     className="relative ml-3"
                                                 >
                                                     <div>
-                                                        <Menu.Button className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800">
+                                                        <Menu.Button className="relative border border-gray-600 dark:text-white dark:bg-gray-900 hover:bg-gray-600 hover:text-white flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-offset-2 focus:ring-offset-gray-800">
                                                             <span className="absolute -inset-1.5" />
                                                             <span className="sr-only">
                                                                 Open user menu
@@ -141,7 +136,7 @@ export default function Navigation() {
                                                                 initials={
                                                                     initials
                                                                 }
-                                                                className="size-10 rounded-full bg-gray-900"
+                                                                className="size-10 rounded-full"
                                                                 // src={
                                                                 //     user.imageUrl
                                                                 // }
@@ -158,18 +153,34 @@ export default function Navigation() {
                                                         leaveFrom="transform opacity-100 scale-100"
                                                         leaveTo="transform opacity-0 scale-95"
                                                     >
-                                                        <Menu.Items className="border border-gray-700 m-2 text-xs p-2 space-y-1 absolute flex flex-col items-start right-0 z-10 mt-2 w-56 origin-top-right rounded-md dark:bg-gray-800 dark:text-gray-300  py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                                            <div className="border border-gray-700 m-2 text-xs w-48 rounded-xl p-2 space-y-1 dark:bg-gray-900">
+                                                        <Menu.Items className="border border-gray-700 m-2 text-xs p-2 space-y-1 absolute flex flex-col items-start right-0 z-10 mt-2 w-56 origin-top-right rounded-md dark:bg-gray-800 bg-white dark:text-gray-300  py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                                            <div className="border border-gray-700 m-2 text-xs w-48 rounded-xl p-2 space-y-1 bg-gray-100 dark:bg-gray-900">
                                                                 <Text>
                                                                     {
                                                                         user.username
                                                                     }
                                                                 </Text>
-                                                                <div>
+                                                                <div className="pb-2">
                                                                     {user.email}
                                                                 </div>
-                                                                <div>
-                                                                    {user.team}
+                                                                <hr className=" pb-2 border[0.5px] border-gray-800" />
+                                                                <div className="flex">
+                                                                    {user.team ===
+                                                                    'Liverpool' ? (
+                                                                        <>
+                                                                            <Avatar
+                                                                                className="size-8"
+                                                                                src={
+                                                                                    '/liverpool_small.png'
+                                                                                }
+                                                                            />
+                                                                            <p className="pl-1 pt-2">
+                                                                                Liverpool
+                                                                            </p>
+                                                                        </>
+                                                                    ) : (
+                                                                        user.team
+                                                                    )}
                                                                 </div>
 
                                                                 {/* <div>user.email</div> */}
@@ -192,12 +203,12 @@ export default function Navigation() {
                                                                                     active
                                                                                         ? 'dark:hover:bg-gray-700'
                                                                                         : '',
-                                                                                    'block px-4 py-2 text-sm text-gray-700 dark:hover:text-white dark:text-gray-300 '
+                                                                                    'block px-4 py-2 text-base text-gray-400 hover:text-gray-700 dark:hover:text-white dark:text-gray-300 '
                                                                                 )}
                                                                             >
                                                                                 {
                                                                                     button.name
-                                                                                }
+                                                                                } 
                                                                             </a>
                                                                         )}
                                                                     </Disclosure.Button>
@@ -210,7 +221,7 @@ export default function Navigation() {
                                         </div>
                                         <div className="-mr-2 flex md:hidden">
                                             {/* Mobile menu button */}
-                                            <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md bg-gray-800 p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                                            <Disclosure.Button className="relative inline-flex items-center border border-black justify-center rounded-md bg-white dark:bg-gray-900 p-2 text-gray-600 hover:bg-gray-600 hover:text-white focus:outline-none focus:ring-white focus:ring-offset-2 dark:focus:ring-offset-gray-800 focus:ring-offset-gray-00">
                                                 <span className="absolute -inset-0.5" />
                                                 <span className="sr-only">
                                                     Open main menu
@@ -241,8 +252,8 @@ export default function Navigation() {
                                             href={item.href}
                                             className={classNames(
                                                 item.current
-                                                    ? 'bg-gray-900 text-white'
-                                                    : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                                                    ? 'dark:bg-gray-900 bg-white dark:border-gray-600 text-black dark:text-white border border-black hover:bg-gray-600 hover:text-white'
+                                                    : 'text-gray-300 hover:bg-gray-600 hover:text-white',
                                                 'block rounded-md px-3 py-2 text-base font-medium'
                                             )}
                                             aria-current={
@@ -255,12 +266,12 @@ export default function Navigation() {
                                         </Disclosure.Button>
                                     ))}
                                 </div>
-                                <div className="border-t border-gray-700 pb-3 pt-4">
+                                <div className="border-t pb-3 pt-4">
                                     <div className="flex items-center px-5">
-                                        <div className="flex-shrink-0">
+                                        <div className="flex-shrink-0 ">
                                             <Avatar
                                                 initials={initials}
-                                                className="size-10 rounded-full bg-gray-900"
+                                                className="size-10 rounded-full  dark:bg-gray-900 dark:text-white bg-white border border-gray-800"
                                                 // src={
                                                 //     user.imageUrl
                                                 // }
@@ -268,16 +279,16 @@ export default function Navigation() {
                                             />
                                         </div>
                                         <div className="ml-3">
-                                            <div className="text-base font-medium leading-none text-white">
+                                            <div className="text-base pb-1 font-medium leading-none dark:text-white text-gray-800">
                                                 {user.username}
                                             </div>
                                             <div className="text-sm font-medium leading-none text-gray-400">
-                                                {user.id}
+                                                {user.email}
                                             </div>
                                         </div>
                                         <button
                                             type="button"
-                                            className="relative ml-auto flex-shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                                            className="relative ml-auto border border-gray-600 dark:border-gray-400 dark:text-gray-400 flex-shrink-0 rounded-full bg-white dark:bg-gray-900 hover:bg-gray-600 hover:text-white p-1 text-gray-600 focus:outline-none focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                                         >
                                             <span className="absolute -inset-1.5" />
                                             <span className="sr-only">
@@ -293,7 +304,7 @@ export default function Navigation() {
                                         {userNavigation.map((item) => (
                                             <Disclosure.Button
                                                 key={item.name}
-                                                className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+                                                className="block rounded-md px-3 py-2 dark:hover:text-white text-base text-gray-400 hover:text-gray-700"
                                             >
                                                 {item.name}
                                             </Disclosure.Button>
@@ -307,7 +318,7 @@ export default function Navigation() {
                 <header className="py-10">
                     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                         <div className="flex">
-                            <h1 className="text-3xl font-bold tracking-tight text-white">
+                            <h1 className="text-3xl font-bold tracking-tight text-gray-800 dark:text-white">
                                 Your Dashboard
                             </h1>
                             <p className="px-3">🚀</p>

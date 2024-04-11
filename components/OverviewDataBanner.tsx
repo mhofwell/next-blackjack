@@ -53,26 +53,26 @@ export default async function OverviewBanner({ id }: { id: string }) {
     return !data ? (
         <div className="flex justify-center items-center w-full h-full">
             <Skeleton />
-        </div> // add skeleton loader here
+        </div>
     ) : (
-        <div className="bg-gray-900">
+        <div className="dark:bg-gray-900 bg-white ">
             <div className="mx-auto max-w-7xl">
-                <h2 className="text-2xl pb-5 font-semibold tracking-tight text-white">
+                <h2 className="text-2xl pb-5 font-semibold tracking-tight text-black dark:text-white">
                     Overview
                 </h2>
-                <div className="border border-gray-800 p-5 rounded-xl">
-                    <div className="grid grid-cols-2 gap-px bg-white/5 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="border dark:bg-gray-900 bg-white border-gray-800 p-5 rounded-xl">
+                    <div className="grid grid-cols-2 gap-px dark:bg-gray-800 bg-gray-200 sm:grid-cols-2 lg:grid-cols-4">
                         {stats.map((stat) => (
                             <div
                                 key={stat.name}
-                                className="bg-gray-900 px-4 py-6 sm:px-6 lg:px-8"
+                                className="dark:bg-gray-900 bg-white  px-4 py-6 sm:px-6 lg:px-8"
                             >
-                                <p className="text-sm font-medium leading-6 text-gray-400">
+                                <p className="text-sm font-medium leading-6 text-gray-500">
                                     {stat.name}
                                 </p>
                                 <div className=" mt-2 flex gap-x-2">
                                     <p>
-                                        <span className="text-4xl font-semibold tracking-tight text-white">
+                                        <span className="text-4xl font-semibold tracking-tight text-gray-600 dark:text-white">
                                             {stat.value}
                                         </span>
                                     </p>

@@ -185,7 +185,7 @@ export default function PoolEntryTable() {
                                         >
                                     ) => handleRowClick(event)}
                                     id={entry.id}
-                                    className="hover:bg-gray-800 cursor-pointer"
+                                    className="dark:hover:bg-gray-800 hover:bg-gray-200 cursor-pointer"
                                 >
                                     <TableCell>
                                         {entry.net_goals >= 17 &&
@@ -285,7 +285,7 @@ export default function PoolEntryTable() {
                                     <TableRow key={`${entry.id}-expanded`}>
                                         <TableCell colSpan={9}>
                                             <div className="w-full flex justify-center">
-                                                <div className="border dark:bg-gray-900 border-gray-800 p-5 rounded-xl w-full sm:w-2/3 mx-auto">
+                                                <div className="border dark:bg-gray-900 bg-white dark:text-white text-black border-gray-800 p-5 rounded-xl w-full sm:w-2/3 mx-auto">
                                                     <EntryCard id={entry.id} />
                                                 </div>
                                             </div>

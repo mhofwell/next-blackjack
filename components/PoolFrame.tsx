@@ -15,7 +15,7 @@ export default async function PoolFrame() {
         <div>
             <ErrorBoundary errorComponent={ErrorComponent}>
                 <>
-                    <h1 className="text-2xl font-semibold">Pool Manager</h1>
+                    <h1 className="text-2xl dark:text-white text-gray-800 font-semibold">Pool Manager</h1>
                     <PoolSelector id={id} />
                     <PoolData />
                 </>

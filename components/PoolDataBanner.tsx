@@ -114,18 +114,18 @@ export default function PoolDataBanner() {
     }
 
     return (
-        <div className="grid grid-cols-2 gap-px bg-white/5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-px dark:bg-gray-800 bg-gray-200 sm:grid-cols-2 lg:grid-cols-4">
             {stats.map((stat) => (
                 <div
                     key={stat.name}
-                    className="bg-gray-900 px-4 py-2 sm:px-6 lg:px-8"
+                    className="dark:bg-gray-900 bg-white px-4 py-2 sm:px-6 lg:px-8"
                 >
-                    <p className="text-sm font-medium leading-6 text-gray-400">
+                    <p className="text-sm font-medium leading-6 text-gray-500">
                         {stat.name}
                     </p>
                     <div className=" mt-2 flex gap-x-2">
                         <p>
-                            <span className="text-2xl font-semibold tracking-tight text-white">
+                            <span className="text-2xl font-semibold tracking-tight text-gray-600 dark:text-white">
                                 {stat.value}
                             </span>
                         </p>

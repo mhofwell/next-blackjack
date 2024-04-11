@@ -6,7 +6,11 @@ const config: Config = {
     theme: {
         extend: {
             backgroundImage: {
-                trippy: 'url("/public/trippy.png")',
+                'rainbow': "url('/rrrainbow.svg')",
+                'abstract': "url('/aaabstract.png')",
+                'abstract2': "url('/aaabstract2.jpeg')",
+                'noise': "url('/nnnoise.svg')",
+                
             },
             animation: {
                 enter: 'enter 0.2s ease-out forwards',

@@ -1,5 +1,4 @@
 'use client';
-import Image from 'next/image';
 import Link from 'next/link';
 import AnimatedButton from './AnimatedButton';
 import { useForm, SubmitHandler } from 'react-hook-form';
@@ -11,6 +10,7 @@ import { logUserIn } from '@/lib/auth/login';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { setAuthState } from '@/lib/store/slices/auth-slice';
 import { useRouter } from 'next/navigation';
+import { Avatar } from './UI/avatar';
 
 type LoginCredentials = z.infer<typeof LogInSchema>;
 
@@ -81,21 +81,16 @@ export default function ReactHookForm() {
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen sm:mx-auto sm:w-full sm:max-w-sm">
-            <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                <Image
-                    className="mx-auto h-20 w-20"
-                    src="/group2.png"
-                    width={500}
-                    height={500}
-                    alt="PL Blackjack Logo"
-                />
-                <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight ">
-                    Welcome Back to
-                </h2>
-                <h2 className="text-center text-2xl font-bold leading-9 tracking-tight ">
-                    Premiere League Blackjack
-                </h2>
-            </div>
+            <Avatar
+                className="mx-auto size-20 bg-gray-900"
+                src={'/group2.png'}
+            />
+            <h2 className="mt-5 text-center text-gray-700 dark:text-white text-2xl font-semibold leading-9 tracking-tight ">
+                Welcome Back to
+            </h2>
+            <h2 className="text-center text-2xl text-gray-700 dark:text-white font-semibold leading-9 tracking-tight ">
+                Premiere League Blackjack
+            </h2>
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 ">
                     <div>
@@ -110,7 +105,7 @@ export default function ReactHookForm() {
                                 id="email"
                                 placeholder="jurgen@klopp.com"
                                 autoComplete="email"
-                                className="block w-full autofill:text-white autofill:shadow-[inset_0_0_0px_1000px_rgb(55,65,81)] rounded-md border-0 py-1.5 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-500 dark:bg-gray-600 dark:hover:bg-gray-700 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                className="block w-full dark:autofill:shadow-[inset_0_0_0px_1000px_rgb(55,65,81)] rounded-md border-0 py-1.5 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-500 dark:bg-gray-600 dark:hover:bg-gray-700 hover:bg-gray-100 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 {...register('email')}
                             />
                             {errors.email?.message && (
@@ -125,7 +120,7 @@ export default function ReactHookForm() {
                         <div className="flex items-center justify-between">
                             <label
                                 htmlFor="password"
-                                className="block text-sm font-medium leading-6 text-gray-900 dark:text-white"
+                                className="block text-sm font-medium leading-6 text-gray-900 dark:text-white "
                             >
                                 Password
                             </label>
@@ -141,7 +136,7 @@ export default function ReactHookForm() {
                                 type="password"
                                 placeholder="********"
                                 autoComplete="current-password"
-                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-500 dark:bg-gray-600 dark:hover:bg-gray-700 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                className="block w-full dark:hover:bg-gray-700 hover:bg-gray-100 rounded-md border-0 py-1.5 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-500 dark:bg-gray-600 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 {...register('password')}
                             />
                             {errors.password?.message && (
