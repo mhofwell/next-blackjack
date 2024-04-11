@@ -89,6 +89,8 @@ export default function EntryCard({ id }: { id: string | null }) {
                 setIsMobile(window.innerWidth <= 425);
             };
 
+            handleResize();
+
             window.addEventListener('resize', handleResize);
 
             return () => {

@@ -86,6 +86,9 @@ export default function PoolEntryTable() {
                 setIsMobile(window.innerWidth <= 768);
             };
 
+            // Check window size on mount
+            handleResize();
+
             window.addEventListener('resize', handleResize);
 
             return () => {
@@ -106,13 +109,15 @@ export default function PoolEntryTable() {
 
     const handleRowClick = (event: React.MouseEvent<HTMLTableRowElement>) => {
         const payload: string = event.currentTarget.id;
-        dispatch(setActiveEntry(payload));
-        setSelectedRow(selectedRow === payload ? null : payload);
+        if (payload != 'a') {
+            dispatch(setActiveEntry(payload));
+            setSelectedRow(selectedRow === payload ? null : payload);
+        }
     };
 
     const componentData: Entry[] = entries || [
         {
-            id: '1',
+            id: 'a',
             goals: 0,
             own_goals: 0,
             net_goals: 0,
@@ -195,7 +200,7 @@ export default function PoolEntryTable() {
                                             : entry.net_goals > 29
                                             ? `${currentRank} 🤡`
                                             : currentRank === 1 &&
-                                              entry.id !== '1'
+                                              entry.id !== 'a'  
                                             ? `${currentRank} 🤩`
                                             : entry.net_goals === 21
                                             ? `${currentRank} 🃏🏆`
