@@ -304,6 +304,7 @@ export default function Navigation() {
                                         {userNavigation.map((item) => (
                                             <Disclosure.Button
                                                 key={item.name}
+                                                onClick={handleClick}
                                                 className="block rounded-md px-3 py-2 dark:hover:text-white text-base text-gray-400 hover:text-gray-700"
                                             >
                                                 {item.name}
