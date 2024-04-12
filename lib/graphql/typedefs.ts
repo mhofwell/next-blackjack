@@ -51,6 +51,15 @@ const typeDefs = gql`
         user: User
     }
 
+    type UserEntryLarge {
+        id: String!
+        paid: String!
+        status: String!
+        pool: PoolBannerData
+        players: [Player]
+        user: User
+    }
+
     type Player {
         id: Int!
         fn: String!

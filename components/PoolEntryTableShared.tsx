@@ -14,13 +14,18 @@ import {
 } from './UI/table';
 import { Badge } from './UI/badge';
 import { Avatar } from './UI/avatar';
-import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
+import { useAppDispatch } from '@/lib/store/hooks';
 import { getInitials } from '@/lib/tools/getInitials';
 import { serverActionQuery } from '@/lib/actions/serverActionQuery';
 import { ApolloError } from '@apollo/client';
-import { POOL_ENTRIES_QUERY } from '@/lib/graphql/queries';
+import {
+    POOL_BANNER_DATA_QUERY,
+    POOL_ENTRIES_QUERY,
+} from '@/lib/graphql/queries';
 import { useState, useEffect } from 'react';
 import { setActiveEntry } from '@/lib/store/slices/entry-slice';
+import { usePathname } from 'next/navigation';
+import { Text } from './UI/text';
 
 type AllEntriesUser = {
     id: string;
@@ -35,6 +40,19 @@ type Entry = {
     status: string;
     paid: string;
     user: AllEntriesUser;
+};
+
+type PoolBannerData = {
+    name: string;
+    entryFee: number;
+    treasury: number;
+    fee: number;
+    active: number;
+    bust: number;
+    inactive: number;
+    eliminated: number;
+    total: number;
+    gameweek: number;
 };
 
 type PoolState = {
@@ -68,26 +86,50 @@ async function fetchData(
     setLoading(false);
 }
 
+async function fetchPoolBannerData(
+    id: string,
+    setPoolBannerData: React.Dispatch<
+        React.SetStateAction<PoolBannerData | null>
+    >,
+    setError: React.Dispatch<React.SetStateAction<ApolloError | null>>,
+    setBannerLoading: React.Dispatch<React.SetStateAction<boolean>>
+) {
+    const variables = {
+        input: id,
+    };
+
+    setBannerLoading(true);
+
+    const { data, error } = await serverActionQuery(
+        POOL_BANNER_DATA_QUERY,
+        variables
+    );
+
+    if (data) {
+        setPoolBannerData(data.poolBannerData);
+    }
+
+    if (error) {
+        console.error(error);
+        setError(error);
+    }
+    setBannerLoading(false);
+}
+
 export default function PoolEntryTable() {
-    const poolState = useAppSelector((state) => state.poolReducer.data);
     const dispatch = useAppDispatch();
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState<ApolloError | null>(null);
     const [entries, setEntries] = useState<Entry[] | null>(null);
     const [selectedRow, setSelectedRow] = useState<string | null>(null);
     const [isMobile, setIsMobile] = useState(false);
-
-    const isDarkMode =
-        window.matchMedia &&
-        window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-    const shareIcon = isDarkMode ? '/dark_share.png' : '/light_share.png';
-
-    const handleShare = () => {
-        const url = window.location.origin + `/pool/${poolState.active}`;
-        toast.success('Copied to clipboard!');
-        navigator.clipboard.writeText(url);
-    };
+    const [poolBannerData, setPoolBannerData] = useState<PoolBannerData | null>(
+        null
+    );
+    const [bannerLoading, setBannerLoading] = useState(true);
+    const pathname = usePathname();
+    const parts = pathname.split('/');
+    const poolState = { active: parts[2] }; // 'Pool ID'
 
     let rank = 1;
 
@@ -116,6 +158,19 @@ export default function PoolEntryTable() {
             success: 'Entries fetched!',
             error: 'Failed to load entries.',
         });
+        toast.promise(
+            fetchPoolBannerData(
+                poolState.active,
+                setPoolBannerData,
+                setError,
+                setBannerLoading
+            ),
+            {
+                loading: 'Fetching pool data...',
+                success: 'Pool data fetched!',
+                error: 'Failed to load pool data.',
+            }
+        );
         selectedRow && setSelectedRow(null);
     }, [poolState.active]);
 
@@ -127,7 +182,7 @@ export default function PoolEntryTable() {
         }
     };
 
-    const componentData: Entry[] = entries || [
+    const entryComponentData: Entry[] = entries || [
         {
             id: 'a',
             goals: 0,
@@ -142,6 +197,19 @@ export default function PoolEntryTable() {
         },
     ];
 
+    const poolComponentData: PoolBannerData = {
+        name: poolBannerData?.name || '',
+        entryFee: poolBannerData?.entryFee || 0,
+        treasury: poolBannerData?.treasury || 0,
+        fee: poolBannerData?.fee || 0,
+        active: poolBannerData?.active || 0,
+        bust: poolBannerData?.bust || 0,
+        inactive: poolBannerData?.inactive || 0,
+        eliminated: poolBannerData?.eliminated || 0,
+        total: poolBannerData?.total || 0,
+        gameweek: poolBannerData?.gameweek || 0,
+    };
+
     if (error) {
         return (
             <ErrorComponent
@@ -152,7 +220,7 @@ export default function PoolEntryTable() {
         );
     }
 
-    if (loading) {
+    if (loading || bannerLoading) {
         return (
             <div className="flex justify-center items-center w-full h-full">
                 <Skeleton />
@@ -161,17 +229,22 @@ export default function PoolEntryTable() {
     }
 
     return (
-        <div>
-            <div className="flex justify-end">
-                <img
-                    className="size-6 mb-2"
-                    style={{
-                        cursor: 'pointer',
-                    }}
-                    src={shareIcon}
-                    onClick={handleShare}
-                ></img>
+        <>
+            <div className="flex flex-col">
+                <div className="flex">
+                    <Text className=" pr-2">Pool:</Text>
+                    <h2 className="text-s font-normal">
+                        {poolComponentData.name}
+                    </h2>
+                </div>
+                <div className="flex">
+                    <Text className=" pr-2">Gameweek:</Text>
+                    <h2 className="text-s font-normal">
+                        {poolComponentData.gameweek}
+                    </h2>
+                </div>
             </div>
+
             <Table
                 dense
                 className=" text-xs sm:text-sm [--gutter:theme(spacing.4)] sm:[--gutter:theme(spacing.6)]"
@@ -190,7 +263,7 @@ export default function PoolEntryTable() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {componentData.map((entry) => {
+                    {entryComponentData.map((entry) => {
                         // Use the variable inside the map function
                         const currentRank = rank;
 
@@ -327,6 +400,6 @@ export default function PoolEntryTable() {
                     })}
                 </TableBody>
             </Table>
-        </div>
+        </>
     );
 }

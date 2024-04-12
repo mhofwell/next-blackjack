@@ -53,7 +53,7 @@ async function fetchData(
     setLoading(false);
 }
 
-export default function PoolDataBanner() {
+export default function PoolDataBannerShared() {
     const poolState: PoolState = useAppSelector(
         (state) => state.poolReducer.data
     );
@@ -76,6 +76,10 @@ export default function PoolDataBanner() {
 
     const stats = [
         {
+            name: 'Pool',
+            value: bannerData?.name || 'No Pool',
+        },
+        {
             name: 'Gameweek ',
             value: bannerData?.gameweek || 0,
         },
@@ -83,11 +87,6 @@ export default function PoolDataBanner() {
         {
             name: 'Entry Fee',
             value: bannerData?.fee ? `$${bannerData.fee}` : '$0',
-            unit: 'CAD',
-        },
-        {
-            name: 'Treasury',
-            value: bannerData?.treasury ? `$${bannerData.treasury}` : '$0',
             unit: 'CAD',
         },
         { name: 'Active', value: bannerData?.active || 0 },

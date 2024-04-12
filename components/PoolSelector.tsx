@@ -53,7 +53,6 @@ export default function PoolSelector({ id }: { id: string }) {
     }
 
     useEffect(() => {
-        dispatch(setActivePool(''));
         fetchData(setLoading, setError, setOptions, id);
     }, []);
 

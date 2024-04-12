@@ -28,7 +28,6 @@ export const pool = createSlice({
         },
         setActivePool: (state, action: PayloadAction<string>) => {
             // set the active pool
-
             state.data.active = action.payload;
         },
     },

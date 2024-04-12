@@ -11,8 +11,6 @@ import Skeleton from './UI/skeleton';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { resetActiveEntry } from '@/lib/store/slices/entry-slice';
 import { Avatar } from './UI/avatar';
-import { Button } from '@headlessui/react';
-import toast from 'react-hot-toast';
 
 type EntryData = {
     id: string;
@@ -72,31 +70,20 @@ async function fetchData(
     setLoading(false);
 }
 
-export default function EntryCard({
+export default function EntryCardLarge({
     id,
     rank,
 }: {
     id: string | null;
-    rank: number | null;
+    rank: string | null;
 }) {
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState<ApolloError | null>(null);
     const [entryData, setEntryData] = useState<EntryData | null>(null);
     const [entryId, setEntryId] = useState(id);
+
     const dispatch = useAppDispatch();
     const [isMobile, setIsMobile] = useState(false);
-
-    const isDarkMode =
-        window.matchMedia &&
-        window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-    const shareIcon = isDarkMode ? '/dark_share.png' : '/light_share.png';
-
-    const handleShare = () => {
-        const url = window.location.origin + `/entry/${rank}/${entry.id}`;
-        toast.success('Copied to clipboard!');
-        navigator.clipboard.writeText(url);
-    };
 
     useEffect(() => {
         // Ensure window is defined
@@ -116,7 +103,6 @@ export default function EntryCard({
     }, []);
 
     useEffect(() => {
-        setEntryId('');
         // fetch the entry id after entries are selected from the table.
         fetchData(setLoading, setError, setEntryData, entryId);
         dispatch(resetActiveEntry());
@@ -169,15 +155,30 @@ export default function EntryCard({
 
     return (
         <div>
-            <div className="flex justify-end">
-                <img
-                    className="size-6 mb-2"
-                    style={{
-                        cursor: 'pointer',
-                    }}
-                    src={shareIcon}
-                    onClick={handleShare}
-                ></img>
+            {/* <PoolDataBannerShared /> */}
+            <div className="flex justify-between">
+                <div className="pb-5">
+                    <h1 className="pr-4">{entry.user.username}</h1>
+                    <Text>Rank: {rank}</Text>
+                </div>
+                <div>
+                    <Badge
+                        className="text-s"
+                        color={
+                            entry.status === '21!'
+                                ? 'yellow'
+                                : entry.status === 'ACTIVE'
+                                ? 'lime'
+                                : entry.status === 'BUST'
+                                ? 'orange'
+                                : entry.status === 'INACTIVE'
+                                ? 'zinc'
+                                : 'sky'
+                        }
+                    >
+                        {entry.status}
+                    </Badge>
+                </div>
             </div>
             <PlayerTable players={entry.players} isMobile={isMobile} />
             <div className="flex flex-col pt-3">
