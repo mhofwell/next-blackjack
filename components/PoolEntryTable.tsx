@@ -76,12 +76,7 @@ export default function PoolEntryTable() {
     const [entries, setEntries] = useState<Entry[] | null>(null);
     const [selectedRow, setSelectedRow] = useState<string | null>(null);
     const [isMobile, setIsMobile] = useState(false);
-
-    const isDarkMode =
-        window.matchMedia &&
-        window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-    const shareIcon = isDarkMode ? '/dark_share.png' : '/light_share.png';
+    const [shareIcon, setShareIcon] = useState<string>('');
 
     const handleShare = () => {
         const url = window.location.origin + `/pool/${poolState.active}`;
@@ -90,6 +85,17 @@ export default function PoolEntryTable() {
     };
 
     let rank = 1;
+
+    useEffect(() => {
+        // Ensure window is defined
+        if (typeof window !== 'undefined') {
+            const isDarkMode =
+                window.matchMedia &&
+                window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            setShareIcon(isDarkMode ? '/dark_share.png' : '/light_share.png');
+        }
+    }, []);
 
     useEffect(() => {
         // Ensure window is defined
