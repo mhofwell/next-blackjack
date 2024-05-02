@@ -1,7 +1,6 @@
 'use server';
 import ErrorComponent from '@/app/dashboard/error';
 import Skeleton from './UI/skeleton-grid';
-import { Badge } from './UI/badge';
 import { getClient } from '@/lib/apollo/client';
 import { UPDATE_POOL_DATA_MUTATION } from '@/lib/graphql/queries';
 
@@ -15,6 +14,7 @@ type OverviewData = {
 };
 
 export default async function OverviewBanner({ id }: { id: string }) {
+    
     const { data, errors } = await getClient().mutate({
         mutation: UPDATE_POOL_DATA_MUTATION,
         variables: {

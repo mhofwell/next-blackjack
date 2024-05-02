@@ -202,61 +202,63 @@ const Mutation = {
 
         let active = 0;
         let total = 0;
-        pools.forEach((pool: Pool) => {
-            // for each entry
-            pool.entries.forEach((entry: Entry) => {
-                let G = 0;
-                let OG = 0;
-                let count = 0;
-                let didAll4Score = false;
-                total += 1;
-                // get the players
-                entry.players.forEach((player: Player) => {
-                    const playerData = eplData.elements.find(
-                        (element: { id: number }) => element.id === player.id
-                    );
-                    // sum the goal stats for this pool
-                    if (playerData) {
-                        if (playerData.goals_scored > 0) {
-                            G += playerData.goals_scored;
-                            count += 1;
-                        }
-                        //sum adjustments
-                        G += player.goal_adjustment;
 
-                        if (playerData.own_goals > 0) {
-                            OG += playerData.own_goals;
-                        }
+        // Flatten the data structure into a single array
+        const entries = pools.flatMap((pool: Pool) => pool.entries);
 
-                        OG += player.own_goal_adjustment;
+        // for each entry
+        entries.forEach((entry: Entry) => {
+            let G = 0;
+            let OG = 0;
+            let count = 0;
+            let didAll4Score = false;
+            total += 1;
+            // get the players
+            entry.players.forEach((player: Player) => {
+                const playerData = eplData.elements.find(
+                    (element: { id: number }) => element.id === player.id
+                );
+                // sum the goal stats for this pool
+                if (playerData) {
+                    if (playerData.goals_scored > 0) {
+                        G += playerData.goals_scored;
+                        count += 1;
                     }
-                });
+                    //sum adjustments
+                    G += player.goal_adjustment;
 
-                count === 4 ? (didAll4Score = true) : (didAll4Score = false);
+                    if (playerData.own_goals > 0) {
+                        OG += playerData.own_goals;
+                    }
 
-                const NG = G - OG;
-
-                // set goals for the entry
-                entry.goals = G;
-                entry.own_goals = OG;
-                entry.net_goals = NG;
-
-                // set paid for the entry
-                entry.paid = 'YES';
-
-                // set status for this entry
-                if (didAll4Score && NG <= 21) {
-                    entry.status = 'ACTIVE';
-                    active += 1;
-                } else if (!didAll4Score) {
-                    entry.status = 'INACTIVE';
-                } else if (NG > 21) {
-                    entry.status = 'BUST';
-                } else {
-                    // Eliminated = can't automate this yet. Need to add a way to eliminate entries.
-                    entry.status = 'ELIMINATED';
+                    OG += player.own_goal_adjustment;
                 }
             });
+
+            count === 4 ? (didAll4Score = true) : (didAll4Score = false);
+
+            const NG = G - OG;
+
+            // set goals for the entry
+            entry.goals = G;
+            entry.own_goals = OG;
+            entry.net_goals = NG;
+
+            // set paid for the entry
+            entry.paid = 'YES';
+
+            // set status for this entry
+            if (didAll4Score && NG <= 21) {
+                entry.status = 'ACTIVE';
+                active += 1;
+            } else if (!didAll4Score) {
+                entry.status = 'INACTIVE';
+            } else if (NG > 21) {
+                entry.status = 'BUST';
+            } else {
+                // Eliminated = can't automate this yet. Need to add a way to eliminate entries.
+                entry.status = 'ELIMINATED';
+            }
         });
 
         // loop over entries in each pool and save them to the database
