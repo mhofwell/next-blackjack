@@ -313,13 +313,17 @@ const Query = {
             }
         });
 
-        // try {
         // get the latest gameweek from EPL API
         const res = await fetch(
             'https://fantasy.premierleague.com/api/fixtures?future=1'
         );
         const data = await res.json();
-        const gameweek = data[0].event - 1;
+        let gameweek: number;
+        if (data[0]) {
+            gameweek = data[0].event - 1;
+        } else {
+            gameweek = 38;
+        }
         const response: PoolBannerData = {
             id: bannerData.id,
             name: bannerData.name,

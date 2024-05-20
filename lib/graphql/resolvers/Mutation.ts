@@ -191,7 +191,14 @@ const Mutation = {
 
         const gwData = await futureFixtures.json();
 
-        const gameweek = gwData[0].event - 1;
+        let gameweek: number = 0;
+
+        if (!gwData[0]) {
+            console.error('No gameweek data found.');
+            gameweek = 38;
+        } else {
+            gameweek = gwData[0].event - 1;
+        }
 
         const epl = await fetch(
             'https://fantasy.premierleague.com/api/bootstrap-static/'
